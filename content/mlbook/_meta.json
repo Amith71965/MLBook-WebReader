@@ -1,0 +1,65 @@
+{
+  "title": "Machine Learning and Artificial Intelligence",
+  "subtitle": "Concepts, Algorithms and Models",
+  "author": "Prof. Reza Rawassizadeh",
+  "institution": "Boston University",
+  "contactEmail": "rezar@bu.edu",
+  "amazonUrl": "https://a.co/d/bT92nVX",
+  "githubUrl": "https://github.com/Amith71965/MLBook",
+  "coverImage": "https://pub-1f5c0ba9c71c47dda9854bea440ba21d.r2.dev/mlbook/cover.png",
+  "parts": [
+    {
+      "title": "Preliminary Concepts",
+      "chapters": ["ch3"]
+    },
+    {
+      "title": "Supervised Learning",
+      "chapters": ["ch8", "ch9"]
+    },
+    {
+      "title": "Deep Learning",
+      "chapters": ["ch10", "ch11"]
+    }
+  ],
+  "chapters": {
+    "ch3": {
+      "number": 3,
+      "title": "Probability and Statistics",
+      "description": "Foundational concepts in probability theory, statistical methods, distributions, and Bayes' rule — the mathematical bedrock for all machine learning.",
+      "pdfFile": "Chapter 3_Probability and Statistics.pdf",
+      "notebooks": ["Ch3/"]
+    },
+    "ch8": {
+      "number": 8,
+      "title": "Regressions",
+      "description": "Linear and non-linear regression techniques including univariate, multivariate, polynomial, and regularized methods.",
+      "pdfFile": "Chapter 8 -Regressions.pdf",
+      "notebooks": ["Ch8/"],
+      "prerequisites": ["ch3"]
+    },
+    "ch9": {
+      "number": 9,
+      "title": "Classification Algorithms",
+      "description": "Decision trees, SVM, k-NN, Naive Bayes, ensemble methods — algorithms for categorizing data into discrete classes.",
+      "pdfFile": "Chapter 9- Classification Algorithms.pdf",
+      "notebooks": ["Ch9/"],
+      "prerequisites": ["ch3", "ch8"]
+    },
+    "ch10": {
+      "number": 10,
+      "title": "Artificial Neural Networks",
+      "description": "Perceptrons, backpropagation, gradient descent, LSTM, GRU, CNN, and RNN architectures for deep learning.",
+      "pdfFile": "Chapter 10-Artificial Neural Network.pdf",
+      "notebooks": ["Ch10/"],
+      "prerequisites": ["ch3", "ch8"]
+    },
+    "ch11": {
+      "number": 11,
+      "title": "Self-supervised Deep Learning",
+      "description": "Autoencoders, restricted Boltzmann machines, self-organizing maps, and denoising techniques for unsupervised representation learning.",
+      "pdfFile": "Chapter 11-Self-supervised Deep Learning.pdf",
+      "notebooks": ["Ch11/"],
+      "prerequisites": ["ch10"]
+    }
+  }
+}

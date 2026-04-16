@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ------------------------------------------------------------------ */
+/*  ML Book Reader — Editorial Design System                           */
+/*  Curated Anthology aesthetic: cream/ink, Newsreader + Inter          */
+/* ------------------------------------------------------------------ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Cream palette */
+  --color-cream-50: #fefcf8;
+  --color-cream-100: #faf7f2;
+  --color-cream-200: #f0ebe0;
+  --color-cream-300: #ddd6c6;
+
+  /* Ink palette */
+  --color-ink-300: #9e9d93;
+  --color-ink-400: #7a7968;
+  --color-ink-500: #5e5d4e;
+  --color-ink-600: #4a4939;
+  --color-ink-700: #44433a;
+  --color-ink-900: #373831;
+
+  /* Fonts (CSS variables set by next/font) */
+  --font-serif: var(--font-newsreader), "Georgia", serif;
+  --font-sans: var(--font-inter), "Helvetica Neue", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ------------------------------------------------------------------ */
+/*  Base                                                                */
+/* ------------------------------------------------------------------ */
+
+html {
+  background: var(--color-cream-50);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream-50);
+  color: var(--color-ink-900);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-cream-300);
+  color: var(--color-ink-900);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Drop-cap                                                           */
+/* ------------------------------------------------------------------ */
+
+.dropcap-wrapper > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 3.75rem;
+  line-height: 0.8;
+  padding-right: 0.5rem;
+  padding-top: 0.15rem;
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
+
+/* ------------------------------------------------------------------ */
+/*  KaTeX overrides                                                    */
+/* ------------------------------------------------------------------ */
+
+.katex-display {
+  margin: 2rem 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+.katex {
+  font-size: 1.05em !important;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Prose overrides for MDX content                                    */
+/* ------------------------------------------------------------------ */
+
+.prose :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 3rem;
+}
+
+.prose :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  margin-top: 2rem;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Shiki (rehype-pretty-code) overrides                               */
+/* ------------------------------------------------------------------ */
+
+pre[data-theme] {
+  background: var(--color-cream-100) !important;
+  border: 1px solid var(--color-cream-200);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+code[data-theme] span {
+  color: var(--shiki-light, inherit);
 }

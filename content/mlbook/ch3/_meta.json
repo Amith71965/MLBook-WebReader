@@ -1,0 +1,13 @@
+{
+  "number": 3,
+  "title": "Probability and Statistics",
+  "sections": [
+    "00-introduction",
+    "01-concepts-and-definitions",
+    "02-basic-statistical-concepts",
+    "03-probability",
+    "04-bayes-rule",
+    "05-probability-distributions",
+    "06-em-algorithm"
+  ]
+}

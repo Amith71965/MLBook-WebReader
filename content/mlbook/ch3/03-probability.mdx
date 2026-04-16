@@ -1,0 +1,48 @@
+---
+chapter: 3
+section: 3
+title: "Probability"
+slug: "probability"
+keywords: ["probability", "sample space", "events", "conditional probability", "independence"]
+notebooks: ["Ch3/Stats.ipynb"]
+---
+
+Probability theory provides the mathematical framework for quantifying uncertainty. It allows us to assign a numerical value — between 0 and 1 — to our belief that a particular event will occur.
+
+## Sample Space and Events
+
+The **sample space** $\Omega$ is the set of all possible outcomes of a random experiment. An **event** $A$ is a subset of the sample space: $A \subseteq \Omega$.
+
+For example, when rolling a six-sided die:
+
+$$\Omega = \{1, 2, 3, 4, 5, 6\}$$
+
+The event "rolling an even number" is $A = \{2, 4, 6\}$.
+
+## Axioms of Probability
+
+Kolmogorov's axioms define the rules that any probability measure $P$ must satisfy:
+
+1. **Non-negativity**: $P(A) \geq 0$ for every event $A$
+2. **Normalization**: $P(\Omega) = 1$
+3. **Additivity**: For mutually exclusive events $A$ and $B$:
+
+$$P(A \cup B) = P(A) + P(B)$$
+
+## Conditional Probability
+
+The probability of event $A$ given that event $B$ has occurred is defined as:
+
+$$P(A | B) = \frac{P(A \cap B)}{P(B)}, \quad P(B) > 0$$
+
+This is one of the most important concepts in machine learning. When we train a classifier, we are essentially learning $P(Y | X)$ — the probability of a label $Y$ given features $X$.
+
+## Independence
+
+Two events $A$ and $B$ are **independent** if knowing that one occurred does not change the probability of the other:
+
+$$P(A \cap B) = P(A) \cdot P(B)$$
+
+Equivalently, $P(A | B) = P(A)$.
+
+In practice, the assumption of independence is powerful but often unrealistic. The **Naive Bayes** classifier (Chapter 9) makes this assumption explicit — and despite its "naive" nature, it performs remarkably well in many real-world scenarios.
