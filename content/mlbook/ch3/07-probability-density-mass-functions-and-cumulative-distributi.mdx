@@ -1,0 +1,34 @@
+---
+chapter: "ch3"
+order: 7
+slug: "probability-density-mass-functions-and-cumulative-distributi"
+title: "Probability Density/Mass Functions and Cumulative Distribution Functions"
+wordCount: 630
+---
+The *Probability Density/Mass Function (PDF/PMF)* shows how dense the probability is at each data point. In other words, a variable could have different values, and PDF or PMF shows how likely a value can be assigned to the target variable. For discrete data, we use PMF, and for continuous data, we use PDF. PDF doesn't show the probability of a value (since it's zero) but rather helps in calculating the probability over a range of values.
+
+Imagine you are living in the future; corporation greed and corrupt governments have ruined the planet's resources. There are new businesses that make good profits. Edible insect cultivation is one of those businesses. You are a world-known AI expert and recently got a new consulting project.
+
+An insect farmer came to you and asked you to use data science and other scientific methods to improve the taste of his bugs. He told you that he guessed that rain positively impacts his bugs' moods and a good mood will result in tastier bugs.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_14_Picture_8.jpeg" alt="Figure" />
+
+We should measure the amount of rain to better understand insects' moods. Figure 3-7 (a) shows the amount of rain in centimeters and the number of days for each rainfall, which is a discrete variable. In this figure, 6 cm of rain is the most frequent amount of rain we had because it occurred in eight days.
+
+Note that the sum of probabilities in PMF is equal to 1, and the area under the curve in PDF is equal to 1. Why do we use PMF and not PDF? Because rain per day is a discrete value, we don't have any other dates between yesterday and today.
+
+*Cumulative Distribution Function (CDF)* is a function that describes a *distribution* of a variable (either discrete or continuous variable). In other words, CDF is a function that describes the probability that a variable (discrete or continuous) will take a value less than or equal to a specific value.
+
+To plot the CDF of our example, first, we need to plot the PMF because we are dealing with a discrete variable, i.e., the amount of rain. Figure 3-7 (b) presents the PMF of Figure 3-7 (a). Figure 3-7 (c) presents the CDF plot, which looks like steps, and each step is the size of the PMF. The *Y-*axis of the PMF (or PDF) diagram shows the density of a value, which is a number between 0 and 1, and the *X*-axis represents the values as in PMF.
+
+By using CDF, we can answer the probability that rain is going to be less or larger than a particular value. For example, what is the probability of having less than *6 cm* or rain? In other words, CDF is the probability of being less or greater than *x* (*x* is a value). To answer this question, by plotting CDF, we can add up all probabilities until that particular point *P*(*x* &lt; 6*cm*)
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_15_Figure_4.jpeg" alt="Figure" />
+
+Figure 3-7: (a) The amount of rain based on the frequency of rain, (b) the PMF of rain, (c) CDF of the Rain.
+
+from the CDF plot. Therefore, it will be . 0.04 + 0.06 + 0.19 = 0.29
+
+Once again, let us remind you that in this example, we consider rain as discrete data and use a histogram to plot its PMF. PDF uses a line chart because it is used for continuous data.
+
+Figure 3-7 (b) shows the PMF plot, which is the sum of all probabilities, and it should be equal to 1. Then, by using the PMF values, the CDF will be designed as shown in Figure 3-7 (c). You can see from Figure 3-7 (c) and Figure 3-7 (b) that the size of the steps in CDF is taken from values in PMF.

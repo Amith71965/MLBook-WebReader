@@ -1,0 +1,108 @@
+---
+chapter: "ch10"
+order: 7
+slug: "regularization-in-neural-network"
+title: "Regularization in Neural Network"
+wordCount: 2343
+---
+A successful machine learning algorithm should avoid overfitting. We can think of overfitting as just memorizing the data (not learning) and matching everything to the training dataset. Therefore, if new data arrives in the system (test data) that does not match the existing data, the algorithm can not determine a label for it.
+
+As we have described in Chapter 8, to avoid overfitting, we use regularization. We describe popular methods that used regularization in ANN, but in addition, to resolve overfitting, they can handle vanishing and exploding gradient problems as well.
+
+### **Vanishing and Exploding Gradients**
+
+We have learned that a neural network operates in three steps. First, it begins from the input layer and goes through hidden layers to reach the output. This process is known as forward pass. Second, the loss function compares the output (e.g., prediction) result with the actual label and measures the error. In simple words, the output of a loss function is an error value. In the third step, the neural network uses the error value and backpropagation algorithm to calculate the gradient for each neuron in the network. Gradients (a vector of partial derviates with respect to weights and biases) are used by the network to adjust its weights and biases to reduce error.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_40_Picture_5.jpeg" alt="Figure" />
+
+Figure 10-21: The gradient (blue triangle) is getting smaller and smaller in the back propagation that at some points get useless and weights do not change at all.
+
+As the network moves from the output toward the input layer, the gradient gets smaller by the chain rule, and thus, the weight adjustment gets smaller. In a more technical sense, the gradient is exponentially shrinking as the backpropagation moves toward the input neuron. Figure 10-21 visualizes this phenomenon. A high gradient reveals a big adjustment, while a small gradient indicates a minor adjustment in weight.
+
+When a network is deep (with many hidden layers), the gradient gets smaller and smaller until it vanishes, and thus, weights on the layers close to the input layer never get updated. For example, if the gradient of the last layer close to the output layer is 0.5 or less than one, as we go deep in the network, it gets smaller and smaller because it gets multiplied by some smaller number. For example, it will be 0.5 × 0.4 × 0.1 = 0.02 . Then the weight in the input layer will be  $w_{new}^{(l)} = w_{old}^{(l)} - \alpha \times 0.02$ . Since we know a learning rate is also a small number, such as 0.01, we have  $w_{new}^{(l)} = w_{old}^{(l)} - 0.0002$ , which means the new weight has very insignificant differences from the old weight, this is known as *vanishing gradient*. The same thing could happen with gradients larger than one, and thus, it makes a very big gradient that does not let SGD get close to minima, which is the *exploding gradient*.
+
+In summary, the vanishing gradient refers to a problem in deep neural networks; the gradient in backpropagation is getting too small that the weight doesn't get updated at all. This is not good because some weights, especially weights close to the input layer, didn't change by backpropagation, and only weights close to output layers get updated.
+
+There are approaches that do not solve this problem but try to mitigate them. One approach is the use of ReLU or Leaky-ReLU as activation functions and avoiding using hyperbolic tangent as activation function, which is prone to the vanishing gradient. In the following, we briefly list common approaches.
+
+### **Weight Initialization**
+
+There are two approaches that use a more subtle weight initialization and do not perform the weight initialization completely randomly at the beginning. These approaches are known as Xavier [Glorot '10] and He [He '15].
+
+Xavier or Gorlot initialization uses random weights with a normal distribution and not completely random numbers. In particular, uses random weights drawn from a normal distribution with a mean of 0 and a variance of  $2/(n_{in} + n_{out})$  where  $n_{in}$  presents the number of input neurons and  $n_{out}$  the number of output neurons.
+
+He initialization (a.k.a Kaiming initialization) proposes a weight initialization for non-linear activation functions such as ReLU and Leaky ReLU while considering the non-linearity of non-linear activation functions. Weights are initialized to have a normal distribution, with zero mean and variance of  $2/n_{in}$ , and biases are initialized to zero.
+
+### **Gradient Clipping**
+
+Another approach is Gradient clipping, which cuts off gradients before they reach a predefined limit. This limitation can be specified by a transformation and normalizing the range of the gradient. For example, we cut off all gradients larger than a specific threshold, e.g., 1, or smaller than a specific threshold, e.g., -1. Then, all gradient values above 1 are set to 1, and all values below -1 are set to -1.
+
+Gradient clipping can be applied to any type of neural network where the risk of exploding gradients is a concern. However, Gradient Clipping is commonly used in RNN networks, which we will explain later.
+
+### **Batch Normalization**
+
+Back in Chapter 3, we described the standardization and normalization approaches. Also, in the Clustering chapter (Chapter 4), we provide an example that all data should be in the same range to be able to cluster them. If we intend to have a neural network that handles different numerical ranges, we should normalize them. For example, we would like to have a classification algorithm to predict the happiness of our users based on their age and annual income. The age is a number between 0 and 120, but income is widely varied. For example, in the U.S., it could be from 10,000\$ per year to >10,000,000,000\$. Therefore, we need to bring these variables into the same range. In the neural network, Batch normalization is a bit different from the previous normalization methods we have learned.
+
+Batch Normalization or Batch Norm normalizes the activations of a previous layer at each batch, meaning it applies a transformation that maintains the mean output close to zero and the output standard deviation close to one. It is done at the input layer and hidden layers after intermediate layers within the network. Batch normalization helps speed up training, reducing the sensitivity to network initialization and mitigating the vanishing/exploding gradient problem.
+
+Batch normalization was introduced in 2015 by Loffe and Szegedy [Loffe '15]. It adjusts the outputs of the previous layer to have a mean close to 0 and a standard deviation close to 1 based on the current mini-batch. Keep in mind that *it's about the activations, not the weights directly*.
+
+The process of Batch normalization is implemented as follows:
+
+(i) Assuming that m is the batch size of the input and  $x_i$  is the ith example in this batch, first, mini-batch mean  $(\mu_B)$  and mini-batch variance  $(\sigma_B^2)$  for each input batch will be calculated, independently.
+
+$$\mu_{B} = \frac{1}{m} \sum_{i=1}^{m} x_{i}$$
+
+$$\sigma_{B}^{2} = \frac{1}{m} \sum_{i=1}^{m} (x_{i} - \mu_{B})^{2}$$
+
+(ii) Next, the output of an activation function will be substituted with the z-normalized value of it, before passing it to the next layer. In Chapter 3, we described the z-score, written as:
+
+$$\hat{x}_i = \frac{x_i - \mu_B}{\sigma_B}$$
+
+(iii) After the value (output of activation function) of each neuron is normalized, then it multiplies the output by an arbitrary parameter (scale)  $\gamma$  and adds another arbitrary parameter (shift)  $\beta$ , to the result, as follows:
+
+$$y_i = (\hat{x}_i \times \gamma) + \beta$$
+
+Similar to weight and bias parameters, both of these parameters (scale and shift) are learned during the training process, and the optimizer configures them. Therefore, we can write the equation of batch normalization as follows:
+
+$$y_i = \gamma \frac{\hat{x}_i - \mu_B}{\sigma_B} + \beta$$
+
+Once again, let us remind you that the Batch norm is applied to the outputs of the input layer and the output of the hidden layers.
+
+Now that we understand batch normalization, a question might arise: Why do we need batch normalization and not just use traditional normalization? The problem is that traditional normalization may not go far in a deep neural network, and still is prone to several issues. One of these issues is referred to as *covariate shift*, which states that the distribution of original input data as it proceeds through its hidden layers will change. In other words, input values in each layer are scaled by trainable parameters, and as parameters get turned back by the backpropagation algorithm, the original distribution of input data will change. Batch norms can mitigate this issue by updating the network's parameters, thereby stabilizing the training process and often resulting in faster convergence.
+
+### **Other Normalization Techniques**
+
+In addition to Batch Normalization, there are other kinds of normalizations, including *Instance normalization* [Ulyanov '17], *Layer Normalization* [Ba '16], and *Group Normalization* [Wu '18]. Before we explain them, we should know that the input data fed into a neural network is in tensor format, and it has height, width, and depth (channel). We will learn more about input data later.
+
+**Instance Normalization** is a type of batch normalization that is applied for a specific instance. For example, if the neural network applies a Batch Norm on a set of images while instance normalization applies the normalization on every single image. In other words, it treats *each input sample separately for normalization*. Therefore, mean and variance are calculated for each channel of an individual sample across both *x* and *y* (spatial) dimensions and not for batches of input samples.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_43_Figure_6.jpeg" alt="Figure" />
+
+Figure 10-22: Visualization of different neural network normalization methods.
+
+**Layer Normalization** tries to address the Batch Norm's dependency on the batch sizes, which is particularly challenging for RNN networks (we will explain RNN later in this Chapter). To handle this limitation, Layer Normalization [Ba '16] introduces a *normalization across channel dimensions*. Similar to instance normalization, layer normalization normalizes the data across all the features (channels) within a layer for each individual sample rather than across different samples in a batch as in batch normalization.
+
+**Group Normalization** tries to address Batch Norm's need for large memory because of a need for a large set of batches [Wu '18]. Group Normalization divides the channels into groups and computes the mean and variance of the normalization in each group, which makes it independent from batch sizes. Figure 10-22, is designed by Wu et al. [Wu '18] to visualize these normalization approaches.
+
+#### **Dropout**
+
+One of the most popular neural network regularization methods introduced by Hinton et al. and popularized by Srivastava [Srivastava '14] is Dropout. The idea of dropout is simple but very effective. During training, a random subset of neuron outputs in a layer is set to zero in each epoch, reducing their contribution to the next layer temporarily. It is typically implemented by adding a dropout layer to the network. For example, a network might have 50% of its neurons in the first hidden layer 'dropped out' in each iteration to prevent overfitting. While dropout rates
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_44_Picture_4.jpeg" alt="Figure" />
+
+Figure 10-23: A mock example of having dropout layer after the first hidden layer. Nodes which are converted to zero are presented in grey color and this layer in each epoch turns off (make their activation function output zero) 50% of nodes.
+
+commonly range from 20% to 50%, the optimal rate depends on the specific context and network architecture. Dropout ensures that the network's predictive performance does not rely too heavily on any single neuron, promoting more robust learning. Figure 10-23 presents a simple example of a dropout regularization. There, we have a neural network, and in every iteration, 50% of its first layer of hidden neurons are turned off (their weights will be equal to zero).
+
+Gal and Ghahramani [Gal '16] introduced an extension called *Monte Carlo (MC) Dropout*, which applies dropout during both the training and test phases to obtain a measure of predictive uncertainty. In MC Dropout, the network makes multiple predictions for the same input with different neurons dropped out each time, and the results are averaged to estimate the final output. This approach can enhance the model's ability to estimate its uncertainty but should be used carefully in applications where accurate uncertainty estimation is critical, such as in medical diagnostics.
+
+### **Early Stopping**
+
+We have explained that training a neural network is a computationally expensive process. To manage this, we employ regularization methods, which help prevent overfitting and can also indirectly reduce computational costs by promoting simpler models. During training, we monitor the loss, and once it reaches an acceptable level, we can halt the training process. One popular regularization technique is *early stopping*, which we detailed in Chapter 8. Early stopping involves terminating the training when the model's performance on the validation set starts to deteriorate, thus preventing overfitting and potentially saving computational resources. There is not much more to add here except to reiterate that early stopping can be effectively implemented in neural network training to optimize resource usage.
+
+#### NOTE:
+
+- \* We have explained that neural networks suffer from high computational complexity, which makes them unsuitable for settings with limited computational capacities, such as batterypowered devices. There are several different approaches to making neural networks lighter, and we will explain them in Chapter 14.
+- \* There is no optimal way to design the number of layers and neurons, and since there is no methodological approach to doing it, the selection of neurons and layers is referred to as 'dark art'. A simple common approach is to use a large model, which is larger than our need, and use dropout to prevent overfitting. This approach is called 'stretch pants', in which we do not search for a pant that fits; we get a large pant that stretches and fits our size.
+- \* A neural network has lots of hyperparameters to tune such as learning rate, number of hidden layers, number of neurons, cost function, types of activation function, optimization algorithm, batch size, etc. It is common to rely on some predefined settings, but you might change a parameter and make some significant advancements; nobody knows until you experiment.

@@ -1,0 +1,42 @@
+---
+chapter: "ch8"
+order: 5
+slug: "multiple-linear-regression"
+title: "Multiple Linear Regression"
+wordCount: 1008
+---
+The linear regression we have explained is the simplest regression, which has one input or independent variable. Most of the time, we have multiple input (predictor) variables. In these cases, we can use multiple linear regression to predict the output, i.e., *multilinear regression*. The multiple linear regression equation is written as follows:
+
+$$y = \beta_0 + x_1 \beta_1 + x_2 \beta_2 + \ldots + e$$
+
+We can summarize the summation as follows:
+
+$$y = \beta_0 + \sum_{k=1}^n x_k \beta_k + e$$
+
+To better understand the use of multiple linear regression, let's use an example. Assume Mr. Nerd is still looking to find the symptom of his stress. Therefore, he has studied his life in a bit more detail, and he found some factors that are contributing to his daily stress, including work, being active of social media discussions, physical pain in his body, and family issues. To model this amount of information, we can use the following multiple linear regression:
+
+$$Stress = \beta_0 + \beta_1. work + \beta_2. social\ media + \beta_3. physcial\ pain + \beta_4. family - issues + \ldots + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{-1} + e^{$$
+
+Assuming we have two predictors, we can visualize it with a surface plot as shown in Figure 8-3. We neglect family issues for the sake of visualization because more than three predictors are hard
+
+to visualize in two-dimensional picture. Previously, we have described two questions that can be answered with simple linear regression, (i) predicting the output based on the given input and (ii) describing the relation between *x* and *y*.
+
+While employing multiple linear regression, usually, we need to answer some more questions [James '13]. For example, which one of the input variables *x1*, *x2*, … is useful for predicting the *y?* Do all input variables help to explain the output variable? How well does our model fit the data? To answer these questions, the software package that implements regression, provides a *p*-value or F-statistic test score for each input variable. Then, we can decide which input variables are useful and which are not useful.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_6_Figure_10.jpeg" alt="Figure" />
+
+Figure 8-3: A multi linear regression example for Mr. Nerd and his mood score.
+
+If there is no relation between input variables, all their s should be equal to zero. If there is a relation, at least one of the s is not zero. Therefore, we can write the following hypothesis: *β β*
+
+*H0 = There is no relation between input and output variables ( ). β*<sup>1</sup> = *β*<sup>2</sup> = . . . = *β<sup>n</sup>* = 0
+
+*H1 = There is a relation between input and output variables (at least one ). β<sup>x</sup>* ≠ 0
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_7_Picture_0.jpeg" alt="Figure" />
+
+This hypothesis test will be performed by F-statistic test or F-test, which is written as follows:
+
+$$F = \frac{(TSS - RSS)/p}{RSS/(n - p - 1)}$$
+
+In this equation  $TSS = \sum_{i=1}^{n} (y_i - \bar{y})^2$ , and n - p - 1 presents the degree of freedom, which in this case is the degree of freedom from error. The f-value > 1 means the null hypothesis is rejected (the alternate hypothesis is correct). The f-value  $\le 1$  means the null hypothesis is correct, and thus the model has no predictive capability. It is recommended to check the output of regression and check p-value and f-value should be significant to accept the model. Note that the p-values and f-statistics are associated with the overall model and the individual coefficients, not directly with the input variables themselves.

@@ -1,0 +1,145 @@
+---
+chapter: "ch3"
+order: 18
+slug: "parametric-significance-tests"
+title: "Parametric Significance Tests"
+wordCount: 2576
+---
+In this section, we will describe useful tests for a given condition, but we skip computation details. Our focus is on learning statistics for machine learning. Plenty of fantastic statistical books or online resources are available if you are interested in the details of each test. At the end of this chapter, we introduce some of them.
+
+### t-test
+
+We use a t-test to compare the mean of two groups of data where the sample size is small, i.e., less than 30 sample data points are available, and we do not know the standard deviation of the population distribution (or the other group distribution). We could assume that the population or other group dataset is *approximately normally distributed,* and we use a t-distribution to test the null hypothesis. This test operates on a *small number of data points* without knowing the variance of the other group. In fact, the t-test uses the sample (one dataset) variances to estimate the population (another dataset) variances.
+
+The t-test checks whether the *means* of the two groups are significantly different. As shown in Figure 3-23, the t-distribution was another form of normal distribution but more flattened than the z-distribution with a fatter tail [.](#page-48-0) Therefore, since the sample size is small, we can say that [8](#page-48-0) increasing the sample makes the distribution similar to normal distribution.
+
+There are three types of t-tests: the *one-sample t-test*, the *independent (or unpaired) t-test,* and the *paired (or dependent) t-test*.
+
+### **One-sample t-test**
+
+It is used when we have *a single group of sample data*, the sample size is small, and we would like to compare it with a known population mean. However, we do not know the standard deviation of a population. In other words, we only have the sample dataset and the mean of the population dataset. The purpose of a one-sample t-test is to compare the mean of this sample against a known mean of the population.
+
+For example, assume your second job is selling ice cream on the street. Every week, you bring 100 ice creams and go to sell them (the population size is 100).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_48_Picture_7.jpeg" alt="Figure" />
+
+Your average daily sales are 50 ice-creams (population mean is 50), and we assume α=0.05, with a standard deviation of 12.
+
+The insect farmer told you to sell his bug-infused ice cream and boost your sales. You accept his proposal to sell his bug-infused ice-creams as well. After a couple of weeks, you sample 20 days and study your average daily ice cream sales (all types of ice creams). It is 60, with a standard deviation of 15. Does the bug-infused ice cream change your sales at all (either positive or negative)?
+
+To answer this question, you can use a significance test because you can compare two groups of data together. The one-sample t-test is applicable here because we have a small sample (n = 20) with a known standard deviation (*σ* = 15) and mean (*x*¯ = 60) and a population with a known
+
+Distribution tail is also referred to as Kurtosis. [8](#page-48-1)
+
+mean ( = 50). However, we do not know the standard deviation of the population. In summary, we have the following: *μ*
+
+Before selling bug-infused ice cream: *Group 1: sample size=?, SD= ?, mean = 50* 
+
+After selling bug-infused ice cream:
+
+```
+Group 2: sample size= 20, SD= 15, mean = 60
+```
+
+Using software to calculate the t-test, the result of the one-sample t-test shows that *p-*value *&lt; 0.05*. Therefore, we find that adding bug-infused ice cream has some impact on our ice cream sales. We can only say there is a significant difference between the two groups, and we can not provide any more justification.
+
+### **Independent t-test**
+
+Independent t-test, also known as *two-sample t-test*, is the most commonly used t-test. We use this t-test to compare the mean of *two groups* that are *independent* and report whether there are significant differences among them. In addition to the normal distribution of data, the mean of both datasets should be different as well. The independent t-test assumes that variances for the two datasets are equal. However, there is a variation of the independent t-test, known as *Welch's t-test*, that does not assume equal variances.
+
+To understand the independent t-test, we use an example. Assume you decided to do something very important for humanity and changed your job from a data scientist and ice cream seller to a biologist. You discovered a medication that can cure obesity. To prove if your drug is successful, you test it on two groups of users (groups A and B) whose members have the same diet and the same amount of physical activity.
+
+Group A receives the medication (treatment group), and group B does not receive the drug (control group). Group A has 15 members (n1=15), and group B has 20 members (n2=20). The mean weight of group A members after using the drug is 72kg, and the mean weight of group B members is 73kg. Group A members' weight standard deviation is 4.2 kg, and group B members' weight standard deviation is 1.1kg. To summarize, we have the following information:
+
+```
+Using your obesity medication: Group A: sample size = 15, SD= 4.2, mean = 72 
+Not using your obesity medication: Group B: sample size = 20, SD= 1.1, mean = 73
+```
+
+By using an independent t-test, we compute the *p*-value, and we regret to inform you that the *p*value of the unpaired t-test shows the result of 0.031, which is &lt; 0.05. Therefore, your obesity medication is effective.
+
+### **Paired t-test**
+
+The Paired t-test is used when we have *one group* of data measured at *two different times*. It is another form of a one-sample t-test. َUsually, this test is employed to check if the new treatment, method, etc., is effective on the same data points and works better than the previous method or not.
+
+For instance, your biological startup applies some gene modification to the weight loss medication. Then, measure human weights before you give them genetically modified medication, and then again, you measure their weights afterward. A paired t-test will be used to identify the statistical significance between these two measurements. This means that the data points are the same, but we measure them at two different times.
+
+### ANOVA, MANOVA and ANCOVA
+
+The t-test is limited to comparing only two groups of data (or one group in two different conditions). However, Analysis of Variance (ANOVA) is a statistical method used to analyze differences among statistical characteristics of *two or more groups of data*. The simplest form of ANOVA generalizes the significance test for more than two groups. The H0 in ANOVA assumes that all groups' means are equal, and H1 assumes that at least two of the group means are different.
+
+H0: *μ*<sup>1</sup> = *μ*<sup>2</sup> = *μ*<sup>3</sup>
+
+H1: Means are not all equal.
+
+ANOVA also assumes homogeneity of variances (the variances are similar across groups). Similar to the t-test, ANOVA assumes all samples follow a normal distribution and that the variances of samples are not significantly different.
+
+ANOVA works with factors (variables) and levels (values). Factors are variables such as gender, which male, female, and transgender are levels for the gender factor. The result of the ANOVA test will be presented as an F-ratio. F-ratio is a ratio of two variances [.](#page-50-0) ANOVA operates based [9](#page-50-0) on a hypothesis test called the F-test. It compares the variability between groups to the variability within groups.
+
+There are three well-known types of ANOVA, One-Way ANOVA, Repeated-Measures ANOVA, and Factorial ANOVA. Also, there are two known extensions of ANOVA, including MANOVA and ANCOVA. We explain them briefly in the following.
+
+### **One-Way ANOVA**
+
+In this test, we have *only one variable (factors)* with *at least two values (levels)***,** and levels are *independent*. For instance, assume you are now a successful biologist, and you get a new contract from the insect farmer to use some drugs on his bugs and make their size optimal for a better taste. When you were a data scientist, you got to know that muscular insects have less fat and taste better. Now, you start experimenting with feeding insects testosterone to increase their musculature tissues. You use testosterone in three different dosages: 0 mcg, 5 mcg, and 20 mcg.
+
+In other words, the factor is a testosterone dosage, and levels are 0, 5, and 20 mcg. Analyzing the differences between these three groups of testosterone treatment could be done with One-Way ANOVA.
+
+If you are looking for a resource to understand ANOVA deeply, we recommend you check Chapter 9 of Statistics II [9](#page-50-1) for Dummies [Rumsey '09]. Here, you only need to learn when to use it.
+
+### **Repeated Measure (Dependent) ANOVA**
+
+In Dependent ANOVA, we have *only one variable* with at *least two values*, but the values are *dependent*.
+
+For instance, assume, we measure the weight of bugs who have received 20 mcg of testosterone. If we measure their weight on 3 different days, e.g., Day 1, Day 3, and Day 6, we need to use repeated measure ANOVA to see if there is any statistical difference between them. Because bugs are the same, their weights each day have changed. Analysis of the impact of testosterone will be done on one variable with dependent values; in this case, we use dependent ANOVA.
+
+It is very similar to a paired t-test, but we use the t-test when our dataset is small.
+
+### **Factorial ANOVA**
+
+When we have *more than one variable (factor),* we use this test. Note that variables must be *independent*. A well-known type of Factorial ANOVA is *Two-Way ANOVA*. Two-way ANOVA is used when we have one dependent variable and *two independent variables,* and there might be an interaction between independent variables.
+
+For instance, assume we are measuring the weight changes (dependent value) in different days (variable) for male and female bugs separately (two independent variables). Or we are measuring mood changes (assume bugs have mood, e.g., happy, sad, etc.), i.e., dependent values, of male and female bugs (two independent variables) to different dosages of testosterone (independent values). For this type of analysis, we deal with two independent variables and different values (dependent or independent); we use Factorial ANOVA . [10](#page-51-0)
+
+### **MANOVA**
+
+Multivariate Analysis of Variance (MANOVA) is a significance test for sample datasets with *more than one dependent variable* and *one independent variable*. ANOVA is limited to one dependent variable, but MANOVA can handle more than one dependent variable. In the previous example, we give testosterone to bugs and measure their weight in one day. However, the farmer is obliged to adhere to ethical codes and would like to be sure that testosterone does not have any adverse effect on bugs' moods. Therefore, in addition to measuring weight, every day, a therapist (who can talk in bug languages) talks with bugs and measures their level of happiness.
+
+Similar to ANOVA, if there is one independent variable and more than one dependent variable, we use *One-Way MANOVA*. If there is more than one independent variable and more than one dependent variable, we use *Two-Way MANOVA*.
+
+If you think it is not easy to remember them, we do agree with you that you should preserve your brain cells for the next chapters. Just try to identify the characteristics of your dataset and read again these descriptions to decide about the best possible test, you can use Table 3-6 to decide about your test as well.
+
+A very good and brief description of ANOVA exists here: [http://statisticslectures.com/topics/introanova,](http://statisticslectures.com/topics/introanova) and we [10](#page-51-1) adopt our example from this link.
+
+### **ANCOVA**
+
+Another variation of factorial ANOVA is ANCOVA, which stands for Analysis of Covariance (ANCOVA). There are additional variables that are not independent or dependent variables, but they affect the dependent variable.
+
+These variables are called *covariates*. A covariate is a type of *control variable that is measured but not manipulated in the experiment*. Covariates are extraneous variables that are not of primary interest to our analysis but can influence the dependent variable.
+
+To understand what covariate is, let's use an example, While we are measuring bugs' mood, we might not consider that the weather has an impact on their mood. On rainy days, bugs are unhappy, and on sunny days, they are happy. Weather is a covariate in this example. The goal of a scientific process is to establish a relationship between the independent variable and dependent variable without any external influence, but covariates can have an influence.
+
+|                          | Dependent Variables |                    |                   |  |  |  |  |  |
+|--------------------------|---------------------|--------------------|-------------------|--|--|--|--|--|
+|                          |                     | 1                  | >1                |  |  |  |  |  |
+| Independent<br/>Variables | 1                   | One-Way<br/>ANOVA   | One-Way<br/>MANOVA |  |  |  |  |  |
+|                          | >1                  | Factorial<br/>ANOVA | Two-Way<br/>MANOVA |  |  |  |  |  |
+
+Table 3-6: Deciding about the best ANOVA test based on number of independent and dependents variables.
+
+Since ANCOVA is the analysis of covariance, it decomposes the variance of the dependent variable into variance explained by the covariates and variance explained by the independent variable, plus residual variance. In simple terms, think of ANCOVA as adjusting the dependent variable by the group mean of the covariates. We are very sure you understand the previous sentences are perfectly fine, but don't worry. We will not need to know how it works.
+
+Remember, we should use ANCOVA instead of ANOVA when we have covariates. The same is applicable to MANOVA and MANCOVA. When we need MANOVA but we have covariates, we go for MANCOVA . [11](#page-52-0)
+
+### NOTES:
+
+\* Some argue that probability plots are visual tools, so subjective judgment is involved in interpreting them. They complement, but don't replace, formal statistical tests for distribution fit.
+
+We do not describe the statistical analysis with covariate in detail if you are interested in learning more, check this [11](#page-52-1) fantastic tutorial: [http://www.statsmakemecry.com/smmctheblog/stats-soup-anova-ancova-manova-mancova](http://www.statsmakemecry.com/smmctheblog/stats-soup-anova-ancova-manova-mancova)
+
+- \* When there is more than "one group" of normally distributed datasets to compare, we go for ANOVA and its derivations for statistical significance tests.
+- \* Where we have a small (&lt; 30 samples) sample size and we intend to find if there are any significant differences between the population mean and hypothesized value, we can use the ttest.
+- \* To conduct a t-test, we should know the mean for both datasets that will be compared together. t-test H0 states that two population means are the same, H0: , while the alternative hypothesis H1 says they are not the same, H1: . *μ*<sup>1</sup> = *μ*<sup>2</sup> *μ*<sup>1</sup> ≠ *μ*<sup>2</sup>
+- \* The null hypothesis in ANOVA assumes that all samples' means are equal H0: . The alternate hypothesis, H1, says that at least two means are different. *μ*<sup>1</sup> = *μ*<sup>2</sup> = *μ*<sup>3</sup>
+- \* None of the statistical tests are ideal, and all of them make mistakes. Usually, it is better to test your data with different tests and see which one provides a good answer. However, we should have a good justification for selecting a specific test and rejecting others.
+- \* Both t-test and ANOVA operate based on the assumption that the population and samples follow a normal distribution (according to the Central Limit Theorem). If the data does not follow the normal distribution or we do not have this assumption, we should go for nonparametric tests.
+- \* In addition to covariates, there is another term called *confounding variables*, which are variables that distort the relationship between the independent and dependent variables.

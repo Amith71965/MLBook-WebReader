@@ -1,0 +1,50 @@
+---
+chapter: "ch8"
+order: 9
+slug: "piecewise-segmented-or-non-additive-regression"
+title: "Piecewise, Segmented, or Non-Additive Regression"
+wordCount: 873
+---
+Despite the described limitations, linear regressions are very resource-efficient and are widely in use. Sometimes, instead of using polynomial regression, which is not as efficient as linear regression, we can use two or more linear regressions to get rid of the 'additive assumption' of linear regression. See Figure 8-5, which shows the amount of joy Mr. Nerd experiences from eating based on the calories of his food. He enjoys eating, but overeating reduces his joy as well.
+
+The data points presented in Figure 8-5 are not additive because at around 110 calories, his joy starts to decline; before 110 calories, it was increasing. Therefore, we cannot model it with simple linear regression. Polynomial regression is also computationally complex, and it is recommended not to use it. However, by separating the dataset into two datasets, we can easily use two linear regression lines that fit the data appropriately. Figure 8-5 (b) presents the separator line, and Figure 8-5 (c) presents these two regression lines.
+
+Sometimes, we can use more than one polynomial regression to model our dataset, and it is not just limited to linear regression. However, this doesn't seem a rational choice because when we don't care about computational complexity, we can simply use a polynomial regression.
+
+Now, a question might arise: at what point do we need to separate the dataset? By visual inspection, we can recognize where in this small dataset, we can spot the distinctive point. For real-world datasets, which are usually too large and multidimensional, we do not have such a
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_12_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-5: (a) A dataset that can are not additive, and thus, we can't use a simple line to fit them. (b) The knot is specified to separate the dataset into two sub-datasets. (c) The same dataset can be modeled with two linear regressions.
+
+simple solution and can't visualize them. Therefore, we need a more subtle approach to design the distinctive border for a regression (the dotted line in Figure 8-5 (b)).
+
+We can start by selecting a random data point and separating the dataset into two subsets from that random data point. Then, we draw a linear regression line for each subset and calculate R, SSE, F-statistics, or other evaluation metrics for each of these regression lines. We will explain these evaluation metrics later in this chapter. We change the data point, selecting a different one from the dataset, and determine various evaluation metrics. The point that yields the minimum sum of these metrics will serve as the optimal discrimination point, allowing us to divide the dataset into two subsets for which we can apply individual linear models.
+
+For example, assuming we have a dataset and we randomly select three data points to separate it into two subsets.
+
+```
+d1 : f_statistics1 + f_statistics2 = 3.1 + 2.5
+d2 : f_statistics1 + f_statistics2 = 3.2 + 2.1
+d3 : f_statistics1 + f_statistics2 = 3.1 + 2.6
+```
+
+Among the three following data points, i.e., . The is the best data point for separation because it has the maximum F-statistics. *d*1, *d*2, *d*<sup>3</sup> *d*<sup>3</sup>
+
+The point where one linear regression breaks and another starts is called a *knot*. We can also use the piecewise regression for polynomial regressions (See Figure 8-6). Assuming *c* is the knot, and based on the value of *x1* and *c* we should have two models. Therefore we write the following equatio[n](#page-12-0) for a polynomial regression with two variables *x1* and *x2*. 2
+
+If you encounter the power inside parentheses, e.g., , it is not to the power of , it is read as *k*th index of . Sometimes, [2](#page-12-1) the index is not written as a subscript, and if it is written as super-script, it should be inside parentheses. *x*(*k*) *x* (*k*) *x*
+
+$$y = \begin{cases} \beta_0^{(1)} + \beta_1^{(1)} x_1 + \beta_2^{(1)} x_2 &amp; if \quad x_1 > c \\ \beta_0^{(2)} + \beta_1^{(2)} x_1 + \beta_2^{(2)} x_2 &amp; if \quad x_1 \le c \end{cases}$$
+
+Each of these regression models in a piecewise regression is called a *spline*. We explained linear regression, but polynomial regression can have the same attribute too. For example, by looking at Figure 8-6, we see a single polynomial function can't model all
+
+the datasets properly. However, using a piecewise regression, we can use two polynomials to model the dataset properly.
+
+Although this approach seems flexible, it is useful when we have access to the entire dataset (population) and not just the sample dataset. Somehow, we are hacking a polynomial or linear regression to handle the dataset, and some mathematicians do not agree with this approach for different reasons, including giving biased regression coefficients that need shrinkage (we explain later); it yields a very high  $R^2$  value that is badly biased, and so forth. Nevertheless, who cares? Since it works, feel free to use it. Just be careful not to use it in front of a picky mathematician.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_13_Figure_4.jpeg" alt="Figure" />
+
+Figure 8-6: Piecewise polynomial regression example.
+
+Note in all examples we explained here, we assume there is only one knot, and thus, we separate the dataset into two subsets. There is no limitation on the number of knots and we can separate a dataset into more than two subsets with several knots [James '13].

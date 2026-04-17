@@ -2,6 +2,77 @@
   "number": 10,
   "title": "Artificial Neural Networks",
   "sections": [
-    "00-introduction"
+    {
+      "order": 0,
+      "slug": "intro",
+      "title": "Introduction",
+      "wordCount": 724
+    },
+    {
+      "order": 1,
+      "slug": "universal-approximation-theory",
+      "title": "Universal Approximation Theory",
+      "wordCount": 265
+    },
+    {
+      "order": 2,
+      "slug": "biological-neural-network",
+      "title": "Biological Neural Network",
+      "wordCount": 450
+    },
+    {
+      "order": 3,
+      "slug": "artificial-neural-network",
+      "title": "Artificial Neural Network",
+      "wordCount": 1917
+    },
+    {
+      "order": 4,
+      "slug": "perceptron-algorithm",
+      "title": "Perceptron Algorithm",
+      "wordCount": 1666
+    },
+    {
+      "order": 5,
+      "slug": "activation-functions",
+      "title": "Activation Functions",
+      "wordCount": 2466
+    },
+    {
+      "order": 6,
+      "slug": "neural-network-optimizers",
+      "title": "Neural Network Optimizers",
+      "wordCount": 7279
+    },
+    {
+      "order": 7,
+      "slug": "regularization-in-neural-network",
+      "title": "Regularization in Neural Network",
+      "wordCount": 2343
+    },
+    {
+      "order": 8,
+      "slug": "convolutional-neural-network-cnn",
+      "title": "Convolutional Neural Network (CNN)",
+      "wordCount": 5109
+    },
+    {
+      "order": 9,
+      "slug": "recurrent-neural-network-rnn",
+      "title": "Recurrent Neural Network (RNN)",
+      "wordCount": 4340
+    },
+    {
+      "order": 10,
+      "slug": "summary",
+      "title": "Summary",
+      "wordCount": 907
+    },
+    {
+      "order": 11,
+      "slug": "further-reading-or-watching",
+      "title": "Further Reading or Watching",
+      "wordCount": 356
+    }
   ]
 }

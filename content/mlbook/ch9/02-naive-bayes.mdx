@@ -1,0 +1,312 @@
+---
+chapter: "ch9"
+order: 2
+slug: "naive-bayes"
+title: "Naive Bayes"
+wordCount: 5723
+---
+One of the first theories in statistical learning (one of the oldest names of machine learning) is Bayes' theorem [Bayes '63], introduced by Thomas Bayes. It describes the probability of an event's occurrence depending on our prior knowledge about things related to the event . For [1](#page-2-0) example, the probability of us getting peace of mind is related to helping others and not expecting any rewards, and getting obese is related to diet, genetics, etc.
+
+In this section, we first describe the Naive Bayes theorem, and then we describe the prediction capability of the Naive Bayes theorem.
+
+### **Bayes Theorem**
+
+We use the Bayes Theorem to use the probability of something we already know (prior) to predict something that is happening in the future (posterior). In other words, it combines prior knowledge (prior probability) with new evidence (likelihood) to form an updated probability (posterior probability). In the context of machine learning, we employ prior knowledge or evidence (*x*) to select the best hypothesis or proposition that predicts the future (*h*). This is the Bayes theorem and is shown in Figure 9-1.
+
+If you can't recall the concept of probability, before reading the rest of this algorithm, read Chapter 3. [1](#page-2-1)
+
+ $P(h \mid x)$  presents the *posterior* probability of hypothesis h given the dataset x.
+
+ $P(x \mid h)$  presents the *likelihood* of observing the data x given that the hypothesis h is true.
+
+P(h) presents the *prior* probability of hypothesis h being true before observing the data x.
+
+P(x) presents the *marginal* probability of the data x under all hypotheses, also known as the *evidence*.
+
+You might recall from Chapter 3 that we discussed the conditional probability of P(A|B) will be written as follows:
+
+$$P(A | B) = \frac{P(A \cap B)}{P(B)}$$
+, or  $P(B | A) = \frac{P(B \cap A)}{P(A)}$ .
+
+Naive Bayes assumes that all features are independent of each other. In other words, the Naiveness of this method assumes that if we don't have a probability of two events occurring together, we can assume the probability of having them occurring together is the product of their probabilities and events being independent. In other words, we don't know the probability of A and B occurring together, and it is calculated as follows:  $P(A \cap B) = P(A) \cdot P(B)$ .
+
+Let's use an example to understand this theorem. One of your friends told you that most people who used essential oils, traditional medicine, herbal medicine, and other non-scientific methods (let's call them the xmed) did not get sick at all. You are curious to see if that theory is right or not, and let's assume you have statistical data of the people who got 'flu' and who 'don't get flu', plus people who 'use xmed' and 'don't use xmed'. We define probabilities of people who had used xmed as P(x) and people who stayed healthy as P(h), we also know the probability of people who have used xmed and didn't get sick, i.e., P(h|x). Now, we would like to know if his theory is correct, i.e., the probability of people who use xmed, given they are healthy P(x|h). Figure 9-1 visualizes the Bayesian inferences and explains how this question can be answered.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_3_Picture_8.jpeg" alt="Figure" />
+
+Thomas Bayes
+
+$$P(h|x) = \frac{P(x|h)P(x)}{P(h)} = \frac{P(x|h)P(x)}{h}$$
+
+Figure 9-1: Naive Bayes equation and visualization of probabilities.
+
+### **Prediction with Naive Bayes**
+
+The Naive Bayes assumes that each feature is independent of every other feature. This is a naive assumption, but it works fine in many cases. For example, the choice of lunch does not have any relation with the underwear color, i.e., Naive Bayes is correct, but the choice of lunch does have a relation to the diet, and this might negate the Naive Bayes assumption.
+
+Recall to use the Bayesian theorem for prediction, our objective is to predict the P(h|x), which is called *posterior probability*, from P(x|h) which is called *likelihood*, P(x) and P(h) probabilities which are known and available. In other words, from the training dataset, we would like to make inferences, and this inference is called *Bayesian inference*. P(x) is known, the objective is to find the maximum of P(h|x), which is identical to  $P(x|h) \times p(h)$ .
+
+Assume we have k number of class lables,  $c_1, c_2, \ldots c_k$ , and each of our data points has n number of features, i.e.  $f_1, f_2, \ldots f_n$ , we can use the Naive Bayes classification algorithm and assign one of the available k labels to each of the data points. Based on the Bayes theorem, it is formalized with the following equation:
+
+$$P(c_i|f_1, f_2, \dots f_n) = \frac{P(f_1, f_2, \dots, f_n|c_i) \cdot P(c_i)}{P(f_1, f_2, \dots, f_n)}$$
+
+With some mathematical calculations, which we do not describe, the Naive Bayes Theorem can be rewritten as follows:
+
+$$P(c_i|f_1, f_2, \dots f_n) = \prod_{j=1}^{j=n} P(f_j|c_i) \cdot P(c_i) \quad for \quad 1 \le i \le k$$
+
+As an example of Naive Bayes classification, we can use it to check whether an email is spam or not. We generalize the example to your daily life because, after reading this book from the beginning to the end, you will be a superstar in data science and AI. You are receiving too many emails, and you have asked your secretary to remove all emails with the word "prestigious" and come to your email address. The word "prestigious" is very common in spam emails, but it could be a new client you want to work with. For example, an email that states, "We are a prestigious journal that publishes your scientific work," seems to come from a predatory journal and thus spam.
+
+The traditional spam filters cannot filter your spam emails properly, and you need a more robust approach to filter emails that are asking for your journal submission (spam). Your staff analyzed some sample emails, and he ended up having the following probabilities:
+
+P(S): Probability of an email that is spam. 20 % of emails you received are spam.
+
+ $P(\neg S)$ : Probability of an email that is important, and thus not spam, i.e., 100 - 20 = 80 %. The symbol  $\neg$  means negation in probability. For example, if A is an event, then  $\neg$ A represents the event that A does not occur.
+
+P(P): Probability of an email includes the word "prestigious".15% of your email includes the term "prestigious".
+
+ $P(P \mid \neg S)$ : The probability of an email having the term "prestigious", given that it is not spam, is 8% of not spammed emails include this term.
+
+ $P(P \mid S)$ : The probability of having an email that includes the word "prestigious", given that it is marked as spam. Your secretary has labeled about 12% of emails that include the term "prestigious" as spam.
+
+P(S|P): Probability of an email being spam, given that it has the word "prestigious" in it. This is what we are trying to find in the dataset or predict. Therefore, we can calculate P(S|P) by using the following equation, which we described earlier:
+
+$$P(S|P) = \frac{P(P|S) \cdot P(S)}{P(P)} = \frac{0.12 \times 0.2}{0.15} = 0.16$$
+
+This is a very simple example, and we have only one feature. Let's make the spam filter a bit more intelligent because your staff has realized that you still get many spam emails. He went to collect another 100 sample emails and analyze them. He realizes the term "family" in business email means no clear payment policy. For example, the person who says, "We are like a family in the work environment." is planning not to pay properly. Let's use P(F) to present the probability of an email including the word "family". By analyzing those 100 emails manually, your staff created Table 9-1 (a), which includes the result of his analysis. If the values of this table are normalized to be between zero and one, this table is also called the likelihood table, which includes the probabilities.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_5_Figure_5.jpeg" alt="Figure" />
+
+Table 9-1: (a) describes the number of spam vs non-spam emails and the frequencies of words "family" or "prestigious" in each category. (b) By relying on Navie's assumption that events are independent, we calculate the probability of having both words by multiplying probabilities divided by the number of emails in each category.
+
+He has forgotten to analyze the occurrences of "family" and "prestigious" terms together. Based on the naive assumption, events are independent, and thus, we can assume the following:  $P(F \cap P) = P(F) \cdot P(P)$ . Here  $P(F) = \{all\ email\ contain\ 'family'\}/\{all\ emails\} = 18/100$ , and  $P(P) = \{all\ email\ contain\ 'prestigious'\ \}/\{all\ emails\} = 23/100$ . As these two events are independent, this formula is true. However, it is not our answer, and the desired probability is conditional probability. Therefore, we can create Table 9-1 (b) Simply by multiplying the
+
+probability by all emails in each category to understand approximately the number of emails that include both "family" and "prestigious" and are spam, i.e., . The approximate number of emails that include both "family" and "prestigious" that are not spam is (which is close to zero). 20 × 0.59 = 11.8 ∼ 12 80 × 0.00375 = 0.3
+
+Based on the data provided Table 9.1, we can have the following probabilities:
+
+Probability of getting an email that is spam, *P*(*S* ) = 20/100
+
+Probability of getting an email that is not spam, *P*(¬*S* ) = 80/100
+
+The probability of getting an email containing the word "prestigious", given it is spam, *P*(*P*|*S* ) = 17/20
+
+The probability of getting an email containing the word "prestigious", given it is not a spam *P*(*P*|¬*S* ) = 6/80
+
+Probability of getting an email containing the word "family", given it is spam, *P*(*F* |*S* ) = 14/20
+
+The probability of getting an email containing the word "family", given it is not spam, *P*(*F* |¬*S* ) = 4/80
+
+The probability of having a spam email, given that it includes both words "family" and "prestigious" is . The sign or stayed for conjunction (and). The results can be read from Table 9-1. Therefore, when an email including these two keywords arrives, the spam filter marks it as spam because there is a 59% probability that it is spam. *P*(*S* |*F* ∩ *P*) = 0.59 ∩ ∧
+
+This is the *Naive* Bayes algorithm because calculating the probability for each hypothesis is simplified. However, this does not mean that predictive ability is not strong; it is a very useful algorithm for many classification cases; we will describe a classification (prediction) example shortly.
+
+### **Gaussian Naive Bayes**
+
+Gaussian Naive Bayes is a type of Naive Bayes method where continuous attributes are considered, and data features have a Gaussian distribution. The email example that we have previously explained deals with discrete data. We can also use Naive Bayes to make predictions on continuous data. Assuming features are normally distributed*,* we can use the Gaussian Naive Bayes algorithm. If they are not normally distributed, it is recommended that outliers be removed to make them approximately normally distributed.
+
+For example, let's assume there is another feature in spam email detection, which is the "time of email arrival"; we call it "time" for the sake of brevity. Our objective is to perform a prediction based on time. We assume time is a continuous variable; for the continuous variable, instead of probability, we use their probability distribution function (PDF), which is not the PDF from Adobe but the one we explained back in Chapter 3. Instead of estimating , we should estimate , *S* denotes the spam. *P*(*h*|*d* ) *P*(*S* | *pd f* (*time*))
+
+### **Naive Bayes Prediction Example**
+
+Here, we explain another prediction example in another form. This example can ensure that when we finish this section, we are experts in Naive Bayes, and the soul of Thomas Bayes is praying for the sins we have performed or will perform in our machine learning career by a more complex algorithm when Naive Bayes can answer the same thing.
+
+Assume you have a good friend, and when you call him/her, s/he is always available to hang out with you. Having a social interaction is very important for mental health. Nevertheless, watching "TV" or "playing online games" is also delightful.
+
+Every weekend, you check your favorite TV series webpage to see if the new episode of your favorite series, "How to Waste My Time instead of Learning AI," has arrived. Also, you open your phone and scroll the app market to see if there is a new good game to download and play. You do this every weekend, and you decide to use the Naive Bayes algorithm to predict whether you will go to meet your
+
+| tv  | game | meet<br/>friend |
+|-----|------|----------------|
+| no  | no   | no             |
+| no  | no   | yes            |
+| no  | yes  | no             |
+| yes | yes  | no             |
+| no  | yes  | yes            |
+| no  | yes  | yes            |
+| yes | yes  | no             |
+| yes | yes  | no             |
+| no  | no   | yes            |
+| yes | no   | yes            |
+
+Table 9-2: Data we have collected from our previous observations.
+
+friend over the weekend or stay home and spend your time on games or watching TV. Table 9-2. presents what you have recorded about your behaviors over the previous weekends. Your friend would like to predict whether you will meet him/her next weekend (based on the availability of a new game or episode). Assuming the # sign will be used to mention the count of events and  $\wedge$  is used to specify intersection (and), first, we calculate the conditional probabilities as follows:
+
+$$P(TV = yes) : 4/10 = 0.4, \quad P(Game = yes) : 6/10 = 0.6, \quad P(Friend = yes) : 5/10 = 0.5$$
+
+$$P(Game = yes | Friend = yes) = \frac{\#(Game = yes) \land \#(Friend = yes)}{\#(Friend = yes)} = \frac{0.2}{0.5} = 0.4$$
+
+$$P(TV = yes | Friend = yes) = \frac{\#(Friend = yes) \land \#(TV = yes)}{\#(Friend = yes)} = \frac{0.1}{0.5} = 0.2$$
+
+$$P(Game = no | Friend = yes) = \frac{\#(Game = no) \land \#(Friend = yes)}{\#(Friend = yes)} = \frac{0.3}{0.5} = 0.6$$
+
+$$P(TV = no | Friend = yes) = \frac{\#(Friend = yes) \land \#(TV = no)}{\#(Friend = yes)} = \frac{0.4}{0.5} = 0.8$$
+
+$$P(Game = yes | Friend = no) = \frac{\#(Game = yes) \land \#(Friend = no)}{\#(Friend = no)} = \frac{0.4}{0.5} = 0.8$$
+
+$$P(TV = yes | Friend = no) = \frac{\#(TV = yes) \land \#(Friend = no)}{\#(Friend = no)} = \frac{0.3}{0.5} = 0.6$$
+
+$$P(Game = no | Friend = no) = \frac{\#(Game = no) \land \#(Friend = no)}{\#(Friend = no)} = \frac{0.1}{0.5} = 0.2$$
+
+$$P(TV = no | Friend = no) = \frac{\#(TV = no) \land \#(Friend = no)}{\#(Friend = no)} = \frac{0.1}{0.5} = 0.2$$
+
+Recall that we have explained that a probability in a Naive Bayes is constructed based on the following equation:  $P(c_i|f_1,f_2,\ldots f_n)=\Pi_{j=1}^{j=n}P(f_j|c_i)\cdot P(c_i)$ . Now, we can construct every combination of two other available information ("tv", "game"), disregarding the real value of the "meet friend" column.
+
+For example, for the four different combinations of "TV" and "Game" based on Table 9-2, we can write the following:
+
+TV = no, Game = no
+
+$$P(meetfriend) = P(TV = no | Friend = yes) \times P(Game = no | Friend = yes) \times P(Friend = yes)$$
+  
+=  $0.8 \times 0.6 \times 0.5 = 0.24$ 
+
+$$P(\sim meetfriend) = P(TV = no | Friend = no) \times P(Game = no | Friend = no) \times P(Friend = no)$$
+  
+=  $0.2 \times 0.2 \times 0.5 = 0.02$ 
+
+TV = no, Game = ves
+
+$$P(meetfriend) = P(TV = no | Friend = yes) \times P(Game = yes | Friend = yes) \times P(Friend = yes)$$
+  
+=  $0.8 \times 0.4 \times 0.5 = 0.16$ 
+
+$$P(\sim meetfriend) = P(TV = no | Friend = no) \times P(Game = no | Friend = no) \times P(Friend = no)$$
+  
+=  $0.2 \times 0.2 \times 0.5 = 0.02$ 
+
+TV=yes, Game=no
+
+$$P(meetfriend) = P(TV = yes | Friend = yes) \times P(Game = no | Friend = yes) \times P(Friend = yes)$$
+  
+=  $0.2 \times 0.6 \times 0.5 = 0.06$ 
+
+$$P(\sim meetfriend) = P(TV = yes | Friend = no) \times P(Game = no | Friend = no) \times P(Friend = no)$$
+  
+=  $0.6 \times 0.2 \times 0.5 = 0.06$ 
+
+TV=yes, Game=yes
+
+$$P(meetfriend) = P(TV = yes | Friend = yes) \times P(Game = yes | Friend = yes) \times P(Friend = yes)$$
+  
+=  $0.2 \times 0.4 \times 0.5 = 0.04$ 
+
+$$P(\sim meetfriend) = P(TV = yes | Friend = no) \times P(Game = yes | Friend = no) \times P(Friend = no)$$
+  
+=  $0.6 \times 0.8 \times 0.5 = 0.24$ 
+
+Now, with this data, we can populate Table 9-3 and compare its prediction result (fourth and fifth columns) with the actual value (third column). We can calculate accuracy, precision, recall, and other metrics related to the accuracy by comparing the actual and predicted class results.
+
+| tv  | game | meet<br/>friend | Predicted<br/>(meet friend) | Predicted<br/>(¬ meet-friend) |
+|-----|------|----------------|----------------------------|------------------------------|
+| no  | no   | no             | x<br/>0.24                  | 0.02                         |
+| no  | no   | yes            | 0.24<br/>✔                  | 0.02                         |
+| no  | yes  | no             | 0.16<br/>x                  | 0.02                         |
+| yes | yes  | no             | 0.04                       | 0.24<br/>✔                    |
+| no  | yes  | yes            | ✔<br/>0.16                  | 0.02                         |
+| no  | yes  | yes            | ✔<br/>0.16                  | 0.02                         |
+| yes | yes  | no             | 0.04                       | 0.24<br/>✔                    |
+| yes | yes  | no             | 0.04                       | ✔<br/>0.24                    |
+| no  | no   | yes            | 0.24<br/>x                  | 0.02                         |
+| yes | no   | yes            | 0.06                       | 0.06                         |
+
+Table 9-3: Meet or not meet with the friend predicted. Based on the "meet friend" column, we use a tick mark to state a correct prediction and x to state an incorrect prediction. Since, in the last row, both predicted values are equal, we can not make any judgment.
+
+The result of a Naive Bayesian algorithm will be a confusion matrix, and via the confusion matrix, the software package, or manually, we can interpret the results.
+
+The two examples we have explained were binary classification, and we chose binary for the sake of simplicity, but keep in mind that we can use Naive Bayes for multilevel classification or prediction as well. Assuming *N* is the number of training data objects, *f* is the number of features, and *c* is the number of classes, the computational complexity of Naive Bayes in the training phase is *O(Nf),* and for the testing phase is *O(fc)*.
+
+#### NOTES:
+
+- \* Since there is no parameter being used for Naive Bayes, an optimization method is not needed to find a good fit for the parameter. Naive Bayes and similar models are referred to as parameter-free models.
+- \* Naive Bayesian can perform both binary and multi-class classification.
+- \* While dealing with classification, we might encounter generative models, generative statistics, and the term generative often. In simple terms, the generative model is a model that is composed of joint probability distributions, e.g. . Another term in discriminative models describes conditional probability, e.g. . Later, we will learn more about these two types of models. *P*(*X*, *Y* ) *P*(*Y* |*X* =′ *something*′)
+
+## *k* Nearest Neighbor (kNN)
+
+The algorithms we have explained, such as regression algorithms and naive Bayes, are based on building a model that generalizes the training data to make predictions. However, other types of supervised learning algorithms do not build a generalized model; instead, they use the whole dataset for prediction. These are referred to as *instance-based learning* algorithms. In instancebased learning, predictions are made by analyzing the specific instances in the dataset that are closest to the new data point. A popular example of these algorithms is the *k*-nearest Neighbor (kNN) algorithm [Cover '67], which classifies new instances based on the majority label among the *k-*closest training examples.
+
+Please close your eyes, take a deep breath, and think about Chapter 4, where we explained clustering algorithms. Imagine yourself surfing among clustering algorithms as a data science expert without the need to learn the mathematics we have described afterward. *k*NN is very easy to understand and operates similarly to unsupervised learning algorithms. Now, wake up; real life is waiting for you.
+
+kNN operates under the assumption that similar data points are located near each other. In supervised learning, this means starting with a dataset where each data point is labeled. kNN uses a distance function to measure the closeness between data points. For example, the Euclidean distance function, which is also common in clustering algorithms (check Chapter 4), can be used in kNN. The algorithm then labels unlabeled data points based on the labels of the closest data points. The number of these 'closest data points' to consider is specified by the hyperparameter *k*. For instance, if *k*=3, the algorithm looks at the three nearest neighbors of an unlabeled point to determine its label.
+
+As illustrated in Figure 9-2, labeled points might be colored red and blue, while
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_10_Picture_5.jpeg" alt="Figure" />
+
+Upcoming Algorithms
+
+unlabeled points are grey. kNN would predict the label of the grey points based on the majority label of their three closest neighbors. This algorithm receives *k* as a hyperparameter, which specifies the number of neighbor data points. Assuming , check Figure 9-2 (a), we have a dataset in two-dimensional space, and we label a few of its data points as red and blue data points, and the grey ones in Figure 9-2 (b) do not have labels. [2](#page-10-0) *k* = 3
+
+We could say it is three-dimensional space because another dimension or feature is blue/red color. It is better to [2](#page-10-1) refer to dimensions as features because having a dimension that includes either blue or red is not wrong, but it is not common.
+
+The kNN algorithm calculates the distance of each unlabeled data point into *k* nearest data points and decides on the label. For example, the algorithm chooses a data point that is marked with "?" in Figure 9-2 (b) to decide about its label (blue or red). Figure Figure 9-2 (c) shows that there are three data points close to this particular data point; two are red, and one is blue. Therefore, the majority are red, and thus, this data point will receive the red label as well (Figure 9-2 (d)). This process continues until all data points receive a label. Also, if a new data point is added to the dataset, it will be treated as another unlabeled data point.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_11_Figure_1.jpeg" alt="Figure" />
+
+Figure 9-2: (a) The dataset without labeled data points (b) few data points in the dataset has been labeled with blue and red color. (c) a data point have been selected, we need to know what label (red or blue) does this data point receive ?
+
+Our lovely *k*NN belongs to the category of *lazy learning* algorithms because it stores all the data points first and then uses them, which does not actively classify data points. Due to its simplicity in implementation, kNN is one of the most used supervised learning algorithms and has many applications. For example, online housing agencies can use the kNN algorithm to propose a price for a house based on the nearest neighbor prices they have.
+
+Similar to clustering techniques, the best approach to identifying the optimal value for *k* is to test with different values for *k* and choose the one with the highest accuracy. This is known as *hyperparameter tuning* or sensitivity analysis as well. Assuming *n* is the number of data points, *d* is the number of dataset dimensions, and *k* is the number of nearest neighbors, the computational complexity of kNN is or *O*(*nd* + *k n*) *O*(*k dn*) .
+
+As brute force kNN is very slow, some approaches are used to make kNN perform faster. In the following, we explain three of these approaches, including Voronoi Tessellation, KD-Tree, and Local Sensitive Hashing.
+
+### **Voronoi Tessellation**
+
+Voronoi tessellation [Voronoi '08] is the process of partitioning a 2D plane that includes several data points into regions, in which each region presents the area closest to its related data point and is centered around a data point. Check Figure 9-3(a); we have data points on a 2D plane, and in Figure 9-3(b), the regions were drawn by a Voronoi Tessellation, and the result is the Voronoi diagram. The result is called the Voronoi diagram (right side of Figure 9-3). Each region represents the area that is closest to its corresponding data point, and it is centered around a data point. All points within a region are closer to its center data point than to any other data point. If a new data point is added to the plane, it creates a new region in the Voronoi diagram, altering the boundaries of the existing regions to ensure that each point in the plane is within the region of its closest data point.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_12_Figure_1.jpeg" alt="Figure" />
+
+Figure 9-3: (a) Original dataset (b) Voronoi tessellation of the original dataset.
+
+If a *k*NN algorithm sets , it can use Voronoi tessellation to decide about data points. In other words, Voronoi tessellation is the approach we use to quantify the 2D space for each data point. For , the process involves checking multiple regions around the test point. In particular, the nearest k neighbors (in terms of Euclidean distance) to the test point are identified. The labels of these k neighbors are then considered. The test point is assigned the label that is most frequent among these k neighbors. *k* = 1 *k* > 1
+
+Voronoi tessellation improves the search time to *O(log n)*, but it is only good for lowdimensional data and for higher than two-dimensional data, assuming *d* is the number of dimensions the computational complexity gets close to *O(d.n),* reflecting the challenge of distance computations and neighbor searches in higher dimensions.
+
+### **KD-Tree**
+
+If you recall, in Chapter 5, we explained that one of the big challenges in working with data is to reduce the search space, and trees are very useful in reducing the search space. K Dimensional Tree or KD-Tree [Bentley '75] is used for the kNN algorithm to partition the search space efficiently for the nearest neighbors. While KD-Tree is used for exact nearest-neighbor searches, it can also be adapted for approximate nearest-neighbor searches to improve efficiency, especially in high-dimensional spaces. In the latter case, there is a trade-off where some of the nearest neighbors might be missed in favor of faster computation.
+
+Let's use an example to understand how this algorithm distributes data into the tree. Assume we have the following dataset in two-dimensional space: \{(2,1), (1,3), (2,2), (3,1), (3,5), (4,5), (4,6), (6,4), (7,4), (7,7), (8,8)\}. We plot the dataset as it has been shown in Figure 9-4 (a).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_13_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-4: (a) The original dataset. (b) The median has been chosen, and the first branch of the tree is constructed to separate the dataset into two sub-datasets. (c) Now the dimension changed (Y-axis), and the same process will be repeated. (d) Again, the axis changed, and the same process. (e) No other data point left, and each node in the final tree has only one data point.
+
+The process of KD-Tree partitioning starts by finding the median in one of the dimensions, e.g., here, we have two dimensions, and we choose x (we could also choose y). The values on the x-axis are  $\{1,2,2,3,3,4,4,6,7,7,8\}$ , and the median of this set is 4. Next, we plot the KD-Tree based on the median, as is shown in Figure 9-4 (b). We can see we have a tree with a node x > 4 on its right side are nodes with larger or equal x values,  $\{(4,5), (4,6), (6,4), (7,4), (7,7), (8,8)\}$ , and on the left side, nodes with smaller x values are located, i.e.,  $\{(2,1), (1,3), (2,2), (3,1), (3,5)\}$ .
+
+Next, we switch to another dimension, i.e., the y-axis, and get the median of *y* coordinates. Since our dataset is partitioned into two segments, we do it once for each segment. The values on the yaxis on the left segment of Figure 9-4 (b) are , its median is '2'. Now, the next node to construct the KD-Tree will be drawn on the y-axis at '2'; the same process will be done on the right side (the median on the y-axis is 6). See Figure 9-4 (c) to check its results. Again, as you can see from the tree on the right side of Figure 9-4 (c), the KD-tree algorithm goes into each branch and does the same (see Figure 9-4 (d)) until each branch has only one data point and the tree generation stops, as shown in Figure 9-4 (e). \{1,1,2,3,5\}
+
+By building such a tree to search for the nearest neighbor, the algorithm can navigate through the right branches instead of brute force search to find the nearest neighbors (check Chapter 5 if you can't recall the search on trees). Since it uses a tree, it improves the search for the nearest neighbor. To determine the label for a new data point, the new data point traverses the KD-tree to find its nearest neighbors. Once the k nearest neighbors are found, their labels are used to determine the label of the new point, typically through voting.
+
+KD-Tree is useful when we have low dimensional data; if we need to deal with high dimensional data, it is recommended to use Local Sensitive Hashing. Assuming we have *n* data points and *k* dimensions, the computational complexity of KD-Tree is *O (k.n log n).*
+
+### **Locality Sensitive Hashing (LSH)**
+
+Locality Sensitive Hashing (LSH) [Indyk '98] is employed in various applications, such as finding duplicate documents, enabling search engines to locate similar images, aiding biologists in identifying similar gene expressions in genomic datasets, and detecting audio and visual similarities used in authentication systems. Therefore, please switch to full attention mode while reading this section.
+
+Given the prevalence of high-dimensional data in real-world scenarios, LSH is often utilized to enhance kNN efficiency by hashing similar data points into the same buckets, thereby reducing the search space. LSH is somewhat analogous to clustering because it groups similar data points. However, while traditional hash functions aim to minimize collisions (check Chapter 5), LSH works in the opposite, and it is designed to maximize collisions for similar data points, effectively grouping them into the same buckets, which simplifies and speeds up the search process in kNN algorithms.
+
+LSH receives the number of *separator hyperplanes* or *lines*, i.e., *k*, and the *number of iterations*, *l*, as input parameters (hyperparameters). It cuts the data space with lines or hyperplanes with *k*  lines, and we end with a maximum of regions (or buckets) to search. The small regions that are generated by the separator lines are called buckets. Then, it separates the dataset into different regions, and when a new data point arrives, it compares it only to the other data points in that bucket. The algorithm runs this process *l* times. 2*k*
+
+For example, assume we set *k=3* and *l=3*. Figure 9-5 (a) shows the dataset that is converted into buckets in Figure 9-5 (b). Each new data point that arrives will be compared only to its bucket. This is good, but we might miss some data points. For instance, in Figure 9-5 (b). 'f' belongs to 7
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_15_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-5: (a) The original dataset. (b) Three lines drawn as a hash function to separate each data point. (c) Another three separator lines drawn, and (d) for the third time, another set of line drawn. Note the result of this hashing is written on the right side of each figure.
+
+the 011 and does not belong to the same bucket that 'g' (110) or 'h' (010) belongs. To mitigate this issue, we repeat the process of assigning data points to a bucket three times (because l=3), as shown in Figure 9-5 (c) and (d).
+
+Considering the result of this bucketing, we can see 'a' and 'b' stay in the same region, 'c','d', and 'e' in the same region, and 'f' and 'h' are in the same region. However, we cannot judge for 'g', with only l=3. We should make l larger to identify neighbors of 'g'. When a new data object is received by the algorithm, kNN can use LSH and assign this data point to one of the existing regions. Also, the list of other data points for that particular region is available, and thus, the algorithm compares the newly arrived data point only to the data points that belong to that region (i.e., the same region). For example, if the hash code assigns region 000 to the newly arrived data object, based on Figure 9-5, it will be compared to 'a' and 'b' only.
+
+Assuming n is the number of data objects, k is the number of separator lines or hyperplanes, and d is the number of data dimensions, the computational complexity of finding the right bucket (hash code) for a new data object is  $O(d \cdot k + O(\frac{d \cdot n}{2^k}))$ , or we can say it is close to  $O(d \log n)$ , which is close to KD-Tree complexity.
+
+#### NOTES:
+
+- \* While deciding about a *k* in *k*NN, there is no optimization-related algorithm exists for that. The best way to decide about *k* is to perform the parameter sensitivity analysis or hyperparameter tuning, i.e., experimenting and checking the result until we get the best parameter.
+- \* It is recommended that the data be rescaled to have all features in the same numerical range while using the *k*NN algorithm.
+- \* KD-Tree is also used to order the multidimensional space and facilitate search in the multidimensional environment.
+- \* One of the biggest advantages of kNN is its non-linear decision boundary, which can even handle classifying complex shapes. For example, take a look at Figure 9-6, which shows a complex classification required to separate the class of blue from red data objects.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_16_Figure_5.jpeg" alt="Figure" />
+
+Figure 9-6: *k*NN algorithm that can classify fairly complex structures. We can see from this image that blue and red dots are interviewed, but the kNN can successfully classify them (look at the red and blue region).

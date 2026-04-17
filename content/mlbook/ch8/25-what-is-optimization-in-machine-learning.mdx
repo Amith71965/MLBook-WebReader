@@ -1,0 +1,34 @@
+---
+chapter: "ch8"
+order: 25
+slug: "what-is-optimization-in-machine-learning"
+title: "What is Optimization in Machine Learning?"
+wordCount: 861
+---
+All models we have explained in this chapter are heavily dependent on their parameters, e.g., linear regression is dependent on  $\beta_0$  and  $\beta_1$ , and changes in these parameters change the model behavior. In the context of machine learning, optimization is the process of changing and tweaking model parameters to minimize the cost function. Why do we need an optimization algorithm, and why not experiment with all possible parameters (brute force) until we get the best result? To better understand the need for optimization, take a look at the right side of Figure 8-22. The bottom of this curve is the optimal parameter value because the cost is at its lowest. However, to get to the minima or maxima point via a brute force approach, we need to experiment with all possible points on the function curve, i.e., all blue dots on the curve. This is expensive to experiment with, and even for this simple convex function, we have too many blue points to experiment with. Recall in Chapter 4, we explained that a real-valued function is called convex if the line segment between any two distinct points on the graph of the function lies
+
+above the graph between the two points. For convex functions, any local minimum is also a global minimum. It is efficient in optimization as it guarantees that if we find a local minimum, we have also found the global minimum. But still, it is not guaranteed that the optimization algorithm will find it.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_56_Figure_1.jpeg" alt="Figure" />
+
+Figure 8-22: (left) Using an optimization to reach the minima, and therefore, very few data points will be processed. (right) Not using an optimization, and thus, many data points will have experimented on the function to find the minima.
+
+However, if we use optimization, as is shown on the left side of Figure 8-22, we can skip many data points and get faster to the minimum. By faster, we mean fewer experiments.
+
+Take a look at Figure 8-23, it is a function and we can see its local minimums (minima or sometimes called optima), have the smallest *y* value in each valley (or in comparison to its adjacent points), and global minima, is specified the smallest value of *y* in the entire function. Local minima are points where the cost function is lower than at adjacent points, while the global minima is the lowest point across the entire function.
+
+The process of optimization in the context of the machine learning algorithm is usually identifying a good local minima. By good, we mean a number close to the global minimum or, ideally, the global minimum itself. Therefore, we can say that the ultimate goal of optimization is to find the global minimum. In reality, if we deal with non-convex shape optimization, it is not possible to find the optimal point (global minima), and thus we seek to identify strong local minima. If we have a convex shape (e.g., Figure 8-22), both local minima and global minima are the same, but still, it is not guaranteed that the optimization algorithm will find it.
+
+Note that the blue curve in Figure 8-23 presents the cost function. We don't know the shape of this curve, and by optimization, we experiment with lots of different parameter values and measure the cost to identify this function shape (cost function shape).
+
+By looking at the figure, we can easily identify local minima(s) or global minimum (or minima). Mathematically there are two conditions required to claim a datapoint as a local minima: (i) its first-order derivative is zero, i.e., (ii) its second-order derivative is positive, i.e., . *f*′(*x*) = 0 *f*′′(*x*) ≥ 0
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_57_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-23: A sample function (non-convex shape) with its local minimal and global minima data points have been specified. While reading any of these optimization diagram note that the function presented in blue line is not known and the optimization objective is to find these minima.
+
+Now, by using this background knowledge about optimization, we can say that optimization is focused on reducing the cost or loss function by choosing the right values for the model parameters. In other words, our goal is to build the best model to describe the dataset. Therefore, identifying the optimal value for model parameters reduces the error, and thus we can have the optimal model. Please accept our apologies for repeating it too many times, we want to be sure you memorize the logic behind optimization.
+
+The algorithms we described in this chapter are associated with a cost function, e.g. RMSE is the cost function of linear regression, and changing parameters ( ) will affect the RMSE. Therefore, an optimization algorithm is used to identify the lowest cost based on different combinations of We do not use RMSE, because RMSE can be used for a convex function, which is usually not a case in a real-world model. *β*0, *β*<sup>1</sup> *β*0, *β*<sup>1</sup> .
+
+There are various methods for directing the search on the given function toward optimum, including gradient, Hessian, and directional derivatives. In the rest of this section, we explain gradient descent methods, which are widely used for directing the search toward the optimum.

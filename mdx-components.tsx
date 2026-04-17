@@ -1,6 +1,32 @@
 import type { MDXComponents } from "mdx/types";
 
+type FigureProps = {
+  src: string;
+  alt?: string;
+  caption?: string;
+};
+
+function Figure({ src, alt, caption }: FigureProps) {
+  return (
+    <figure className="my-12">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt ?? caption ?? "Figure"}
+        className="rounded-3xl w-full"
+        loading="lazy"
+      />
+      {caption ? (
+        <figcaption className="mt-3 text-right font-sans text-[10px] font-semibold tracking-[0.15em] text-ink-500 uppercase">
+          {caption}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
 const baseComponents: MDXComponents = {
+  Figure,
   h1: ({ children }) => (
     <h1 className="font-serif text-4xl md:text-5xl text-ink-900 tracking-tight mt-16 mb-4 leading-tight">
       {children}

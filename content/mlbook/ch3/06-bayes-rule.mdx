@@ -1,0 +1,18 @@
+---
+chapter: "ch3"
+order: 6
+slug: "bayes-rule"
+title: "Bayes Rule"
+wordCount: 181
+---
+Bayes Rule is an alternative approach to calculate P(A|B). It can be derived from the conditional probability above and written as follows:
+
+$$P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}$$
+
+We skip its mathematical proof because this book is not about mathematics. To better understand the use of the Bayes rule, consider a scenario where eating too many nuts increases the person's triglycerides. Suppose 20% of guests have high triglycerides, we have P(Trig) = 20%. Also, 40% guests love nuts and eat lots of nuts, i.e., P(NutLove) = 40%.
+
+You know that 60% of those who love nuts have high triglycerides P(Trig | NutLove) = 60%. Now, we can find if loving nuts might cause high triglycerides or find P(NutLove | Trig).
+
+$$P(NutLove | Trig) = \frac{P(Trig | NutLove) \cdot P(NutLove)}{P(Trig)} = \frac{0.6 \times 0.4}{0.35} = 0.68$$
+
+The result says it is 68% of people with high triglycerides love nuts. There is a direction in machine learning that uses probabilistic reasoning on data, but we skip it in this book and later in Chapter 9 explain Naive Bayes rule classification.

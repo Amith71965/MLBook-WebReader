@@ -1,0 +1,280 @@
+---
+chapter: "ch3"
+order: 8
+slug: "statistical-distribution"
+title: "Statistical Distribution"
+wordCount: 4473
+---
+A dataset has a characteristic like ours. For instance, an unknown person (assuming we are not talking about the first author of this book) is overeating, but he complains that he has a slow metabolism and easily gains weight. It is his characteristic. A dataset has characteristics, too, but instead of using plain language to describe it, we use statistical distribution to describe its characteristics, i.e., descriptive statistics.
+
+Some models and algorithms, such as Gaussian Mixture Model clustering or generative AI models, operate based on the data distribution. Therefore, we use inferential statistics to make a decision (e.g., group the data) about the data. You can check the earlier sections in this chapter to recall the differences between inferential and descriptive statistics.
+
+Again, we remind ourselves that any variable must include repetitive values in a dataset because any scientific phenomena should be reproducible, and the entire notion of machine learning and data science operates based on the notion of reproducibility and repeatability. Usually, the more repeated values we have in the dataset, the better the accuracy of our machine learning algorithm.
+
+Sometimes, we smooth the dataset to increase its repetitiveness. More about generalization and smoothing will be explained later in other chapters.
+
+We can use distribution to describe a
+
+narrative about a dataset or for the prediction and sample it for generative AI applications. Distribution usually focuses on one single variable, such as a column in a CSV file, which is called a *univariate distribution*. In other words, it presents *how often all possible values of a single variable occur* (probability or frequency of their occurrences). We can plot the distribution of a variable in a two-dimensional space, i.e., the X-axis presents values, and the Y-axis presents the *volumes*. A multivariate distribution is a distribution that can hold more than one variable (see Figure 3-8).
+
+There are specific known distributions, but a real-world dataset might not always fit into any known distributions [Skiena '17]. However, being familiar with the known distribution and their use. Whatever you do with data, there will be a nerd with statistical knowledge to say: *"I can't believe this until you show me the data distribution."* Therefore, plot your data distribution before using any machine learning model or algorithm.
+
+In the following, we describe distributions and when to use each distribution. Be patient if they sound boring; you need to understand them, and they are very crucial for the rest of this book, especially when we discuss neural networks. Keep in mind that any distribution can be mathematically formalized (described) using *means*, *variances*, *covariances*, and perhaps other additional parameters.
+
+Some distributions are discrete, and some are continuous. Besides, we describe their PDF or PMF as well, but to help us keep our brain unexploded by the end of this chapter, we skip explaining their CDF, and you can check them online.
+
+### Normal (Gaussian) Distribution
+
+The most common distribution that exists in nature is normal distribution, also known as Gaussian distribution or Bell-shaped distribution. It is typically used for a continuous variable. This distribution has a symmetric bell shape. As you see in Figure 3-8, the peak of the curve in the normal distribution is the mean, and most of the data in this distribution are located near the mean. Having a symmetric shape is an ideal case for studying a distribution.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_17_Figure_3.jpeg" alt="Figure" />
+
+Figure 3-8: Normal distribution with its bell shape curve
+
+The Gaussian distribution is very prevalent because often, in social and natural sciences, a random variable that has been appropriately collected should follow a normal distribution. Also, it has several sub-types of distribution, such as z-distribution or t-distribution, which we will explain very briefly later. Gaussian distribution is always defined by mean  $\mu$  and standard deviation  $\sigma$ , as shown in Figure 3-8. The following equation presents the PDF of Gaussian distribution for any given variable of x. Here  $\mu$  is the mean and  $\sigma$  is the standard deviation.  $f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$ 
+
+$$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+
+If you can't recall from school both Pi  $(\pi)$  and Euler (e) numbers  $(\pi = 3.14, \text{ and } e = 2.71)$  are constant numbers in mathematics.
+
+A multivariate normal (Gaussian) distribution is using a covariance matrix instead of variance. For example, a two-dimensional normal distribution uses the following vector for the mean and covariance matrix ( $\Sigma$ ), assuming  $\rho$  is a correlation between two dimensions.
+
+$$\mu = \begin{bmatrix} \mu_1 \\ \mu_2 \end{bmatrix}, \ \sum = \begin{bmatrix} \sigma_1^2 &amp; \rho \sigma_1 \sigma_2 \\ \rho \sigma_1 \sigma_2 &amp; \sigma_2^2 \end{bmatrix}$$
+
+To understand lets assume we use bivariate Gaussian distribution (the simplest form of multivariate Gaussian distribution). Assuming we have *X* and *Y* variables with mean of and and standard deviation of and , their correlation coefficient is computed as follows: *ρ μ<sup>X</sup> μ<sup>Y</sup> σ<sup>X</sup> σ<sup>Y</sup>*
+
+$$\rho = \frac{Cov(X, Y)}{\sigma_X \sigma_Y}$$
+
+Usually, a normal distribution is written with calligraphic *N* and its mean and variance, as follows: . (*μ*, *σ*2)
+
+### Uniform Distribution
+
+A uniform distribution (rectangular distribution) is a distribution in which all its *outcomes are equally likely* (they have the same probability). For example, while throwing dice, all chances have equal probability; we have 6 options, and the chance to get a particular number is . Another good example is flipping a coin, we can get either head or tail, and both have an equal probability of . These two examples are discrete uniform distributions. 1/6 1/2
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_18_Figure_5.jpeg" alt="Figure" />
+
+ Figure 3-9: (left) Continuous uniform distribution (right) dice tossing distribution which is discrete uniform distribution.
+
+Uniform distribution could also be from continuous data. For example, an algorithm that generates random data has a continuous uniform distribution. The result of trials lay between certain bounds in this distribution, and these bounds are defined as parameters *a* (minimum) and *b* (maximum), and the Uniform distribution is written as . *U*(*a*, *b*)
+
+The left part of Figure 3-9 presents a shape of continuous Uniform distribution, and the right part presents the Uniform distribution of tossing a dice, which can have one of the six equal outcomes. The PDF of continuous Uniform distribution is written as follows:
+
+$$f(x) = \begin{cases} \frac{1}{a-b} &amp; for \quad a \le x \le b \\ 0 &amp; for \quad x &lt; a \text{ or } x > b \end{cases}$$
+
+### Beta Distribution
+
+Another distribution that is often used in specific algorithms, such as Thomson Sampling (we will describe it in Chapter 13), is *Beta distribution*. It is particularly effective for modeling variables that represent probabilities, which are naturally constrained between 0 and 1. This distribution is useful in scenarios where the exact probability of a binary outcome (such as success/failure or yes/no) is uncertain. The Beta distribution allows for a flexible way to express this uncertainty. It's especially useful in contexts where we have some prior knowledge or data about the likelihood of these binary outcomes and wish to incorporate this information to understand better or predict future occurrences.
+
+The beta distribution represents all possible values of a probability when (i) we don't know what the probability distribution of the target dataset is, and (ii) we know that the probabilities are not moving toward infinity and have a range between [0,1].
+
+The Beta distribution is defined by two parameters and . Figure 3-10 presents the beta distribution based on different values for and . As we can see, Beta distribution can plot *α β α β*
+
+many different behaviors just by changing its and values. *α β*
+
+For instance, assume you are guessing the probability of being elected as the president of your company. To model this probability, we can use a Beta distribution. This choice is based on the binary nature of the outcome (you either get elected or you don't), and the Beta distribution is ideal for such a scenario.
+
+Let's use another example to remember the beta distribution. We are living in a world full of plastic pollution now; we would like to know how probable it is that in the future, our chickens hatch eggs in plastics. The
+
+P( θ) 0.2 0.4 0.6 0.8 1 *α*=2 *β*=2 2.5 2.0 1.75 1.5 1 0.5 *α*=2 *β*=5 *α*= *β*= 0.5 *α*=3 *β*=1 θ
+
+Figure 3-10: Beta distribution with different values for alpha and beta.
+
+author's aunt said it is true; a decent scientist who read this book, like you, said it is impossible. To model the range of beliefs or estimates about this probability, we can use the Beta distribution. Why Beta distribution? Because we are dealing with a binary outcome (the event either happens or not), we want to capture the range of uncertainty or variability in people's beliefs about this probability. To summarize, Beta distribution is useful to represent *all possible values of a probability.* 
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_19_Picture_9.jpeg" alt="Figure" />
+
+To formalize, a Beta distribution is a distribution that is parameterized by  $\theta$  given  $\alpha$  and  $\beta$  parameters, and its PDF is written as follows:
+
+$$P(\theta \mid \alpha, \beta) = \frac{\theta^{\alpha - 1} (1 - \theta)^{\beta - 1}}{B(\alpha, \beta)} \propto \theta^{\alpha - 1} (1 - \theta)^{\beta - 1}$$
+
+ $\theta$  is in the range between 0 and 1,  $\theta \in [0,1]$ . B is the normalization constant that ensures the total probability is 1. Therefore, we can take out  $B(\alpha,\beta)$  and say that the  $P(\theta \mid \alpha,\beta)$  is proportional 1 to  $\theta^{\alpha-1}(1-\theta)^{\beta-1}$ . By substituting values for  $\alpha$  and  $\beta$  in  $\theta^{\alpha-1}(1-\theta)^{\beta-1}$ , we can get distribution shapes shown in Figure 3-10.
+
+### **Dirichlet Distribution**
+
+A multivariate generalization of Beta distribution (beta distribution for more than one variable) is called *Dirichlet distribution*. In other words, Dirichlet distribution is over vectors of variables and not a single variable. It could be assumed as a *distribution over distributions*.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_20_Figure_5.jpeg" alt="Figure" />
+
+Figure 3-11: Example of multivariate Dirichlet distribution with six sample vectors, each of them has alpha, a vector of size three.
+
+ $<sup>^{1}</sup>$   $\propto$  sign is used in mathematics to show something is proportional to something.
+
+Similar to the Beta distribution, this distribution is parameterized by a vector of  $\alpha = \{\alpha_1, \alpha_2, \dots \alpha_k\}$  parameters. Each  $\alpha_i$  influences the shapes of the distribution at the dimension *i*. In other words, for the k-dimensional Dirichlet distribution, the parameter vector  $\alpha$  has k elements. Look at Figure 3-11, which presents a ternary counterplot (a counterplot inside an equilateral triangle) to visualize the Dirichlet distribution. Assuming we have k=3 outcome as vectors ranging from 0 to 1. Figure 3-11 presents shapes that are created based on different parameters for  $\alpha$ . For  $\alpha &lt; 1$ , we get concentrations at the corners of the triangle. For  $\alpha > 1$ , the distribution tends toward the center of the triangle. As  $\alpha$  increases, the distribution becomes more tightly concentrated around the center of the triangle. This distribution is used in a *Latent Dirichlet Allocation*, a topic modeling approach, which we explain in Chapter 7.
+
+Before explaining the PDF of Dirichlet distribution, we should describe the *Gamma function* (Euler Gamma Function). The Gamma function behaves like a factorial for natural numbers but generalizes to positive real numbers (a continuous set). This is useful for modeling situations involving continuous change and it is written as  $\Gamma$ , along with improper integral<sup>2</sup> as follows:
+
+
+$$\Gamma(n) = \int_0^\infty x^{n-1} e^{-x} dx \quad , \quad n > 0$$
+
+The PDF of the Dirichlet distribution is as follows<sup>3</sup>:
+
+$$f(\theta_1, \theta_2, \dots, \theta_m) = \frac{\Gamma(A)}{\prod_{i=1}^m \Gamma(a_i)} \prod_{i=1}^m \theta_i^{a_i - 1}$$
+
+Here 
+$$A = \sum_{i=1}^{m} a_i$$
+ and  $a_1, \dots a_m$  are the parameters for  $i = 0, \dots m$ 
+
+If it is too complicated to learn, do not worry. We rarely need to recall its PDF unless you have one of those weird job interview questions. We should only know what algorithm (LDA, which we will learn in Chapter 7) uses this distribution.
+
+### **Binomial Distribution**
+
+Most of the distributions we explain are used for discrete variables. A binary discrete variable has only two discrete states, such as flipping a coin (head or tail), the door state (open or close), or whether you find this book fantastically helpful (yes, no). When we are dealing with a binary variable that has a fixed number of independent trials, we can use *Binomial distribution* to make inferences about the dataset. Statisticians use this distribution to judge the data and predict the probability of an event, e.g., buying or not buying a stock, using a medication or not using a medication on a patient, etc. Binomial distribution deals with states or variables that have only two values (binary states), "bi" stays for two in Latin.
+
+To understand the Binomial distribution, consider an example: we have three fat chickens and feed them junk food to make them heavier. Any of these poor chickens either get heart attacks (h) because of overeating or do not get heart attacks (n). Therefore, one of the eight following
+
+<sup>2</sup> We will briefly review Integral in Chapter 8.
+
+<sup>3</sup> The sign  $\Pi$  means the multiplication of variables in front of it. We use  $\Sigma$  the sign for the summation.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_22_Picture_0.jpeg" alt="Figure" />
+
+situations could happen for these three chickens: *\{h,h,h\}, \{h,h,n\}, \{h,n,n\}, \{n,n,n\}, \{n,h,h\}, \{n,h,n\}, \{n,n,h\}, \{h,n,h\}*. We show each probability with a function. Therefore, we can have the following inferences: *P*( . )
+
+```
+P(no heart attack) = P({n, n, n}) = 1/8
+P({one gets heart attack}) = P({h, n, n}) + P({n, h, n}) + P({n, n, h}) = 1/8 + 1/8 + 1/8 = 3/8
+P({two get heart attack}) = P({h, h, n}) + P({n, h, h}) + P({h, n, h}) = 1/8 + 1/8 + 1/8 = 3/8
+P({all thr ee get heart attack}) = P({h, h, h}) = 1/8
+```
+
+By using as a variable that specifies the number of chickens getting heart-attack, we can rewrite the above probabilities as follows: *x*
+
+```
+P(zero heart attack) = P(x = 0)
+P(one heart attack) = P(x = 1)
+P(two heart attack) = P(x = 2)
+P(three heart attack) = P(x = 3)
+```
+
+Since Binomial distribution deals with discrete values, we use histograms to present the distribution. We can plot the with a histogram as shown in Figure 3-12. *P*(*x*)
+
+The binomial distribution is appropriate if the following three conditions are all true. (i) We have a series of independent trials. It means that, in our example, a chicken's heart attack does not impact the heart attack of another chicken. (ii) Trial output is binary and denoted as success or failure, but it could be other information as well, such as yes/no, true/false, etc. (iii) The number of trials is not infinite, and there is a finite number of trials.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_22_Figure_7.jpeg" alt="Figure" />
+
+Figure 3-12: Binomial distribution of three chickens getting heatattack from eating too much junk food.
+
+The binomial PDF enables us to get the probability of observing x successes in n trials, with the probability p of success on a single trial. The binomial PDF for the given value x and given pair of parameters n and p are written as follows<sup>4</sup>:
+
+
+$$f(x \mid n, p) = \binom{n}{x} p^{x} q^{(n-x)}$$
+
+f(x|n,p) presents the probability of observing exactly x successes in n independent trials, where the probability of success in any given trial is p, and the probability of failure in any given trial is q.
+
+Here, we learn Binomial distribution, which is for one-dimensional data. If we have more than one-dimensional data, the Binomial distribution will be referred to as the *multinomial* distribution.
+
+#### Bernoulli Distribution
+
+Bernoulli distribution is a specific case of Binomial distribution; it is discrete and *has only one trial*. An experiment with random results and only having one binary outcome is known as a Bernoulli trial. For instance, we have one chicken, and this chicken has overeaten; either it gets a heart attack or does not get a heart attack. In this case, the probability of getting a heart attack is 1/2, and the probability of not getting a heart attack is 1 - (1/2) = 1/2.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_23_Figure_6.jpeg" alt="Figure" />
+
+Figure 3-13: Bernoulli distribution.
+
+Figure 3-13 visualizes a Bernoulli Distribution. The Bernoulli distribution is discrete, and its PMF is written as follows:
+
+$$P(n) = \begin{cases} 1 - p &amp; for \quad n = 0\\ p &amp; for \quad n = 1 \end{cases}$$
+
+It can be expressed as  $p^n(1-p)^{1-n}$ , where  $n \in \{0,1\}$ . In the future, when you encounter a nerd of mathematics who says this is a Bernoulli vector, she or he means the values are binary (either 0 or 1).
+
+#### Geometric Distribution
+
+The geometric distribution is similar to the Binomial distribution. It is used if all of the following three conditions are satisfied: (i) there is a series of 'independent' trials. (ii) The trial's output is binary, e.g., success/failure, yes/no, true/false, etc. (iii) As the desired binary state is acquired, the trial stops immediately. The first two conditions are similar to the Binomial distribution, but the third condition makes it different from the Binomial distribution.
+
+<sup>4</sup> 
+$$\binom{n}{k}$$
+ is referred as the binomial coefficient and it is calculated as:  $\binom{n}{k} = \frac{n!}{k!(n-k)!}$ 
+
+This distribution, similar to the Binomial distribution, is also used to make inferences about the data. We use geometric distribution when a statistician wants to answer the question, *how many trials do we need to get a successful output?* 
+
+For instance, assume there is a pigeon in the street that relieves himself on the clean window of a car. Whenever he encounters a clean car window, his diarrhea starts immediately. He is a gentle pigeon and tries to control himself, but it is hard. This should happen at least once a day, and after the first relief, the other cars stay clean (the trials stop after the first success). If your car window received its pigeon defecate share yesterday, you have cleaned it. It is also possible to receive it today as well. It means there is no relation between yesterday's today's events (independent trials).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_24_Picture_2.jpeg" alt="Figure" />
+
+Based on your past observation, you have found that the probability of any car parked in his territory and getting dirty is 0.6. Today, you bring your car fresh out of the carwash, but unfortunately, you should park it in his territory again. There are three other clean cars in the street, too (four cars in total). So, you would like to calculate the probability that our pigeon leaves the other three cars clean, and relieves himself at your car window?
+
+The probability that he makes a clean window dirty is P = 0.6, so not making it dirty is 1 - 0.6 = 0.4. Assuming X denotes the number of cars he passes without making them dirty. Assuming "not making dirty" = "success" and "making dirty" = "failure", the probability of a car staying clean is as follows:
+
+```
+P(X=1) = P(success\ in\ the\ 1^{st}\ trial) = 0.4
+P(X=2) = P(failure\ in\ the\ 1^{st}\ trial) \times P(success\ i\ nthe\ 2^{nd}\ trial) = 0.6x0.4 = 0.24
+P(X=3) = P(failure\ in\ the\ 1^{st}\ trial) \times P(failure\ in\ the\ 2^{nd}\ trial) \times P(success\ in\ the\ 3^{rd}\ trial) = 0.6x0.6x0.4 = 0.144
+P(X=4) = P(failure\ in\ the\ 1^{st}\ trial) \times P(failure\ in\ the\ 2^{nd}\ trial) \times P(failure\ in\ the\ 3^{rd}\ trial) \times P(success\ in\ the\ 4^{th}\ trial) = 0.6\times0.6\times0.6\times0.4
+= 0.086
+```
+
+Figure 3-14 visualizes the result, and it shows that as soon as the pigeon encounters a clean car, the chance is higher to stay clean, but if it passes three cars, the chance of keeping his stomach clean for the fourth car is very low at 0.086. Therefore, we can conclude that as much as there are clean cars on the street, your car's chance of receiving our lovely pigeon stomach residuals is reduced. This means as soon as it encounters a clean car video, its stomach gets bad. In other words, if he encounters your car as the first car and tries to control himself, the chance is 0.4 that he keeps your window clean, but if he passes three other clean cars and yours is fourth, your chance of keeping your window clean is only 0.086. Figure 3-15 shows the plot of this geometric distribution.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_25_Picture_0.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_25_Picture_1.jpeg" alt="Figure" />
+
+Figure 3-14: Our lovely pigeon fly on clean cars and when he encounters a clean window his stomach starts to relief.
+
+As you can see from Figure 3-15, geometric distributions always have a right-skewed shape (the concentration is on the left side of the X-axis), and the density of data reduces as we move right
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_25_Figure_4.jpeg" alt="Figure" />
+
+Figure 3-15: Geometric distribution of the probability of not getting a dirty window by the pigeon.
+
+in the histogram, i.e., there is a long tail on the right side. This distribution is written as  $X \sim Geo(p)$ . X is a geometric distribution where the probability of success is p. Since p provides the probability of success, x is the number of trials (x = 1,2,...), The PMF of Geometric distribution is written as:  $f(x) = p(1-p)^x$ 
+
+Once again, let's emphasize the differences between geometric and Binomial distribution. The geometric distribution is similar to the Binomial distribution, but the experiment with geometric distribution stops after the first desired state (e.g., the pigeon relives itself). In contrast, in Binomial distribution, the experiment could continue (e.g., the pigeon continues to relive itself after the first relive).
+
+#### Poisson Distribution
+
+Poisson distribution is being used to model the intervals of rare events. In other words, we can use Poisson distribution to model this dataset when dealing with a dataset that includes rare
+
+system events, such as machine malfunctions. We should know the average occurrences of these rare events (in time), and their time is not changing.
+
+In Poisson distribution, a rare event occurs *randomly* and *independently*. It means the probability, or rate, of this event happening does not change through time, and we can guess how often this could happen. For instance, a rare event occurs two times per year on average. We would like to know the probability that in one year, this event occurs exactly five times. In this case, Poisson distribution will help.
+
+Geometric and Binomial distributions involve a series of trials, while the Poisson distribution models the number of rare event occurrences in a particular interval. While formalizing this distribution, the mean and variance are equal, and written as (lambda). Remember that we said the average (mean) is not changing. The following equation is used to calculate the PMF of the Poisson distribution: *λ*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_26_Figure_3.jpeg" alt="Figure" />
+
+This distribution can model the number of times the rare event, which is discrete, occurs in an interval such as time, space, volume, etc.
+
+Let's discuss some examples to understand its use. By having data from pandemics, we can use Poisson distribution to predict when will the next pandemic, like COVID-19, affect the lives of millions of people?
+
+As another example, assume we are running a machine that produces chicken nuggets. It receives chickens as input and provides chicken nuggets as output. Sometimes, instead of a chicken nugget, it magically converts chickens into a cat (a rare event), and the output is a cat instead of a chicken nugget. We have a small room to keep a few cats temporarily, and every month, an animal shelter vehicle collects the cats from our room. We need to estimate cat production in a time interval to assign food and temporary shelter to these cats. Cat production is a rare event in this system. Nonetheless, it happens with our machine, and we know it occurs about twice a month (λ=2). We would need to estimate what is the probability of getting exactly 3 cats out of this machine in four months because our temporary room has space for only three cats, and the animal shelter told us they can't come earlier than four months. We want to present statistics to the animal shelter and convince them to send their pickup earlier.
+
+Going back to the definition we described, we have a rare event (cat as output), and the mean occurrences of this event per month are 2, λ = (month) = 8, in other words, the mean in four months is 8. Therefore, *X* presents the number of cats a system can produce. 2 × 4
+
+we have 
+$$P(X = 3) = \frac{e^{-8}.8^3}{3!} = 0.286$$
+.
+
+Consequently, we can answer other questions as well. What is the probability that we get zero cats in a month (cat per month presented as  $\lambda=2$ )?
+
+$$P(X = 0) = \frac{e^{-2}.2^0}{0!} = \frac{e^{-2}.1}{1} = 0.135$$
+
+What is the probability that we get 1 cat in a month?
+
+$$P(X = 1) = \frac{e^{-2} \cdot 2^1}{1!} = 0.270.$$
+
+We have followings probability of the number of cats getting produced in a single month:
+
+ $P(getting\ 0\ cat\ in\ a\ month): P(X=0)=0.135$   $P(getting\ 1\ cat\ in\ a\ month): P(X=1)=0.270$   $P(getting\ 2\ cat\ in\ a\ month): P(X=2)=0.270$   $P(getting\ 3\ cat\ in\ a\ month): P(X=3)=0.180$   $P(getting\ 4\ cat\ in\ a\ month): P(X=4)=0.090$  $P(getting\ 5\ cat\ in\ a\ month): P(X=5)=0.036$ 
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_27_Figure_7.jpeg" alt="Figure" />
+
+Figure 3-16: An example of a Poisson distribution.
+
+The plotting of this distribution is shown in Figure 3-16. Poisson distribution is right skewed. If the  $\lambda$  is large, it is getting more symmetrical, and if the  $\lambda$  is near zero, it is getting right-skewed. Figure 3-17 present different lambda in this distribution. Remember that discrete distributions use histograms; Poisson distribution is also a discrete distribution, but for the sake of readability, a line chart presented as connected dots is usually used.
+
+#### Weibull Distribution
+
+The Poisson distribution is appropriate if the rare events we mentioned occur constantly. Nevertheless, if they do not occur at a constant rate and time, we cannot identify their rate; we can use the Weibull distribution. It models a distribution where the rate of rare events is not constant and may vary over time. The shape of a Weibull distribution depends on a parameter k, which is known as the *shape factor*.
+
+The Weibull distribution is a continuous probability distribution. Thus, it is characterized by a Probability Density Function (PDF) rather than a Probability Mass Function (PMF). Its PDF is written as follows:
+
+$$f(x; \lambda, k) = \begin{cases} \frac{k}{\lambda} \left(\frac{x}{\lambda}\right)^{k-1} e^{-(x/\lambda)^k} &amp; \text{for } x \ge 0, \\ 0 &amp; \text{for } x &lt; 0. \end{cases}$$
+
+Here, *x* is the variable (the value for which we are calculating the PDF), is the scale parameter and *k* is the shape factor. The sign ';' means that the right side of the probability are parameters that changing them affect the left side of the probability. *λ*
+
+The right side of Figure 3-17 shows the Weibull distribution example with different combinations of and *k*. *λ*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_28_Figure_4.jpeg" alt="Figure" />
+
+Figure 3-17: (left) The direction of the skewness based on the lambda in Poisson distributions. (right) Different Weibull distributions for different values of *λ* and *k.*

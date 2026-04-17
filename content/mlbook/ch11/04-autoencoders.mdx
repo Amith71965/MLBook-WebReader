@@ -1,0 +1,244 @@
+---
+chapter: "ch11"
+order: 4
+slug: "autoencoders"
+title: "Autoencoders"
+wordCount: 6211
+---
+Previous neural network models we have explained in this chapter are important to learn because they could inspire us while designing our algorithms. In this section, we discuss autoencoders, which, unlike SOM and RBM, are state-of-the-art data representation models.
+
+Despite the superior accuracy of autoencoders due to resource consumption, we can not always use these complex neural network models, and using light algorithms such as SOM could resolve our need.
+
+At the time of writing this chapter in 2021 and revising it back in 2024, autoencoders were one of the main components of most generative AI models. They are used in many applications, such as denoising data (e.g., watermark removal from watermarked images), better weight assignment in neural networks, image segmentation, text2image, synthetic video generation, and so forth.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_18_Picture_5.jpeg" alt="Figure" />
+
+Autoencoders are neural networks that reconstruct (not copy) their inputs in their output layer and try to make a reconstructed output similar to the original input. An autoencoder is composed of two components: an encoder and a decoder. The encoder creates a compressed representation of input data, i.e., transferring the input data into latent space. In other words, *latent space* is the representation of input data in hidden layers. Transferring data into a latent space is associated with compression, and this compression removes non-descriptive features (e.g., redundant and noisy) while keeping the important features. The decoder uses latent space to reconstruct the data, similar to the original data, but without its non-descriptive features. In other words, autoencoders' outputs are not identical to their inputs; they provide an approximate copy of the input. While training, the output entails important features of the input data and removes useless features of the input.
+
+We also use something similar to autoencoders in our daily communications. Let's say you are healthy and ran 12,342 steps in the morning. Then you visit a friend in the evening and tell her you had a productive day because you ran more than 10,000 steps (you compress the data, and instead of 12,342 steps you say more than 10,000 steps). Then your friend visits another friend of hers and tells him she has a friend (you) who is an athlete, and also that person is reading an amazing data science book. She used to reconstruct the data you provided to her, i.e., you said "I ran more than 10,000 steps" and she compressed and decompressed it as you are an "athlete".
+
+Take a look at Figure 11-11. We add noise to an image from the MNIST dataset and feed it into an autoencoder. The output removes the noise because it reconstructs the data by keeping the useful properties of the data and getting rid of non-useful features. The autoencoder has seen many '4' (plenty of clean images without noise) in the training set, and thus it learns to reconstruct '4' by removing unimportant features and only keeping the important ones. If there is no '4' in the dataset, then the denoising was not successful.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_19_Figure_1.jpeg" alt="Figure" />
+
+Figure 11-11: Autoencoder is used to Denoise a noisy image.
+
+### **How do Autoencoders work?**
+
+The typical architecture of an autoencoder is presented in Figure 11-12. We have explained that during the encoding stage, the encoder removes unimportant features, and during the decoding stage, the decoder reconstructs the data by using its important feature, but how does this happen? The hidden layers in autoencoders typically have fewer neurons, and thus, the dimensionality of the data (its features) is reduced. This reduction in the number of features has many useful applications and removes unnecessary features. An autoencoder has at least one hidden layer that includes the features used to encode the input data and change its representation (reducing its features).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_19_Figure_5.jpeg" alt="Figure" />
+
+Figure 11-12: A simple one layer autoencoder which has only one layer of hidden layer.
+
+Training an autoencoder involves three steps: (i) input dataset *x* is fed into the autoencoder, passing through the encoder to construct the latent space features. (ii) Then, it passes through the decoder, and the decoder provides output as a result of reconstruction. (iii) The cost function calculates the differences between and . Based on the cost (error), the backpropagation *x*̂ *x x*̂ *x*
+
+algorithm is used to reconfigure weights and biases in the next iteration and backpropagates from the decoder to the beginning of the encoder.
+
+After training the autoencoder, either the encoder or decoder could be used separately. For example, only an encoder could be used if our goal is to reduce the dimensionality of the data, or a decoder along with the encoder could be used to generate new data but with a pattern similar to the given input data. Since the distribution of the generated data (output) is the same as the distribution of given data (input), autoencoders can construct new data that is similar to the given input data.
+
+We can interpret an autoencoder as a mathematical function. It has an encoder function , and receives input *x*. Another function is the decoding function *g,* which receives the encoding result and provides the output . The cost function of autoencoders is to minimize the error of dissimilarity between input and output, or . A common cost function in autoencoders is the mean square error, and usually, they use non-linear activation functions (e.g., Sigmoid, ReLU, Hyperbolic Tangent). If we use the linear activation function, the dimensionality reduction of the autoencoder will be similar to PCA. *f* (*x*) *x*̂= *g*( *f* (*x*)) *L*(*x*, *x*̂) *L*(*x*, *g*( *f* (*x*))
+
+Now that we understand the basics of autoencoders, we need to be familiar with some specific types of autoencoders. Autoencoders whose hidden layers have fewer neurons than their input layer are called *undercomplete autoencoders*, such as the one presented in Figure 11-12. Autoencoders whose hidden layers have more neurons than input layer neurons are called *overcomplete autoencoders*, such as Figure 11-13. An autoencoder is called a *deep autoencoder* if it has more than one layer of hidden layers, such as Figure 11-12. Most of the time, we use deep autoencoders to solve our problems.
+
+### Autoencoders Can Cheat
+
+The magic of an autoencoder occurs when it achieves an abstract representation of the input data, often facilitated by having a smaller number of activated neurons in the hidden layers. For example, the hidden layers in Figure 11-12 are smaller than the input layer. However, experiments have shown that increasing the number of hidden neurons can enable the network to construct a more accurate representation of the input data. Therefore, in some autoencoder models, the hidden layers typically contain more neurons than the input layers. On the other hand, having more neurons in the hidden layers than in the input layers might cause the network to simply copy the input to the output without any meaningful transformation (i.e., acting as an identity function). Figure 11-13 visualizes this problem. Such behavior, often referred to as cheating, should be avoided. Below, we describe three types of autoencoders that avoid this problem while still benefiting from having more hidden neurons than input neurons.
+
+### **Autoencoder Types**
+
+Autoencoders are grouped into two main categories: regularized autoencoders and variational autoencoders. Common regularized autoencoders include sparse autoencoders, denoising autoencoders, and contractive autoencoders. They provide a regularization method to prevent the output layer from copying the input layer data (act as an identity function). To simplify the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_21_Picture_0.jpeg" alt="Figure" />
+
+Figure 11-13: An over complete autoencoder that its hidden layer acts as identify function and input nodes are copied exactly as they are into the output node.
+
+motivation behind using regularization in autoencoders, consider how we study for a mathematics exam. We need to learn concepts rather than memorize them because learning enables us to solve problems we haven't encountered before. In contrast, mere memorization is akin to copying and pasting answers, which is ineffective for addressing new or unfamiliar questions using our existing knowledge base.
+
+After we are done with regularized autoencoders, we delve into a more advanced autoencoder, the variational autoencoder, which can generate data very close to the given input data [Kingma '13].
+
+### Sparse Autoencoder
+
+Sparse autoencoders (SAE) [Makhzani '13, Ng '11] are typically overcomplete autoencoders, meaning their hidden layers are larger than the neurons of their input layer. When the number of hidden nodes exceeds that of the input, the autoencoder effectively increases the dimensionality of the data, which can lead to the extraction of more useful features. This characteristic is particularly beneficial for algorithms that aim to identify descriptive features of a dataset. Nevertheless, adding the extra hidden neurons requires certain measures to prevent the autoencoder from acting as the identity function (copy/paste of input neurons and cheating).
+
+SAE regularizer disables some neurons at any pass, and thus, the autoencoder will be limited to work with a smaller number of neurons than input neurons, but in the next pass, those disabled neurons will be enabled, and a new group of neurons will be disabled (see Figure 11-14). In practice, it is similar to under-complete autoencoders, which use a smaller number of neurons, but in every iteration, it uses a different set of nodes.
+
+The cost function of the SAE is written as . Here, is the reconstruction loss, and is the regularizer that receives the encoder output as its input. Unlike regularizers, as explained in Chapter 8, these regularizers do not have weight decay. Instead, they measure the hidden layer activations for each training dataset and add a penalty to the loss function to penalize excessive changes in the activation. *L*(*x*, *x*̂) + Ω( *f* (*x*)) *L*(*x*, *x*̂) Ω( *f* (*x*)) *f* (*x*)
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_22_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-14: An example of the sparse autoencoder, which has two neurons of its hidden layer activated at each epoch. The grey neurons are regularized. Hence, their value is too small to have any significant impact on the output.
+
+Two common methods to implement  $\Omega(f(x))$  are  $L_1$  regularization and KL-Divergence. The  $L_1$  regularizer uses  $L_1$  norm as a penalization score. Assuming we have n number of hidden neurons,  $a_i$  the activation of ith neuron, its cost function will be written as:
+
+$$L(x, \hat{x}) + \lambda \sum_{i=0}^{n} |a_i|$$
+
+We have explained in Chapter 3 and Chapter 6 that KL-Divergence measures the differences between two statistical distributions. The KL-Divergence regularizer defines a *sparsity* parameter  $\rho$  that specifies the desired level of sparsity. In other words, it is the average activation of neurons in a hidden layer over the sample of m observations (m is the number of data points in the training set). Usually,  $\rho$  is set to a small variable such as 0.05.
+
+ $\hat{\rho}_j$  specifies the *desired* sparsity level. Assuming  $a_j(x^{(i)})$  is the activation function of the hidden neuron j, and m number of input data gets into neuron j,  $\hat{\rho}_j$  is calculated as follows:
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_23_Figure_0.jpeg" alt="Figure" />
+
+The KL-divergence between  $\rho$  and  $\hat{\rho}_j$  distributions can be used as the penalty function. The penalty will be 0 if  $\rho = \hat{\rho}_j$ . Therefore, assuming we have n number of hidden neurons in the hidden layer, the cost function of SAE with KL-Divergence penalty is written as follows:
+
+$$L(x, \hat{x}) + \sum_{i=1}^{n} KL(\rho | | \hat{\rho}_{j})$$
+
+### **Denoising Autoencoder**
+
+The objective of denoising autoencoder (DAE) [Vincent '10] is to have a representation that can handle noise. Figure 11-15 is a denoising autoencoder. Similar to sparse autoencoders, the hidden layers of denoising autoencoders usually have more neurons than the input layer (overcomplete but could also be undercomplete). Therefore, again, some neurons get inactive, and a regularizer is used to make those neurons inactive.
+
+The denoising autoencoder first adds some noise to the input data and then feeds the noisy input data, instead of the original input data, into the encoder. Many types of noise can be used to make an image noisy, like Gaussian noise, Perlin noise, etc. In Chapter 16, we will provide a more detailed description of different types of noise.
+
+Figure 11-15 presents the architecture of the denoising autoencoder. Assuming the original data is x and the original data with added noise is x', the process of adding noise is a probabilistic process P(x'|x). Nevertheless, the cost function  $L(\hat{x}, x)$  does not compare  $\hat{x}$  (output data) to x' (input data with noise). Instead, it compares the  $\hat{x}$  (output data) to x (original input data).
+
+As shown in Figure 11-15, denoising autoencoders change the input neurons first, for example, setting some of them randomly to 0. It has a hyperparameter that specifies the percentage of neurons that should be randomly deactivated (turned off) during each pass by the denoising function. Since, in every pass, a random number of neurons are changed, this type of autoencoder is called a *stochastic autoencoder*.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_24_Picture_0.jpeg" alt="Figure" />
+
+Figure 11-15: Example of denoising autoencoder. In each iteration the input layer with noise will be added to the network. Afterward, the cost function compares the output layer to the original input layer to tune weights and biases for the next iteration.
+
+#### Contractive Autoencoder
+
+A contractive autoencoder [Rifai '11] is an overcomplete autoencoder (usually but not always) that encourages the model to provide similar encoded output for similar input data. In simple words, similar input data should yield similar output data (i.e., the result of encoding).
+
+It operates by incorporating a penalty into the cost function. It applies a regularization penalty to the activation function (not on weights but only on activation function results). The penalty tries to ensure that small changes in the input do not change the output (encoding result) significantly, and this small change maintains a very similar change in the encoded state. In other words, with respect to the variation in input data, the variation of activation function in neurons of hidden layers should be small. For example, if two input data have small differences and are fairly similar, the activation values of the hidden layer neurons for these two input data should be small as well. Some scientists describe a contractive autoencoder as extracting features that only reflect variations observed in the training set, and it is invariant to the other variations.
+
+The cost function of the contractive autoencoder is written as:  $L(x, \hat{x}) + \lambda(||J||_F)^2$ , which  $\lambda$  is a hyperparameter that controls the strength of the regularizer,  $||J||_F$  is the *Frobenius norm*<sup>2</sup> on the Jacobian matrix<sup>3</sup> of hidden layer activations with respect to inputs. You can check Chapter 8 to recall the Jacobian Matrix. Assuming *n* presents the number of neurons in the hidden layer(s) and *m* presents the number of input neurons,  $a_i(x)$  is the activation of hidden neuron *i* for the
+
+$$|\,|A\,|\,|_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{i,j}|^2}$$
+
+<sup>2</sup> Frobenius norm (Euclidean norm or  $L_2$  norm) of a matrix A with m number of rows and n number of columns is written as follows:
+
+<sup>3</sup> The Jacobian matrix captures the variation of weights of output vectors with respect to the input vector.
+
+given x input, we can write Frobenius norm on the Jacobian matrix of hidden layer activations with respect to inputs as follows:
+
+$$||J||_{F} = \sqrt{\sum_{j=1}^{m} \sum_{i=1}^{n} \left| \frac{\partial a_{i}(x)}{\partial (x_{j})} \right|^{2}} = \begin{vmatrix} \frac{\partial a_{1}(x)}{\partial x_{1}} &amp; \frac{\partial a_{1}(x)}{\partial x_{2}} &amp; \dots &amp; \frac{\partial a_{1}(x)}{\partial x_{m}} \\ \frac{\partial a_{2}(x)}{\partial x_{1}} &amp; \frac{\partial a_{2}(x)}{\partial x_{2}} &amp; \frac{\partial a_{2}(x)}{\partial x_{m}} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ \frac{\partial a_{n}(x)}{\partial x_{1}} &amp; \frac{\partial a_{n}(x)}{\partial x_{2}} &amp; \dots &amp; \frac{\partial a_{n}(x)}{\partial x_{m}} \end{vmatrix}}$$
+
+In this Jacobian matrix, n is the number of activation functions, and m is the number of input neurons. Each row refers to a gradient of one hidden neuron's output with respect to all input neurons. Each column refers to all hidden neurons' activation gradients with respect to one single input neuron. For example, the first row gives a gradient of the first hidden neuron output with respect to all inputs, or the first column gives us all hidden neurons' activation gradients with respect to the first input neuron.
+
+If the partial derivative is zero, changing input  $(x_j)$  does not change the activation value of the hidden unit, i.e.,  $a_i(x)$ . We have understood that a contractive autoencoder makes the feature extraction function (i.e., encoder) resist small changes in the input. How does this happen? By using a penalty, which is a Frobenius norm of the described Jacobian matrix.
+
+A denoising autoencoder is straightforward to implement and does not require the computation of the Jacobian of hidden layers. However, Contractive autoencoders tend to be more stable than denoising autoencoders because they introduce penalties that measure the sensitivity of the hidden representation to small changes in the input. These penalties help maintain stability by ensuring the model's output does not vary significantly in response to minor input changes.
+
+#### Stacked Autoencoder
+
+Sometimes, the input dataset is complex, and one single autoencoder can not remove unnecessary information to provide useful features. Besides, adding more hidden layers might cause underfitting or overfitting, and it is not easy to optimize weights in non-linear autoencoders with several hidden layers. This issue is handled by introducing a *greedy layer-wise pretraining* [Hinton '06, Bengio '07]. This pretraining is shortsighted, which means that each layer is trained based only on the output from the immediately preceding layer rather than on the outputs of all previous layers.
+
+Why does greedy layer-wise training resolve the challenges associated with having too many hidden layers?
+
+When a neural network gets deep (it has many hidden layers), its hidden layers' weights close to the output layer are updated very frequently, but hidden layers' weights close to the input layer might not get updated at all, which can lead to inefficient training and poor convergence (issues often exacerbated by the vanishing gradient problem). Greedy layer-wise pretraining addresses this by training one hidden layer at a time. Each layer is trained using the output from the previous layer as input, effectively isolating the learning process for each layer.
+
+For example, we have a small stacked autoencoder that gets input , and by using the labeled data, it trains it, and the hidden layer of this autoencoder outputs . The next autoencoder receives an input, and in the same fashion, it produces output . The third hidden layer receives as input (not , only the immediate previous layer output). This sequential process repeats until the last layer produces , which is then fed into the output layer of the network. *X Z*1 *Z*<sup>1</sup> *Z*<sup>2</sup> *Z*<sup>2</sup> *Z*<sup>1</sup> *Zn*
+
+Figure 11-16 presents a stacked autoencoder. A stacked autoencoder setup typically involves multiple autoencoders, each consisting of an encoder and a decoder. In a typical use-case for classification, only the encoder components might be utilized, and the last layer is usually a Softmax (or logistic regression), which has a randomized initial weight. Randomized initialized
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_26_Figure_2.jpeg" alt="Figure" />
+
+Figure 11-16: Stacked autoencoder with two autoencoders (this example has only an encoder, and there is no decoder), is followed by a logistic regression or a softmax layer for classification. Note that each encoder is trained separately in a greedy layer-wise manner using the labeled training data, and then finetuning stack them all together and train them.
+
+weights here refer to the weights that must be corrected, and thus, we need to perform backpropagation. The backpropagation process adjusts the weights to approach optimal values, making the path of backpropagation less complex compared to other neural networks. This adjustment phase is known as *fine-tuning*. Fine-tuning is a supervised process, relying on labeled data to compute the errors necessary for backpropagation and to refine the model effectively. This step follows after all the hidden layers have been pre-trained.
+
+### Variational Auto-Encoder (VAE)
+
+All autoencoders we have described until now are regularized autoencoders. However, there is another variation of autoencoder, variational autoencoders (VAE) [Kingma '13], which is very popular. VAE is a combination of variational Bayesian inference and autoencoder. Bayesian inferences are one of the oldest machine learning approaches, and in this book we only explained Bayesian inferences in different places, such as Naive Bayes in Chapter 9, probabilistically graphical model in Chapter 5, and LDA in Chapter 7.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_27_Picture_2.jpeg" alt="Figure" />
+
+Variational autoencoders (VAEs) are generative models that can be seen as an extension of latent variable models, which are similar in some respects to the expectation maximization (EM) algorithm (see Chapter 3). A VAE is specifically a type of latent variable model used to discover the underlying structure of a dataset containing hidden or unobserved variables. For example, if a document mentions terms like 'foreign policy', 'sanctions', and 'allies in the region', we might infer that its underlying topic is 'international politics'. This topic, not explicitly mentioned in the document, represents a latent variable. In contexts where the dataset is high-dimensional and noisy, it is common for classification algorithms to focus on extracting these latent features rather than attempting to utilize all existing features.
+
+#### **The Magic of Generative Models in Data Reconstruction**
+
+The VAE fits into the category of generative algorithms, and generative models are very successful in reconstructing synthetic data similar to the original data due to their focus on the distribution of data. It means that instead of working with the original dataset, they get the distributions of the original dataset and make a new dataset from the distribution of the original dataset. It leads to lots of success in generative AI applications.
+
+How does such a thing happen? Assume we write an autoencoder to encode images of potatoes, carrots, and onions. A one-hot encoder can be used, and each of them can be presented with a bit vector, potato: [0,0,1], carrot: [0,1,0] and onion [1,0,0]. If the algorithm trained on white onion, and not red onion, it might not recognize the red onion. Their shapes are the same (something can be used for inferences), but their colors are different (the color is something that has not been seen by the algorithm before). We can fix this problem by adding one bit and having one hot encoding as follows: potato: [0,0,0,1], carrot: [0,0,1,0], white-onion: [0,1,0,0] and red onion [1,0,0,0]. The more images we encode, the larger we will get the one hot encoding bit vector. Besides, if the algorithm encounters a red potato, it has the same problem despite its shape having similarities with yellow potatoes. By transferring the data into the distribution, we can gain more flexibility in terms of learning the data's characteristics. In this example, assume an onion has a distribution of [0.3,0.5,1,1.2, 1.4], a potato has a distribution of [2,1, 1.5, 1.2, 0.9], and when an object comes with the distribution of [0.5, 0.7, 1.1, 1.4, 1.7], the algorithm can label it as onion because its shape of the distribution is more similar to the onion [0.3, 0.5, 1, 1.2, 1.4] and methods such as KL-Divergence (check Chapter 3) are used to perform this comparison.
+
+#### **How does VAE work?**
+
+The VAE extracts input features, but it does not assign a single value to each of the features (e.g., the face has an eyeglass: yes, the face has silicon in its lip: no). Instead, it presents them in a vector (e.g., the face has eyeglass: 0.7 probability, the face has silicon in its lip: 0.2 probability), and each extracted feature is called a *latent attribute*. These latent attributes construct a *latent space* in which features that are close to each other in the input space stay close to each other in the latent space as well.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_28_Figure_3.jpeg" alt="Figure" />
+
+Figure 11-17: Schematic presentation of a Variational Autoencoder (VAE).
+
+In particular, latent space, i.e., the output of the encoder, is a representation of the input data in a multi-dimensional Gaussian distribution (each feature corresponds to one dimension) in hidden layers. Foster [Foster '19] provides a short and good description of VAE as follows: *"While using regularized Autoencoders, a set of data points will map directly to one single data point in latent space, but VAE maps each data point into a multivariate Gaussian distribution around a point in the latent space."* Figure 11-17 visualizes the architecture of VAE.
+
+Formally speaking, the output of the encoder in VAE is not a single vector *z* (e.g., a vector of one hot encoding). Instead, it computes , and results in a posterior that includes distribution parameters (e.g., mean and standard deviation if we deal with Gaussian distributions), i.e., . This posterior presents the PDF of (Check Chapter 3 if you can't recall the PDF). In other words, VAE transforms the output of the encoder into *mean* and *variance*, which are parameters to describe a Gaussian distribution. Previously described autoencoders map input into a fixedsize vector, while VAEs map the input into a distribution , which is parameterized by the distribution parameters. The decoder then samples from the , and constructs . Afterward, it is passed through an activation function, such as a logit or Softmax function, to reconstruct the , which is similar to *x* (but not exactly equal). For example, if the decoder output is a binary variable, the final layer of the decoder typically uses a logit function to convert the outputs into parameters for a Bernoulli distribution, representing the probabilities of binary outcomes. These probabilities can then be sampled to generate binary data points . Figure 11-17 presents the VAE architecture. *q*(*z*| *x*) *p*(*z*) *z p*(*z*) *p*(*z*) *p*(*x* |*z*) *p*(*x* |*z*) *x*̂ *x*̂
+
+For example, assume that the last layer of the encoder represents a two-dimensional Gaussian distribution . We need two neurons to output the mean values (one for each dimension) and two [4](#page-29-0) additional neurons to output the log standard deviations. Thus, for a two-dimensional Gaussian, we have a total of four neurons, two for the means and two for the log standard deviations (refer to Chapter 3 for a review of Gaussian distribution parameters).
+
+Another thing we need to remember is that variance values are always positive, and to increase the variance variability, the VAE uses the logarithm of the standard deviation, i.e., , instead of the standard deviation itself. This is because the exponential of the logarithm will ensure that the standard deviation remains positive, and the logarithm function is capable of mapping a large domain of positive real numbers to a much smaller range, thus ensuring stability in the backpropagation process. *log*(*σ*)
+
+Assuming is a point sampled from a standard normal distribution, the encoding process converts the original input data into latent space data ( ) by using its mean vector ( ) and variance vector ( ) using the following equation: *ϵ z μ<sup>x</sup> σ<sup>x</sup> z* = *μ<sup>x</sup>* + exp(*log*(*σx*)/2) × *ϵ*
+
+To summarize our discussion, we can say the VAE algorithm operates as follows:
+
+- 1- It feeds the input data *x* into the encoder and constructs , i.e., . *q*(*z*| *x*) *x* → *q*(*z*| *x*)
+- 2- It samples *z* from to construct in latent space, i.e., . *q*(*z*| *x*) *p*(*z*) *q*(*z*| *x*) → *p*(*z*)
+
+VAE uses Gaussian distribution, but there are few works that use another distribution as well. Also, the authors of [4](#page-29-1) the VAE paper explained that it is possible to use other distributions as well.
+
+- 3- The decoder samples from to construct , i.e., . *p*(*z*) *p*(*x* |*z*) *p*(*z*) → *p*(*x* |*z*)
+- 4- Then, the cost function is used to perform the backward pass from step 1 to step 4. The algorithm updates weights and biases, and at the end of the iteration, step 5 will be executed.
+- 5- It uses to construct (reconstruct *x* while some information from x is removed). *p*(*x* |*z*) *x*̂
+
+#### **VAE Cost Function**
+
+The cost function of VAE seems a bit different than other cost functions. However, its nature is the same as other cost functions; its first part calculates the reconstruction penalty (generative loss), and its second part calculates the latent loss (regularizer). VAE cost function is called *Evidence Lower Bound (ELBO),* and it is written as an expected log-likelihood, *,* (because it is a probabilistic method and using expected log-likelihood as a cost function is common among probabilistic methods) minus KL-Divergence between the latent posterior probability distribution, i.e., and prior probability distribution, i.e., . [*log*] *q*(*z*| *x*) *p*(*z*)
+
+$$ELBO = \mathbb{E}[\log p(x|z)] - D_{KL}(q(z|x)||p(z))$$
+
+The expected log-likelihood ( ) is a negative cross-entropy, which is the data reconstruction loss. The expected log-likelihood is similar to other neural network cost functions. The second part, KL-divergence, measures how close the distribution of the latent variables matches the encoder distribution (encoder output). Here, KL-divergence acts as a regularizer that penalizes the encoding process and ensures the sampled data point does not stay far away from the center of the distribution. [*log*(*P*(*x* |*z*))]
+
+Similar to other neural network algorithms, backpropagation is used to minimize the cost function.
+
+### U-Net
+
+We have briefly described two segmentation algorithms in Chapter 6, MSER and Watershed algorithms, several more segmentation algorithms will be described in Chapter 12. Nevertheless, it is a big sin not to explain the legendary U-Net model while discussing autoencoders.
+
+One of the most popular image segmentation algorithms is U-Net , [5](#page-30-0) which has an autoencoder architecture. U-Net [Ronneberger '15] is a semantic segmentation model designed for
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_30_Picture_11.jpeg" alt="Figure" />
+
+Before you proceed with reading U-Net, be sure that you recall the terms we have used in describing CNN in [5](#page-30-1) Chapter 10, including max pooling, stride, downsampling, and upsampling.
+
+medical image segmentation, such as separating the nucleus and cytoplasm in the microscopic image of a cell, extracting the lung tissue from fat and skin tissue in CT images, etc. At the time of writing this part (first in 2021 and revision in 2024), it is state-of-the-art semantic segmentation for medical images, and new models that provide a new segmentation usually compare their approach with U-Net, unless they train on a very large dataset, which we explain them later in Chapter 12. The authors of U-Net did not refer to it as an autoencoder, but it has a very similar architecture to autoencoders, and thus, we explain it in this section.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_31_Figure_1.jpeg" alt="Figure" />
+
+Figure 11-18: U-Net architecture. The left side presents the contraction/encoder, and the right side presents the extraction/decoder part of the network. The dotted arrows (copy and crop) present skip connections. The number of each channel is written on the top of its layer.
+
+The original U-Net architecture is shown in Figure 11-18. It has a U-shape architecture, and it is composed of *contractor layers* (encoders) shown on the left side and *expansion layers* (decoders) shown on the right side of Figure 11-18. Note that not all implementations of U-Net should follow the standard U-Net numbers (or other neural network numbers) usually, we can customize these parameters based on our application needs.
+
+U-Net moves a sliding window on the image and classifies every single pixel of the image; thus, it is very expensive and slow, but due to its superior accuracy, it is widely used for image segmentation, and at the time of writing this text, it is the most popular one.
+
+As we can see in Figure 11-18, its contraction path (left side of U) *downsamples* the input image into a smaller size, and the expansion path (right side of U) *upsamples* the contracted data that it has received from the last layer of contraction path. In each downsampling stage of the contraction path, the number of feature channels doubled, and max pooling with a stride of size 2 is used. In summary, the contraction path is a set of convolutional and max pooling layers. 2 × 2
+
+The first level of the contraction path applies padding, which reduces the input size from to . Then, the output of the convolution is downsampled for the next level. In the next level, the convolution is applied again, and the result is , with 128 channels (the number of channels is doubled). This process continues in four levels of downsampling. 3 × 3 572 × 572 568 × 568 280 × 280
+
+Next, the extractor path starts the process of upsampling, which we can read its numbers from the right side of Figure 11-18. The expansion path is a set of convolutional layers and transposed convolutions (instead of max pooling) to upsample the data. At each level of the expansion path, the number of feature channels will be halved.
+
+Both the contraction path and expansion path use ReLU as an activation function. The contraction path learns *what* is in the image, but since it makes the image smaller, it *loses the spatial information* of the image (often referred to as the *where* information). The expansion path specifies *where* the information is located in the image, which means it handles the *localization of segments* in the image.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_32_Picture_4.jpeg" alt="Figure" />
+
+Figure 11-19: A simplified shape of U-Net architecture.
+
+There is something interesting in U-Net architecture that makes it different from other autoencoders. Between the contraction path and expansion path, there are *skip connections*, marked with dotted lines in Figure 11-18 and Figure 11-19. Skip connections are responsible for cropping the image (by using padding) in the contraction path to match the expansion path image at the same level. By using skip connections from the contraction path, it combines the highlevel 'what' information with the spatial 'where' information to localize features within the image accurately*.* Using the skip connection enables the network to mitigate the risk of vanishing gradients. Another advantage of using skip connections is that it mitigates the *degradation problem*. The degradation problem refers to a phenomenon in a deep neural network in which increasing the depth of a network causes a decrease in the accuracy of the train and test. Using a skip connection is a good solution to avoid both issues and keep them in mind while designing your neural network architecture. We can also employ the use of skip connection for
+
+our neural network, especially while working with image data, and we need encoding and decoding.
+
+We are done with the explanation of U-Net, but if you think that a U-Net architecture does not need to have a U-shape and it could be designed with a simple autoencoder shape, we do not disagree with you. However, the authors of the paper prefer to design it something like Figure 11-18. A more abstract shape of U-Net is designed by the author of Pix2Pix [Isola '17], is shown in Figure 11-19, and it is easy to memorize.
+
+#### NOTES:
+
+- \* Autoencoders are unsupervised learning, and they are adapted as self-supervised learning, where the data itself provides the structure for learning. We can also improve the accuracy of the algorithm by introducing a small amount of labeled data.
+- \* It is not mandatory, but most of the time, autoencoder architectures are symmetric. While it's common for autoencoder architectures to be symmetric, the symmetry pertains to the network's architecture rather than the exact mirroring of input and output data. Non-linear activation functions, such as hyperbolic tangents, enable the network to capture complex relationships in the data, resulting in meaningful compressed representations.
+- \* Aggarwal [Aggarwal '18] recommended transferring non-sparse data into sparse data while describing sparse autoencoder because it provides a more flexible representation of data. The author of this book is a developer who struggles to push machine learning algorithms into battery-powered devices, a.k.a on-device machine learning, and always suffers from a lack of resources. There may be reservations about adopting this approach. Despite this, it's important to present diverse perspectives. In environments where computational resources are not as constrained, such as within well-resourced corporations, following Aggarwal's advice could indeed be beneficial for model design.
+- \* Despite autoencoder compressing features, if we use linear activation functions, they have no additional superiority over traditional image compression algorithms. Therefore, they are not usually used for image compression and do not act well as well.
+- \* Both RBM and autoencoder can *share weights*. Instead of using another set of weights at the output layer, we just use the transpose of weights from the input layer. Therefore, if we have input layer weights, we can have output layer weights. In other words, the weights of the decoder are the transposed weights of the encoder. This approach can operate as a regularizer, which could prevent making a linear transformation (like PCA), while we need a non-linear transformation. Therefore, it prevents the autoencoder from acting as an identity function. Besides, it enforces the model to have fewer parameters. By reducing the number of parameters, the likelihood of overfitting will be reduced. *W W<sup>T</sup>*
+- \* An autoencoder that consists of multiple hidden layers is termed a *deep autoencoder*. These models are particularly effective for information retrieval tasks, including image search and matching, because they can compress high-dimensional data into a more manageable, lowerdimensional space while retaining important features. According to the universal approximation theorem, a neural network with sufficient depth and neuron count can
+
+theoretically represent a wide variety of complex functions. This capability suggests that deep autoencoders have the potential to capture intricate patterns and relationships within the data, although their practical performance depends on factors such as network architecture, training procedures, and data availability.
+
+\* U-Net does not use any fully connected layer and uses only the result of each convolutional layer. You can check the original paper for a justification of their approach and more details about the U-Net architecture [Ronneberger '15].

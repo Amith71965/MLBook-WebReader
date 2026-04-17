@@ -1,0 +1,24 @@
+---
+chapter: "ch9"
+order: 0
+slug: "intro"
+title: "Introduction"
+wordCount: 514
+---
+Welcome to another very popular category of machine learning algorithms: classification algorithms. In the previous chapter, we explained regressions that are used for quantitative information (a sexy name for datasets with numerical relations). However, it's important to note that many real-world machine learning datasets comprise qualitative (categorical or nonnumerical) and quantitative (numerical) data.
+
+Classification algorithms are used to classify and separate the data points of a dataset based on their labels. For example, an algorithm analyzes microscopic images of a patient's kidney and recommends to the physician if the patient has kidney cancer or not. An email spam filter tries to identify spam from real emails; a social media agent tries to identify fake accounts from real users on social media, etc. Classification is not limited to binary decisions; for example, we can feed a dataset of handwritten digits into a classification algorithm, and it can recognize the digit.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_0_Picture_3.jpeg" alt="Figure" />
+
+We have explained in Chapter 1 that classification algorithms are supervised learning algorithms and work based on the assumption to separate the dataset into at least two subsets, a test set and a train set. First, we run a classification algorithm on the train set, which builds a model based on the given data. The model could be a set of *if-then-else* rules or mathematical equations, such as regression models. Afterward, we use the built model and run it on the test set. Then, we can evaluate the result of the classification algorithm with the assistance of the ground truth dataset (a.k.a validation, reference, or benchmark dataset). The ground truth dataset is a small part of the training set that is annotated accurately by human experts, and thus, building it is a laborintensive and expensive process.
+
+There are two types of classifications. One is *non-exclusive classification,* which means a data point could participate in more than one class. The other form is a *mutually exclusive classification* in which any data points are assigned to only one class.
+
+Some algorithms that we have explained in previous chapters are classification algorithms, including logistic regression, softmax regression (Chapter 8), and linear discriminant analysis (LDA) (Chapter 7), which can also be used for classification. In this chapter, we start by describing a rule-based classifier. Then, we describe Naive Bayes, *k* Nearest Neighbor (*k*NN), Support Vector Machine (SVM), and decision tree algorithms. Afterward, we focus on ensemble
+
+learning methods, including Bagging, Boosting, Stacking, Random Forest, and AdaBoost, and then we finalize this chapter with Gradient Boosting Decision trees and their new derivations, including XGBoost, lightGBM, and Catboost.
+
+Note that the gradient boosting algorithms of this chapter are not easy to learn; you might need to read them more than once and check other resources to learn them. We have tried our best to make them easy to understand, but keep in mind that they are complex in their nature. Besides, despite teaching this material for many semesters at Boston University, students still spot some numerical mistakes, and there might also be problems. Please let us know if you spot any numerical mistakes.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_1_Picture_3.jpeg" alt="Figure" />

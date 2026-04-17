@@ -1,0 +1,66 @@
+---
+chapter: "ch3"
+order: 29
+slug: "maximum-likelihood-estimation-mle-approach"
+title: "Maximum Likelihood Estimation (MLE) Approach"
+wordCount: 1014
+---
+Earlier in this chapter, we said a dataset has a characteristic, and this characteristic is presented as a distribution. Any distribution is specified by its parameters. The MLE approach uses a sample dataset to determine the *best distribution parameters*, such as mean and variance for normal distribution, of the original dataset [Edgeworth '08].
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_74_Picture_4.jpeg" alt="Figure" />
+
+As we said several times, in real-world scenarios, we do not have access to the entire dataset; we have only a part (sample observation) of the entire dataset. Therefore, by using the available sample dataset, MLE estimates the distribution parameters of the original dataset.
+
+For example, we have a small part of a dataset, and we assume the original dataset has a Gaussian distribution (of course, it is just an assumption, but it is a common practice). We don't know what the parameters of that Gaussian distribution are because there could be infinite numbers of Gaussian distributions. The MLE tries to approximate the mean and standard deviation by using the sample dataset and constructs a distribution that is the closest match to the original dataset distribution.
+
+Please make some space in your brain for one sentence to memorize: *the goal of MLE is to find the best distribution parameters that fit the original dataset (population).* 
+
+The population dataset distribution is presented with an unknown set of parameters is denoted as **,** and the distribution of the dataset depends on these parameters. The function that quantifies the likelihood of observing the given data *X* and unknown parameters is the likelihood function, denoted as . We use a method called the MLE function to estimate , and it is presented as . Formally, the MLE for the observed dataset *X* can be written as: *θ θ L*(*X*; *θ* ) *θ* ̂ *θ*
+
+$$\hat{\theta} = \arg\max_{\theta} \ \hat{L}(X; \theta)$$
+
+We use the semicolon ';' instead of the '|', ';' is a sign of joint probability, which means it is specified and occur along with *X*. Nevertheless, you might encounter some literature that uses '|' *θ*
+
+instead of ';'. When we encounter the '^' sign, it means it is something that the output of the algorithm will be specified (e.g., predict it).
+
+For computational efficiency, instead of maximizing the likelihood directly, we often use the *logarithm*<sup>16</sup> of likelihood (log-likelihood). Therefore, log-likelihood can be written as:
+
+$$\ell(\theta) = ln[L_n(X; \theta)] \text{ or } \hat{\theta} = \arg \max_{\theta} \ ln[L_n(X; \theta)]$$
+
+Even we can use negative log-likelihood:
+
+
+$$\hat{\theta} = -\ln[L_n(X;\theta)] \text{ or } \hat{\theta} = \arg\min_{\theta} -\ln[L_n(X;\theta)]$$
+
+The logarithm of numbers smaller than one is negative, and the negative log brings them back to positive. It means we calculate the inverse of minimization, which is equal to maximization<sup>17</sup>. In this context, minimizing the error is equivalent to maximizing the log-likelihood.
+
+How does MLE get implemented? There are different approaches to implement it, such as regression algorithms, i.e., Ordinary Least Squares (OLS), or numerical approaches, such as gradient descent. After Chapter 8, we get a good understanding and can learn algorithms to resolve MLE. One popular algorithm for implementing MLE is Expectation Maximization, which we describe here.
+
+You might find this not a very useful concept or hard to digest at this point; you can skip it and return to this part after you read Chapter 6 and gain a more solid understanding of the use of distributions in machine learning.
+
+### **Expectation Maximization (EM)**
+
+Although MLE does not have the entire dataset, it assumes the dataset is complete or fully observed. Nevertheless, part of the dataset could be missing in the observation subset that is used by MLE. Those missing parts could construct parameters that are known as latent variables. Here, latent variables refer to parameters that do not exist in the observed dataset.
+
+The Expectation Maximization (EM) algorithm [Dempster '77] is an algorithm that implements the MLE approach and can handle the latent variable in the sample dataset as well. Therefore, if there are missing data in our observed dataset, the EM algorithm is recommended.
+
+The objective of EM, similar to the MLE objective, is to find unknown parameters  $\theta$  that find the best distribution fit to the original dataset, i.e., approximate maximum likelihood. To approximate the maximum likelihood, this algorithm operates iteratively in two steps. The first step is the estimation step (E-step), and the second step is maximization (M-step). We can summarize it as follows:
+
+(i) *E-step* makes an initial guess of parameters for the expected distribution.
+
+<sup>16</sup> if you can not recall logarithm:  $log_a b = x$  means that  $a^x = b$ . Also, natural logarithm is written as ln, and ln a = x and it means  $a = e^x$ .
+
+<sup>17</sup> We should express our gratitude to uncle Kia (Prof. Kia Teymourian), who clarified the rationale of this for us at work and challenged the author a lot for the explanation of this part.
+
+- (ii) *M-step* starts after the E-step, and when newly observed data is fed into the model. In this step, the EM algorithm tweaks the estimated parameters (from E-Step) to cover newly observed data as well.
+- (iii) From M-step, the process will be repeated until the created distribution does not change in E-step or M-step and it reaches a stable state (converged) or a maximum threshold of iteration.
+
+The random assignment of the initial parameter is a bit tricky because sometimes the EM algorithm might be stuck in the local maximum/minimum (optimum) and, by mistake, assumes it as a global optimum. Check Figure 3-34 to understand the concept of global and local optimum. More about this will be explained in Chapter 8.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_76_Figure_3.jpeg" alt="Figure" />
+
+Figure 3-34: Local versus global minima on a function.
+
+The Gaussian Mixture Model (GMM) and Hidden Markov Model (HMM) are two examples of using the EM algorithm approach for MLE. We will explain these two algorithms in Chapter 4 and Chapter 5.
+
+The computational complexity of MLE and EM depends on many factors, including the shape of the likelihood, the condition of the algorithm, etc. Therefore, it is not something generalizable that we can report here.

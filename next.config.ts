@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      new URL("https://pub-1f5c0ba9c71c47dda9854bea440ba21d.r2.dev/**"),
+      new URL("https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/**"),
     ],
   },
 };

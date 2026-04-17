@@ -1,0 +1,20 @@
+---
+chapter: "ch8"
+order: 19
+slug: "overfitting-and-underfitting"
+title: "Overfitting and Underfitting"
+wordCount: 348
+---
+*Overfitting* refers to creating a model that performs very well on the data that we have observed (train dataset), but it performs very weakly on the newly arrived data (test dataset)*.* In other words, overfitting makes a model too specific on the training dataset and causes poor generalization of any new data points (test dataset).
+
+*Underfitting* refers to creating a model that can neither fit the train nor test data properly. In other words, underfitting refers to *too much generalization*. Therefore, the model will perform poorly on both our training and test datasets. Figure 8-13 shows three examples: an underfitted model, an overfitted model, and a proper model.
+
+We can see in this figure that both underfitted and overfitted lines (in red) are not good representations of the data and are incapable of predicting or modeling the dataset. Overfitting is a very common mistake when we increase the degree of our polynomial regression. Usually, overfitting is a very common mistake in supervised learning.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_38_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-13: Example of underfitting and overfitting in model fitting.
+
+Now, the question is how to avoid releasing the devils of overfitting or underfitting. Underfitting is easy to recognize because as soon as a model does not perform well both on the train and test dataset, we can find it. Nevertheless, overfitting is not that easy. To recognize overfitting, we can change the train and test dataset in every iteration, i.e., k-fold cross-validation. We hope you remember that by using the cross-validation we could change the train and test dataset. For example, we change the train and test dataset five times (5-fold cross-validation) and report the average error from those experiments. If the error is not changing significantly among each experiment, this is an indication that the model is not overfitted. On the other hand, if in one experiment we have a very good result and not in others, that particular experiment is overfitted, and thus, we should revise the model. We can summarize that any significant difference between testing and training is a sign of overfitting.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_38_Picture_3.jpeg" alt="Figure" />

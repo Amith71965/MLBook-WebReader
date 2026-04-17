@@ -1,0 +1,76 @@
+---
+chapter: "ch8"
+order: 13
+slug: "softmax-regression-classifier"
+title: "Softmax Regression (Classifier)"
+wordCount: 1536
+---
+Similar to multiple linear regression and linear regression, sometimes we could have more than two possible outcomes, and the output is not just binary. It could be more than two variables, e.g., type of animal (chicken, cat, dog, mouse, etc.). By logistic regression, we have one binary output variable (e.g., die/survive, like/dislike, true/false, etc.). To handle more than two outputs, we use multinomial logistic regression, multi-class logistic regression**,** or polytomous regression*.* Four known approaches are used for the multinomial logistic regression, including baseline logit model, adjacent category logit, proportional odds cumulative logit, and softmax regression.
+
+Here, we describe *softmax regression* or *maximum entropy regression*, which is the most common multi-class logistic regression. In Chapter 10, we start to learn deep learning models, and will see that softmax is a common approach for multi-class classifiers by using neural networks, but we can use it without neural networks as well.
+
+One easy way to deal with more than two dependent variables is to convert them into a single dependent variable and perform logistic regression. This means we convert a multinomial problem into many binomial classes, and solve binomial classes problem, with logistic regression. For example, in a mobile app that recognizes its users' transportation mode, one variable is "walk" the other variable is "not walk" (bike, public transport, and car). Our variables are "bike" and "not bike" (walk, public transport, and car), and this process continues for each of the possible categorical values. In the end, we have a set of probabilities, and the highest probability will be used to assign the class label to that particular input. However, it is recommended not to use logistic regression for non-binary classes, see Chapter 4.3.5 of [James '13].
+
+Softmax regression is a generalization of logistic regression for *K* categories. Therefore, instead of two binary probabilities, we have *K* different probabilities. For example, the transportation mode could walk, bike, public transport &amp; private vehicle (*K=4*), or a medical treatment type could be surgical, pharmaceuticals, diet, or none (*K=4*).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_27_Picture_4.jpeg" alt="Figure" />
+
+As another example, assume Mr. Nerd is developing an algorithm for a smart refrigerator he has purchased in Chapter 2. He is developing an image recognition algorithm that enables the refrigerator's camera to record the type and amount of foods he has consumed and calculate the body shape of Mr. Nerd in the future. The input of the refrigerator algorithm is a vector of foods Mr. Nerd puts them inside the refrigerator. The output is the future Mr. Nerd's body shape, i.e., "gaining weight", "no changes" and "losing weight" (K=3). The softmax regression can create a model to predict Mr. Nerd's future body based on the three possible outputs.
+
+The output variable of softmax regression is shown as  $Y^{(i)} = \{1,2,...,K\}$  (in logistic regression, it was binary, i.e.,  $Y^{(i)} = \{0,1\}$ ). The softmax output is a set of probabilities (values between 0 and 1), and their sum is equal to 1. Unlike Sigmoid (S-shaped function) we can not use a specific shape or plot to visualize the softmax, which has more than two dimension space.
+
+The softmax regression predicts one output class at a time, it is a multi-class classifier but not multi-output. Therefore, we cannot use it to predict more than one output variable, e.g., we can identify a chicken in a picture, but we cannot identify a chicken and a cat in the same image with one softmax.
+
+To better understand the details of softmax regression, we should look at the logistic regression function, i.e., Sigmoid, and see how it can be generalized to be softmax. Let's rewrite the Sigmoid function, which is used for Logistic regression, as follows:
+
+$$\sigma(z)_i = \frac{1}{1 + e^{-(z)}}$$
+
+Here,  $z = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_k x_k = \sum_{i=0}^m \beta_i x_i = \theta^T x$  and i presents its index. In many resources,  $\sigma(z)_i$  is written as  $h_{\theta}(x)$  or  $\hat{P}$ , which  $h_{\theta}(x)$  stays for a hypothesis based on given input vector of x and  $\theta$  presents parameters of the model.
+
+We see a transpose sign used for  $\theta$ , why? Because  $\theta$  is a  $1 \times n$  matrix (which is a vector) and x is  $1 \times n$  matrix (which is again a vector). Therefore, to multiply these two matrices, we need to multiply  $n \times 1$  matrix to  $1 \times n$  matrix, and from matrix algebra, we knew that  $(1 \times n)^T = (n \times 1)$ .
+
+We can write the softmax function, as a generalization of the sigmoid function. For all k classes of output it is written as follows:
+
+$$P(y = j | x, \theta) = \frac{e^{\theta_j^T x}}{\sum_{i=1}^k e^{\theta_i^T x}}$$
+
+Here, y is the vector we intend to predict,  $P(y=j|x,\theta)$  is the probability that the outcome y is class j given the input features x, and  $\theta$  is the model parameters. k is the number of classes. The equation is very similar to sigmoid (except having a  $\Sigma$  sign in its denominator). The softmax function produces a vector of probabilities, each element representing the probability that the input x belongs to one of the k classes. We can express its output as  $\hat{P}_k(x)$ . To better understand it, let's expand this equation as follows:
+
+$$\hat{P}_{k}(x) = \begin{bmatrix} P(y=1 \mid x, \theta) \\ P(y=2 \mid x, \theta) \\ \vdots \\ P(y=k \mid x, \theta) \end{bmatrix} = \frac{1}{exp(\theta^{(1)T}x) + exp(\theta^{(2)T}x) + \ldots + exp(\theta^{(k)T}x)} \cdot \begin{bmatrix} exp(\theta^{(1)T}x) \\ exp(\theta^{(2)T}x) \\ \vdots \\ exp(\theta^{(k)T}x) \end{bmatrix}$$
+
+Or some prefer to write it as follows:
+
+$$\hat{P}_{k}(x) = \begin{bmatrix} P(y = 1 \mid x, \theta) \\ P(y = 2 \mid x, \theta) \\ \vdots \\ P(y = k \mid x, \theta) \end{bmatrix} = \frac{1}{\sum_{i=1}^{k} e^{\theta_{i}^{T} x}} \begin{bmatrix} e^{\theta_{1}^{T} x} \\ e^{\theta_{2}^{T} x} \\ \vdots \\ e^{\theta_{k}^{T} x} \end{bmatrix}$$
+
+As the output result of softmax regression is a vector of probabilities, their sum is equal to 1. Therefore, while using a softmax function, each output data point depends on the entire vector of input data points. The input of the softmax function is a vector of raw scores (logits) for each class. For a given instance (data point), we have an input feature vector, and this vector represents the attributes or features of the instance relevant to the classification task.
+
+Back to the refrigerator and Mr. Nerd's example, he went shopping and got the following items for its refrigerator: \{broccoli, ice cream, chocolate bar, wheat bread, apple, orange\}. His refrigerator, which is equipped with a softmax regression algorithm, can calculate the future body style of Mr. Nerd and returns the following result as a set of probabilities: \{"gaining weight" = 0.4, "no changes" = 0.5, and "losing weight" = 0.1\}.
+
+### **Model Parameter Estimation**
+
+Similar to logistic regression, the cost function of softmax regression is the MLE. However, we cannot explain a multidimensional classification with visualization, because our brain is limited to 3D visualization only. Before explaining it, we should go back to the cost function of logistic regression, maximum log-likelihood, and formalize it in a mathematical notation.
+
+Assuming  $X = \{x_1, x_2, \dots, x_n\}$  are input variables of the model,  $\theta = \{\beta_0, \beta_1, \dots, \beta_k\}$  presents all model parameters, and  $Y = \{0,1\}$  presents output classes for our input variables, the following equation presents the likelihood function for logistic regression, which we have described:
+
+(i) 
+$$L(\theta) = \prod_{i=1}^{n} [p(y_i = 1 | x_i, \theta)]^{y_i} [1 - p(y_i = 1 | x_i, \theta)]^{1 - y_i}$$
+
+The sign  $\Pi$  represents a set of products (multiple multiplications) similar to the  $\Sigma$ , which is used for summation. The goal is to find  $\theta$  (or  $\hat{\beta}$ ) that maximizes the  $L(\theta)$  function.
+
+We can extend the above equation and incorporate more than two Y values as follows:
+
+(ii) 
+$$L(\theta) = \prod_{n=1}^{N} P(y_n | x_n, \theta)$$
+
+Equation (ii) is the cost function for softmax regression. We have explained that for the logistic regression, we are using the log-likelihood function, therefore, the described equation can be rewritten as follows:
+
+(iii) 
+$$J(\theta) = -\sum_{n=1}^{N} \log P(y_n | x_n, \theta)$$
+
+Note that instead of we use , which is common while using softmax refer to cost function as . We use the negative value for as a function for model parameter estimation, which is called the *negative log-likelihood* or *cross-entropy loss*. We use the negative sign at the end to make the maximization problem as minimization and thus easier to compute. If you are good at mathematics, you can realize that the cost function, we used for softmax regression parameter estimation will be a generalization of the cost function that we used for logistic regression (i.e., maximum log-likelihood). *ℓ*(*θ* ) *J*(*θ* ) *J*(*θ* ) *J*(*θ* )
+
+Since cross-entropy is a cost function used to measure the accuracy of the softmax regressions, our goal should be minimizing the cross-entropy loss. Assuming we have *M different classes (in logistic regression, we have only two)* and *N number of input samples,* the cross-entropy cost function is written as equation (iv).
+
+(iv) 
+$$J(\theta) = -\frac{1}{N} \sum_{i=1}^{N} \sum_{j=1}^{M} y_{ij} \log(p_{ij})$$
+
+This equation is a generalization of equation (i) for more than two output variables. The crossentropy objective function is to reduce the cross-entropy, thus a model that has smaller crossentropy is favored over the model that has larger cross-entropy.

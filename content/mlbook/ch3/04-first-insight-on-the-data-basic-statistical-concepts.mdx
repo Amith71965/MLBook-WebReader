@@ -1,0 +1,158 @@
+---
+chapter: "ch3"
+order: 4
+slug: "first-insight-on-the-data-basic-statistical-concepts"
+title: "First Insight on the Data & Basic Statistical Concepts"
+wordCount: 3066
+---
+In this section, we describe basic statistical concepts, including different types of *mean*, definitions of the *median, variance, standard deviation, covariance, quartile, and whisker plot (box plot)* with examples. If you are familiar with these concepts, you can skip this section, but there are some concepts, such as *multimodal data*, that you might encounter while working with real-world data and miss them if you do not read this section.
+
+Assume we are working with a dataset of chickens in aviculture. Table 3-2 presents the weight and the number of chickens for each weight in one room of the aviculture. This table could be called a *frequency table* as well.
+
+| Weight                | 0.2kg | 0.4kg | 0.5kg | 0.6kg | 0.7kg | 0.8kg | 0.9kg | 1kg | 1.2kg |
+|-----------------------|-------|-------|-------|-------|-------|-------|-------|-----|-------|
+| Number of<br/>chickens | 1     | 2     | 6     | 8     | 7     | 4     | 3     | 1   | 1     |
+
+Table 3-2: Frequency table that presents of chickens for each weight.
+
+If we plot the frequency or distribution of these numbers in a histogram or line plot, we get Figure 3-2. We can use Figure 3-2 to see that the most frequent weight of chickens is between 0.5 and 0.7. This is a very simple inference, but we can use statistics to understand the characteristics of this dataset in more detail.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_4_Figure_1.jpeg" alt="Figure" />
+
+Figure 3-2: Distribution of chickens based on their weight.
+
+### Mean
+
+### **Arithmetic Mean**
+
+Mean (average), or *arithmetic mean*, is shown as *µ,* and it is calculated by summing all values of a variable (weights are variable, and the number of chickens is the value), then dividing by the number of variables (chickens, the total number of chickens = 34). The mean for this example is computed as follows:
+
+$$\frac{0.2 \times 1 + 0.4 \times 2 + 0.5 \times 6 + 0.7 \times 7 + 0.8 \times 4 + 0.9 \times 4 + 1 \times 1 + 1.2 \times 1}{34} = 0.53$$
+
+The *mean* is used when the data is approximately *symmetric*. If the data distribution is skewed, then it is better to use the *median* and *mode* along with the mean to understand the average in the dataset. Symmetric in this context refers to drawing a vertical line from the peak of the data crossing the x-axis, i.e., 8 on the y-axis and 0.6 kg on the x-axis in Figure 3-2. The result will be two shapes, and if they have an equal size, they are called symmetric. If you draw such a line, you can realize that Figure 3-2 is not symmetric (it is asymmetric). It is something usual when we work with a real-world dataset, and if we need to have a symmetric shape, we can sometimes get closer to symmetry by increasing the sample size (dataset size). The reason for favoring having a symmetric shape will be described later in detail. Note that many statistical and machine learning methods can handle asymmetry.
+
+### **Geometric Mean**
+
+ The geometric mean is the *n*th root of the product (multiplication) of *n* values is computed as follows.
+
+Geometric mean = 
+$$\sqrt[n]{x_1, x_2, \dots x_n}$$
+
+The geometric mean is very sensitive to zero and outliers. By sensitive, we mean zero or outliers that have a significant impact on the result. The geometric mean is used when we want an average in *multiplicative conditions* (subject to multiplication) or when we want to know *the product of values*.
+
+For instance, the capacity of each chicken room in our aviculture is measured with three dimensions: width, length, and height. Therefore, to compare different chicken rooms with a number, we use geometric mean, i.e.,  $\sqrt[3]{width.length.height}$ . As another example, let's analyze a 'Chicken Entertainment Inc.' stock. In the first year, their stock grows 50%, next year, it grows 20%, and in the third year, it grows 10%. Therefore, in the first year, the stock is 1.5 times higher than the previous year, then the second year is  $1.5 \times 1.2$  higher than two years ago, and the third year is  $1.5 \times 1.2 \times 1.1$  higher than three years ago. Since the growth in each year affects the value in future years as well, the geometric mean is effective at measuring the average annual growth. To calculate the average growth in stock, we can also use the geometric mean.
+
+#### Harmonic Mean
+
+The *harmonic mean* is useful when numbers are defined in a relationship to something. It is capable of dealing with outliers in the dataset that cannot be removed in the preprocessing stage. For example, we are studying a new medication's impact on participants, and outliers are important, so we can't remove them.
+
+The outlier affects the data, but in some cases, we can not remove them. If we have *n* numbers of variables, the equation to compute harmonic is written as follows.
+
+$$Harmonic\ mean = \frac{n}{\frac{1}{x_1} + \frac{1}{x_2} + \dots + \frac{1}{x_n}}$$
+
+For instance, assume a chicken running from a cat. The running chicken runs the first 8 meters at a 2 km/hour speed. The following 12 meters at 5 km/hour and the last 30 meters at 25 km/hour speed. The arithmetic mean of the running chicken is 10.6 km/hour, which is not precise. However, by using a harmonic mean as follows, we get 16.6 km/hour, which is a more realistic estimation.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_5_Picture_7.jpeg" alt="Figure" />
+
+When we encounter a text referring to mean without saying its type (arithmetic, geometric, harmonic), we should assume it is an arithmetic mean. Here, we do the same; when we say mean or average, we refer to the arithmetic mean. Otherwise, we explicitly mention the type of mean.
+
+### Median
+
+The median is calculated by ordering the discrete data and identifying the number in the middle of the ordered set. For example, assume we have a dataset of chicken weights, ordered, as follows , and the median in this dataset is , which is the fifth element. If the set of numbers is odd, the middle one is the median, but if the set of numbers is even, there will be two medians, the two middle numbers. The median is useful to generalize data when the peak of the data (Figure 3-2) is skewed toward the right or left, and the curve is not symmetric. In these cases, the mean is not the best representative of the average from the data. For instance, assume we have a dataset as follows: . In this dataset, we have many small numbers and few big numbers. The mean is , and the median is 6. However, the number 6 seems to capture better where the middle of the data is, and it is more descriptive for this particular dataset. \{1,1,1,2,4,4,6,7,8\} 4 \{1,2,3,4,5,6,7,8,85,88\} 20.9
+
+### Mode
+
+The mode is the value in the dataset that occurs with the highest frequency in the dataset. For instance, the peak of the curve in Figure 3-2 belongs to 0.6 kg. This means that the mode is 0.6, or, in other words, most of the chickens (eight of them) weigh 0.6 kg.
+
+Sometimes, a dataset has more than one peak, such as Figure 3-3, which has three different peaks. These datasets are known to have *multimodal* distribution. Many mix multimodal with multivariate, but they are not the same concept. Recall that multivariate means we have multiple variables, such as Figure 2-12 in Chapter 2, in which variables are not necessarily related.
+
+In statistics, multimodal means having multiple peaks in one single dataset, but in fields outside statistics, such as computer science or psychology, multimodal can refer to information from different sources, but for one specific action as well, e.g., facial state, smile, and voice are different information, which can be used to express the human emotion (i.e., the specific action).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_6_Figure_7.jpeg" alt="Figure" />
+
+Figure 3-3: Example of a multimodal dataset that has three modes.
+
+These methods are used for discrete data. For continuous data, the mode and median are calculated differently. We don't present these calculations at this stage.
+
+### Variance, Standard Deviation, and Covariance
+
+$$cov(X, Y) = \frac{\sum_{i=1}^{n} (x_i - \mu_x)(y_i - \mu_y)}{n}$$
+
+*Variance* measures the variability, spread, or inconsistency in a dataset. The variance of the discrete finite-sized dataset is the following equation ( ): *σ*2
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_7_Picture_4.jpeg" alt="Figure" />
+
+A low variance in the dataset means more consistency among data points. A high variance among data points means they are less consistent.
+
+*Standard deviation* is the root square of variance and is shown as *SD* or *σ* **=** . It is used to measure the distance from the mean. In other words, standard deviation describes how far the data is from the mean or how far they deviate. *variance*
+
+The variance equation shown above is used for the census and not sampled data. A *census* in the context of statistics refers to a process of obtaining data from every member of a dataset. In contrast, *sampling* refers to the use of a policy to select some members of a large dataset and not all of them. The variance of the sampled dataset has *n-1* instead of *n* in its denominator. More details about the sampling will be explained in this Chapter and later in Chapter 16.
+
+The standard deviation or variance belongs to one-dimensional data. However, if our dataset is multiple-dimensional data, we use covariance instead of variance. Note that the covariance calculation is always used for two dimensions of data. The covariance of the vector , and will be written as follows: *X* = \{*x*1, *x*2, . . . \} *Y* = \{*y*1, *y*2, . . . \}
+
+The variable names are the same, except we add *X* and *Y,* which are two dimensions. If we have more than dimensional-two data, e.g. . We can calculate the covariance between every two pairs of data, including and . *X*, *Y*, *Z* (*X*, *Y* ), (*X*, *Z* ), (*Y*, *Z* )
+
+We can say variance describes *how much data is spread*, while covariance measures both the *spread* and *dependency* between two variables.
+
+When multiple dimensions are considered, covariance can be shown as a matrix. For example, if we have three variables in our dataset as the following matrix, the covariance between column 1 and column 3 is presented in the covariance matrix at cells [3(row),1(column)], and cell [1,3], i.e., 2.66. Respectively, the covariance between column 1 and column 2 is presented in the covariance matrix at cells [1,2] and cell [2,1], i.e., 0.66. With the same approach, we can find the covariance between column 2 and column 3, which is 0.88.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_8_Figure_1.jpeg" alt="Figure" />
+
+### Range and Quartile
+
+The range can describe *how data is spread*, and unlike mean and variance, it doesn't say anything about the distribution of the data. In other words, range refers to the difference between maximum and minimum values in a dataset.
+
+To calculate the range of a variable, the values of this variable should be "ordered". Then, we subtract the largest number, i.e., *upper bound*, in the dataset from the smallest number, i.e., *lower bound*. For example, the range for the dataset given in Table 3-2 is calculated as follows: . The range has a considerable weakness. In real-world datasets, we always have outliers. If there is one weird, alien, undocumented immigrant number (outlier) in the dataset, it affects the range. For instance, if the dataset has an outlier and instead of chickens, it is a sheep, which weighs 30 kg, then the range of Table 3-2 will be . The weight of *29 kg* is very odd in the dataset of chickens' weight. 1.2*kg* − 0.2*kg* = 1*kg* 30*kg* − 0.2*kg* = 29.8*kg*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_8_Figure_5.jpeg" alt="Figure" />
+
+Figure 3-4: A dataset is ordered in ascending order to identify its quartiles.
+
+To mitigate errors caused by outliers, first, we order the dataset in ascending order. Then, we should split the dataset into four segments of equal size. Each of these segments is called a *quartile*. For instance, assume we have a dataset of nine chickens with different weights. The chicken weights are ordered as shown in Figure 3-4. Here, 4 is the minimum quartile, which is called the *lower quartile.* 7.1 is the *upper quartile*. The middle number is 5.1, and it is called the *median quartile* (see Figure 3-4). After we defined four quartiles, instead of calculating the range by subtracting the upper bound from the lower bound (10-2.5=7.5), we subtract the upper quartile from the lower quartile, 7.1 – 4 = 3.1. It is called the *interquartile range*. In other words, *Interquartile range = upper quartile – lower quartile***.** 
+
+Interquartile is handling outliers by neglecting the 25% of the data from both the beginning and end sides of a dataset; it focuses on the 50% of data in the middle, and thus, *it can resolve the negative impact of outliers*.
+
+Quartiles are dividing a dataset into four segments. What about dividing it into 100 pieces? In this case, we can say our data is transformed into *Percentile*. Quartile, percentile, and median are used to make a narrative for the dataset.
+
+### Whisker plot or Box plot
+
+There is a specific visualization to plot the result of quartiles and ranges. It is called the *Whisker*  plot, *box plot*, or *box and whisker diagram*. Figure 3-5 presents a single box plot, but usually, they are different objects used together, as shown in Figure 3-6, and each data object is described in a box plot.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_9_Figure_5.jpeg" alt="Figure" />
+
+Figure 3-5: Whisker plot used to visualize quartiles, and upper/lower bounds.
+
+A question might arise: what type of narrative could we say about the data using the box plot? Or what inferences could we make within box plots?
+
+To answer this question, we use an imaginary scenario: you are a lovely animal lover who tries to provide shelter for feral and stray cats in the city but can't provide for all of them. Three cats came to your street: Cat no.1, Cat no.2, and Cat no.3.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_10_Figure_0.jpeg" alt="Figure" />
+
+Figure 3-6: Whisker-plot of our street cats and their injuries in fight.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_10_Picture_2.jpeg" alt="Figure" />
+
+If you live in areas that have feral cats, you hear their fighting voices often, especially in mating seasons. These three cats also fight a lot and get many injuries after each fight. You like to help them, but you have space to rescue only one. You decide to save the weakest ones who get the most of the injuries. You collect some data about their injuries from their previous fights. Table 3-3 presents the injuries of each cat in the last 10 fights they had.
+
+| Cat no.1 | 1 | 2 | 3 | 4 | 7 | 9 | 4 | 2 | 2 | 1 |
+|----------|---|---|---|---|---|---|---|---|---|---|
+| Cat no.2 | 4 | 3 | 4 | 5 | 5 | 3 | 5 | 3 | 3 | 4 |
+| Cat no.3 | 3 | 4 | 5 | 3 | 5 | 1 | 4 | 2 | 2 | 1 |
+
+Table 3-3: Number of injuries each cat receives in the last 10 fights
+
+However, by looking at this table, we still can't understand which one is the weakest one. At first glance, it might seem that Cat no.1 is the poorest cat because it has once 7 and another time 9 injuries. Also, look how tiny and dumb he is. Nevertheless, box plots in Figure 3-6, drawn from Table 3-3, show that Cat no.2 is the weakest one, and has received the most amount of injuries. Hence, we should don't trust our eyes when math is available, and as a result, it is better to adopt cat no.2 instead of others. Box plots are similar to bar charts and can be drawn horizontally as well.
+
+### Degree of Freedom
+
+In statistics, the *degree of freedom* refers to the number of values in the final calculation of a statistical method that is free to vary. Degree of Freedom is calculated as the total number of observations (*N*) minus the number of parameters estimated (*P*), i.e., *N-P*. In some tests, we use *N-1* instead of *N* or *P-1* instead of *P*.
+
+Let's consider a situation where you're tracking your calorie intake over a month while allowing yourself a weekly sweet treat. Although you are on a diet, you allow yourself to take one sweet treat per week. Over a month, you have four weeks to eat the sweet, and you've selected four different sweets: a chocolate bar, ice cream, a piece of cake, and a small candy box. Each week, you will choose one of these sweets, but the total calories from these treats must not exceed a certain limit for the month. Let's say your calorie limit for all these sweets together is 1000 calories. If the chocolate bar is 300 calories, the ice cream 200 calories, the cake 250 calories, and the candy box 250 calories, you have some flexibility (degrees of freedom) in how you consume these treats across the weeks, but the total must always sum up to 1000 calories or less.
+
+In a statistical sense, the degree of freedom here is the number of choices you can make before your options are constrained by the calorie limit*.* For the first week, you can choose any of the four sweets (the degree of freedom is 3, because once you choose one, you're left with three items whose total calories must sum to a certain number). In the second week, your choice is slightly more limited because you need to keep the total calorie count under the limit, and so on. By the time you reach the last week, if you have adhered to the calorie limit, you will likely have only one sweet left that fits into the remaining calorie allowance. Therefore, your degree of freedom is reduced to 0 since your choice is entirely determined by your previous choices. This example illustrates how degrees of freedom in statistics represent the number of independent choices left before constraints (like total calorie count) limit your options.
+
+
+### Probability
+
+
+Probability is one of the core needs in machine learning, and the poor author of this book spent a huge amount of his time learning it. Here, we start with basic probability concepts and then we move to explain distributions that are used in machine learning and deep neural network models.

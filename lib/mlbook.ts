@@ -47,10 +47,17 @@ export type BookMeta = {
   chapters: Record<string, ChapterMeta>;
 };
 
+type ChapterSectionEntry = {
+  order: number;
+  slug: string;
+  title: string;
+  wordCount: number;
+};
+
 type ChapterSectionsMeta = {
   number: number;
   title: string;
-  sections: string[];
+  sections: ChapterSectionEntry[];
 };
 
 /* ------------------------------------------------------------------ */
@@ -128,8 +135,9 @@ export function getChapterOverview(chapterId: string): ChapterOverview | null {
 
 function parseSectionFile(
   chapterId: string,
-  fileName: string
+  entry: ChapterSectionEntry
 ): Section | null {
+  const fileName = `${String(entry.order).padStart(2, "0")}-${entry.slug}`;
   const filePath = path.join(getChapterDir(chapterId), `${fileName}.mdx`);
   if (!fs.existsSync(filePath)) return null;
 
@@ -138,7 +146,7 @@ function parseSectionFile(
   const fm = data as SectionFrontmatter;
 
   return {
-    slug: fm.slug ?? fileName,
+    slug: fm.slug ?? entry.slug,
     chapterId,
     frontmatter: fm,
     content,
@@ -149,7 +157,9 @@ function parseSectionFile(
 export function getChapterSections(chapterId: string): Section[] {
   const chMeta = getChapterSectionsMeta(chapterId);
   return chMeta.sections
-    .map((name) => parseSectionFile(chapterId, name))
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .map((entry) => parseSectionFile(chapterId, entry))
     .filter((s): s is Section => s !== null);
 }
 

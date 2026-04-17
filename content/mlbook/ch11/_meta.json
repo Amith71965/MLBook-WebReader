@@ -2,6 +2,71 @@
   "number": 11,
   "title": "Self-supervised Deep Learning",
   "sections": [
-    "00-introduction"
+    {
+      "order": 0,
+      "slug": "intro",
+      "title": "Introduction",
+      "wordCount": 770
+    },
+    {
+      "order": 1,
+      "slug": "representation-learning-concepts",
+      "title": "Representation Learning Concepts",
+      "wordCount": 675
+    },
+    {
+      "order": 2,
+      "slug": "self-organizing-maps-som",
+      "title": "Self Organizing Maps (SOM)",
+      "wordCount": 1431
+    },
+    {
+      "order": 3,
+      "slug": "boltzmann-machines",
+      "title": "Boltzmann Machines",
+      "wordCount": 3804
+    },
+    {
+      "order": 4,
+      "slug": "autoencoders",
+      "title": "Autoencoders",
+      "wordCount": 6211
+    },
+    {
+      "order": 5,
+      "slug": "generative-adversarial-network",
+      "title": "Generative Adversarial Network",
+      "wordCount": 10138
+    },
+    {
+      "order": 6,
+      "slug": "contrastive-representation-learning",
+      "title": "Contrastive Representation Learning",
+      "wordCount": 1907
+    },
+    {
+      "order": 7,
+      "slug": "text-to-image-models",
+      "title": "Text-to-Image Models",
+      "wordCount": 9077
+    },
+    {
+      "order": 8,
+      "slug": "other-models-that-we-didn-t-explain",
+      "title": "Other models that we didn't explain",
+      "wordCount": 262
+    },
+    {
+      "order": 9,
+      "slug": "summary",
+      "title": "Summary",
+      "wordCount": 533
+    },
+    {
+      "order": 10,
+      "slug": "further-reading-and-watching",
+      "title": "Further Reading and Watching",
+      "wordCount": 390
+    }
   ]
 }

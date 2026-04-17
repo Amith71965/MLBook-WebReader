@@ -2,12 +2,197 @@
   "number": 3,
   "title": "Probability and Statistics",
   "sections": [
-    "00-introduction",
-    "01-concepts-and-definitions",
-    "02-basic-statistical-concepts",
-    "03-probability",
-    "04-bayes-rule",
-    "05-probability-distributions",
-    "06-em-algorithm"
+    {
+      "order": 0,
+      "slug": "intro",
+      "title": "Introduction",
+      "wordCount": 349
+    },
+    {
+      "order": 1,
+      "slug": "variable-and-value",
+      "title": "Variable and Value",
+      "wordCount": 627
+    },
+    {
+      "order": 2,
+      "slug": "dependent-independent-and-control-variables",
+      "title": "Dependent, Independent, and Control Variables",
+      "wordCount": 211
+    },
+    {
+      "order": 3,
+      "slug": "independent-versus-dependent-trials",
+      "title": "Independent versus Dependent Trials",
+      "wordCount": 245
+    },
+    {
+      "order": 4,
+      "slug": "first-insight-on-the-data-basic-statistical-concepts",
+      "title": "First Insight on the Data & Basic Statistical Concepts",
+      "wordCount": 3066
+    },
+    {
+      "order": 5,
+      "slug": "basic-probability-concepts",
+      "title": "Basic Probability Concepts",
+      "wordCount": 718
+    },
+    {
+      "order": 6,
+      "slug": "bayes-rule",
+      "title": "Bayes Rule",
+      "wordCount": 181
+    },
+    {
+      "order": 7,
+      "slug": "probability-density-mass-functions-and-cumulative-distributi",
+      "title": "Probability Density/Mass Functions and Cumulative Distribution Functions",
+      "wordCount": 630
+    },
+    {
+      "order": 8,
+      "slug": "statistical-distribution",
+      "title": "Statistical Distribution",
+      "wordCount": 4473
+    },
+    {
+      "order": 9,
+      "slug": "power-law-long-tail-exponential-and-zipflaw-distributions",
+      "title": "Power Law (Long Tail), Exponential, and ZipfLaw Distributions",
+      "wordCount": 2524
+    },
+    {
+      "order": 10,
+      "slug": "expected-value-and-expectation-of-a-function",
+      "title": "Expected Value and Expectation of a Function",
+      "wordCount": 320
+    },
+    {
+      "order": 11,
+      "slug": "normalization",
+      "title": "Normalization",
+      "wordCount": 744
+    },
+    {
+      "order": 12,
+      "slug": "how-much-data-is-enough",
+      "title": "How Much Data is Enough?",
+      "wordCount": 538
+    },
+    {
+      "order": 13,
+      "slug": "central-limit-theorem-clt",
+      "title": "Central Limit Theorem (CLT)",
+      "wordCount": 165
+    },
+    {
+      "order": 14,
+      "slug": "bias-in-sampling",
+      "title": "Bias in Sampling",
+      "wordCount": 1320
+    },
+    {
+      "order": 15,
+      "slug": "hypothesis-and-significance-tests",
+      "title": "Hypothesis and Significance Tests",
+      "wordCount": 1286
+    },
+    {
+      "order": 16,
+      "slug": "hypothesis-errors",
+      "title": "Hypothesis Errors",
+      "wordCount": 391
+    },
+    {
+      "order": 17,
+      "slug": "a-b-testing-and-significance-test",
+      "title": "A/B Testing and Significance Test",
+      "wordCount": 457
+    },
+    {
+      "order": 18,
+      "slug": "parametric-significance-tests",
+      "title": "Parametric Significance Tests",
+      "wordCount": 2576
+    },
+    {
+      "order": 19,
+      "slug": "non-parametric-significance-tests",
+      "title": "Non-Parametric Significance Tests",
+      "wordCount": 103
+    },
+    {
+      "order": 20,
+      "slug": "chi-square-test",
+      "title": "Chi-Square Test",
+      "wordCount": 2197
+    },
+    {
+      "order": 21,
+      "slug": "mann-whitney-u-test",
+      "title": "Mann-Whitney-U Test",
+      "wordCount": 714
+    },
+    {
+      "order": 22,
+      "slug": "significance-test-error-correction",
+      "title": "Significance Test Error Correction",
+      "wordCount": 830
+    },
+    {
+      "order": 23,
+      "slug": "effect-size",
+      "title": "Effect size",
+      "wordCount": 637
+    },
+    {
+      "order": 24,
+      "slug": "correlation-coefficients",
+      "title": "Correlation Coefficients",
+      "wordCount": 523
+    },
+    {
+      "order": 25,
+      "slug": "entropy-information-gain",
+      "title": "Entropy & Information Gain",
+      "wordCount": 886
+    },
+    {
+      "order": 26,
+      "slug": "kl-divergence",
+      "title": "KL-Divergence",
+      "wordCount": 420
+    },
+    {
+      "order": 27,
+      "slug": "jensen-shanon-divergence-js-divergence",
+      "title": "Jensen Shanon Divergence (JS-Divergence)",
+      "wordCount": 340
+    },
+    {
+      "order": 28,
+      "slug": "probability-estimations",
+      "title": "Probability Estimations",
+      "wordCount": 199
+    },
+    {
+      "order": 29,
+      "slug": "maximum-likelihood-estimation-mle-approach",
+      "title": "Maximum Likelihood Estimation (MLE) Approach",
+      "wordCount": 1014
+    },
+    {
+      "order": 30,
+      "slug": "summary",
+      "title": "Summary",
+      "wordCount": 682
+    },
+    {
+      "order": 31,
+      "slug": "further-readings-and-watching",
+      "title": "Further Readings and Watching",
+      "wordCount": 364
+    }
   ]
 }

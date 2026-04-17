@@ -1,0 +1,42 @@
+---
+chapter: "ch10"
+order: 0
+slug: "intro"
+title: "Introduction"
+wordCount: 724
+---
+Due to the enormous success of deep learning, you might not read the book from the beginning and start it from here. That is not good, but it should not be a big problem. You should listen to the Good News Potato feedback before you start reading a chapter, and be sure that you have read all required chapters before starting this chapter.
+
+Deep learning has revolutionized many scientific disciplines. People whose research works sound funny and too theoretical before 2012 are now celebrities in academia, not just in computer science but also in other disciplines.
+
+In this chapter, we start by explaining the rationale behind deep learning and then the function of a biological brain. It helps us to explain artificial neural networks more easily later. Next, we move our discussion from the traditional ANN method, including Perceptron and Multilayer Perceptron. Then, we explain activation functions, cost functions, and neural network optimizers. Afterward, two common deep learning models and architectures, including CNN and RNN, are explained.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_0_Picture_4.jpeg" alt="Figure" />
+
+At the time of writing this Chapter (late 2020 and revising in 2024), we are living in the AI boom, and one of the hardest jobs of academic supervisors is to lead motivated students and research workers from focusing too much on neural networks and deep learning, dedicate their time to learning other concepts and algorithms as well. There are many other important things that we should learn before starting to learn deep learning, which is why we postponed the deep learning and neural network to Chapter 10 and later chapters in this book.
+
+*Why is deep learning popular and powerful?* 
+
+There are two main reasons why deep learning is successful and popular: superior accuracy and no need for feature engineering
+
+*Superior accuracy:* The first reason is its superior accuracy while dealing with unstructured data (not tabular data). Other algorithms that we have described all require to have structured data. From tabular formats like CSV to a time series and signals. On the other hand, deep learning works very well for unstructured data, including image, audio, and textual data. Since most of the data we acquire is in unstructured format and conversion to structured format is either
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_1_Picture_0.jpeg" alt="Figure" />
+
+infeasible or very expensive, deep learning algorithms are gaining tremendous popularity working with these datasets.
+
+*No need for feature engineering:* The second reason that deep learning is superior to other machine learning algorithms is that there is no need for feature engineering in these algorithms. We dedicate one chapter (Chapter 6), at least in this book, to describing feature engineering and selecting the appropriate features for the algorithm, which is one of the most important challenges of data science. Feature engineering consumes a significant amount of time to prepare data for the algorithm. Deep learning algorithms, in particular, have hidden layers that handle all features. If a feature does not contribute to the prediction, its weight will be reduced, and this
+
+feature will be ineffective in the final model. It is very exciting for data scientists, especially for those who do not have the domain knowledge to do feature engineering. The hassle of preparing data for the machine learning algorithm is removed. Nevertheless, in many cases, we still do some data engineering, such as resizing the input data (e.g., images for computer vision models), augmenting the data, and increasing the dataset size because deep learning models are trained on large datasets.
+
+However, there is a "no free lunch" theorem, and the process of automatic feature extraction is associated with a huge cost, which is intensive computation. Therefore, scientists move their calculations from CPU to GPU (Graphical Processing Unit) for matrix
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_1_Figure_5.jpeg" alt="Figure" />
+
+Figure 10-1: Differences between deep learning algorithms and traditional machine learning algorithms
+
+multiplication. The popularity of GPU led NVIDIA to launch the first platform for coding for GPU, i.e., CUDA, and later, similar tools came into the market, such as OpenCL [.](#page-1-0) [1](#page-1-0)
+
+https://www.khronos.org/opencl [1](#page-1-1)
+
+Although neural networks, especially deep learning algorithms, outperform all other machine learning algorithms, they operate under the conditions that we can feed them large amounts of data. Figure 10-1 presents an abstract overview of the accuracy between traditional algorithms and deep learning. This figure is inspired by the drawing of Andrew Ng's deep learning course and Aggrawal's book on neural networks [Aggarwal '18].

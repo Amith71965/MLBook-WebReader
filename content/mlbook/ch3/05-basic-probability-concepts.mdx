@@ -1,0 +1,48 @@
+---
+chapter: "ch3"
+order: 5
+slug: "basic-probability-concepts"
+title: "Basic Probability Concepts"
+wordCount: 718
+---
+Probability is the extent to which an event is likely to occur. In other words, how likely an event is probable is specified by a probability. For instance, The probability of rolling a dice and getting six is 1/6. We use P(x) to demonstrate the probability of a variable x.
+
+Tossing a coin has two possible events, including getting head (H) or tail (T), and their probabilities are equal, so we can say that P(H) = 0.5 and P(T) = 0.5. The probability function is formalized as follows:
+
+$$P(desired event happen) = \frac{number of desired event}{total number of events}$$
+
+A probability can have a value range from 0 = "will never happen", to 1 = "always happen". P(x') means the probability of not having x is: P(x') = 1 - P(x). This is called the *marginal probability* rule. The marginal probability rule, also known as the sum rule, is used to find the probability of an event occurring without considering any other events or conditions.
+
+Probability has its own rules and definitions. We describe some of the important probability rules.
+
+### Joint Probability
+
+Imagine you are at a party, and there is a bowl of nuts. The host brings it to you and asks you to take some nuts. Your favorite nuts are pistachio and cashew. The pot includes both of them, but it also involve lots of hazelnuts and almonds, which were not your most desired nuts.
+
+Assume that the pot includes 10% pistachio, 20% cashew, 40% hazelnut, and 30% almonds. To be polite, you intend only to take two pieces of nuts from the pot without choosing them. What is the probability of having only one pistachio and one cashew in your hand? In this case, we should use the joint probability.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_12_Picture_9.jpeg" alt="Figure" />
+
+A *union* between two events is written as follows: *P* (*A* occurs, or *B* occurs, or both occur). In some cases, when events overlap, we compute the joint probability as follows: . *P*(*A or B*) = *P*(*A* ∪ *B*) = *P*(*A* ∪ *B*) = *P*(*A*) + *P*(*B*) − *P*(*A* ∩ *B*)
+
+The union of events A and B, denoted as , means that on a particular trial of the experiment, either A or B occurred (or both did). The following Additive Rule of Probability is a useful formula for calculating the probability of . *A* ∪ *B A* ∪ *B*
+
+$$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+
+Respectively, a *joint probability of intersection* between the two events happening is written as follows: occurs and *B* both occur **.** In other words, in this case, we have . This applies only when events *A* and *B* are independent. Independence means that the occurrence of one event does not affect the probability of the occurrence of the other event. In cases where events *A* and *B* are not independent, the general formula for the joint probability is: . *P*(*A and B*) = *P*(*A* ∩ *B*) = *P*(*A* ) *P*(*A* ∩ *B*) = *P*(*A*) . *P*(*B*) *P*(*A* ∩ *B*) = *P*(*A*) . *P*(*B*|*A*) *or P*(*B*) . *P*(*A*|*B*)
+
+A *conditional probability* is shown as and it means the probability of A given B has occurred. The sign '|' reads as "given" and the conditional probability is computed as follows: *P*(*A*|*B*)
+
+$$P(A \mid B) = \frac{P(A \cap B)}{P(B)}$$
+
+This form of conditional probability is also called *Kolmogorov probability*.
+
+For our example . It is very unlikely, and you have only a 2% chance of being successful. However, some statisticians might say that we should consider removing one item and thus have: or Still, with this approach, the chance is very low. *P*(*Pistachio* ∩ *Cashew*) = (10/100) . (20/100) = 0.02 (10/100) . (20/99) ≈ 0.02 (10/99) . (20/100) ≈ 0.02
+
+These numbers show that you should reduce your expectations. What about having at least one pistachio or at least one cashew from your selection of two nuts? In this case, we can use the union probability to find this.
+
+Therefore, we have:
+
+$$P(Pistachio \cup Cashew) = P(Pistachio) + P(Cashew) - P(Pistachio \cap Cashew) = 10/100 + 20/100 - 0.02 = 0.28$$
+
+Based on the result, it is more likely that you will get at least one of your two preferred nuts compared to the probability of having both pistachios and cashews.

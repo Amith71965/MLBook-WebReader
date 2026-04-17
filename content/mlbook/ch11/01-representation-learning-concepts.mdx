@@ -1,0 +1,28 @@
+---
+chapter: "ch11"
+order: 1
+slug: "representation-learning-concepts"
+title: "Representation Learning Concepts"
+wordCount: 675
+---
+Self-supervised neural networks have a common characteristic, i.e., instead of training the model on the data in its original dimensions (high dimensional space), these models learn a lowdimensional representation of the data (*latent space*) and train their model in the latent space.
+
+It means that each data point in the latent space is a representation of one or more data points in a high-dimensional space. Latent space is located in hidden layers. Latent space includes *features that best describe the characteristics of data*. ٓFeatures that are less important to describe the characteristics of the data are either eliminated or their impact is reduced in the latent space. For example, to construct an artificial human face, the placement of eyes and nose are important and exist in the latent space, but a dot on a cheek is unimportant and will be removed when the data gets into latent space. Variables inside the latent space are referred to as *latent variables*, and other variables that we can observe, such as input or output, are *observed variables*.
+
+### **Generative vs. Discriminative Model**
+
+Machine learning and artificial intelligence algorithms can be classified as generative or discriminative models. Assuming our input data is *x,* and the output that we intend to predict is *y*, a *generative model* uses joint probability to make a prediction or an inference *p*(*x*, *y*).
+
+On the other hand, a *discriminative model* uses conditional probability . We can say a generative algorithm cares about how data has been generated, and these models try to learn the "distribution" of the training data, e.g., GMM (Chapter 4) and HMM (Chapter 5). Once a generative model learns the distribution of the train set, then it can decide on the labels for the test dataset based on the distribution. An easy explanation about generative models is algorithms that deal with data distribution. *p*(*x* | *y*)
+
+In contrast, a discriminative model *discriminates between different data points, disregarding how they have been generated*. In a more technical sense, discriminative models do not need to understand how data is generated; instead, they focus on finding the optimal decision boundary to separate classes using the input features, e.g., logistic regression or SVM (Chapter 9).
+
+Since generative models take into account dependencies between data points, they are very powerful algorithms. On the advantage of generative models, David Foster [Foster '19] stated that "*by sampling from a generative model, we can generate new data"*. For example, to generate images, we need generative models because each pixel in an image is highly correlated with all other pixels in that image. Images are complex, and their features are highly correlated and latent. A human can not infer their relationships, but neural networks can. Discriminative models do not take into account feature dependencies, and thus, they are not very capable of generating synthetic data.
+
+Discriminative models usually operate with labels, and thus, they have been categorized as supervised learning algorithms. However, generative models can be used in both supervised and unsupervised settings, and mainly, they are used in unsupervised settings. However, to keep them separate from traditional unsupervised learning algorithms, scientists call them self-supervised models, In other words, self-supervised learning refers to techniques where *models generate their own training signals from the data.*
+
+### **Deterministic vs. Stochastic Model**
+
+A *deterministic model* produces consistent outputs for the same set of inputs and parameters, given fixed initial conditions. In contrast, a *stochastic model* incorporates elements of randomness, which means its outputs may vary with each execution, even under identical conditions. Therefore, every execution of a stochastic model might have different results. Examples of stochastic models are genetic algorithms (check Chapter 6) or manifold dimensionality reductions, tSNE, and UMAP (check Chapter 7). Most heuristics approaches that try to find the optimal answer, including deep neural networks, belong to stochastic models.
+
+Generative models typically exhibit stochastic behavior because they sample from learned data distributions, making their outputs inherently variable. This stochasticity introduces challenges in using them for end-user applications, though there are techniques to mitigate these effects, which are beyond this basic explanation.

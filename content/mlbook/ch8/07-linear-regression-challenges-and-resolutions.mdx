@@ -1,0 +1,12 @@
+---
+chapter: "ch8"
+order: 7
+slug: "linear-regression-challenges-and-resolutions"
+title: "Linear Regression Challenges and Resolutions"
+wordCount: 353
+---
+There are some limitations in linear regression. We describe two of them that introduce new classes of regression. The first problem with linear regressions is that they can only predict numerical values (categorical values should be encoded). Sometimes we need to predict categorical data, e.g., if an email is spam or not spam, if the patient will die or survive the operation, etc. You might say we can map them to 0 and 1 and easily employ linear regression. That is not wrong, but what will happen if we can not draw a regression line between those binary states? The shape of the data points does not allow to draw the linear regression line. To handle this we use logistic regression, which we will explain shortly.
+
+Another issue is what happens if we have more than one categorical predictor. For example, Mr. Nerd likes technology books, religious and science-fiction books. If we assign them numbers like *'1: technology'*, *'2: religion',* and *'3: science-fiction'.* There is an ordering enforced on book genres. It might lead to a mistake that the algorithm assumes the distance between 'technology' and 'science-fiction' books is larger than the distance between '*technology*' and '*religious*' books. As another example, assume we try to predict a medical condition of emergency room patients; it could be '*accident injury*', '*seizure*', or '*stroke*'. They are very different information, and considering them all together in a linear regression equation does not sound like a wise decision because we are imposing an ordering that does not exist. Therefore, we should look for a better method that considers input variables as binary and not continuous variables. This will be handled by *logistic regression*, which we will explain later.
+
+The second problem is that linear regression is designed to handle linear relationships between features, and can not handle non-linear relations. In other words, the linear regression we described is useful for linear data with a fixed slope (i.e., additive slope). However, sometimes there is no straight line to be able to model the data points. A curved line can resolve this and it will be handled by *polynomial regression*.

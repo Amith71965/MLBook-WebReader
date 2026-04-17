@@ -1,0 +1,16 @@
+---
+chapter: "ch10"
+order: 1
+slug: "universal-approximation-theory"
+title: "Universal Approximation Theory"
+wordCount: 265
+---
+Supervised machine learning can be interpreted as a function approximation problem. We have some data, and there is an *underlying function that is not known.* We try to understand that function. Take a look again at the Figure we have explained in Chapter 1. We have a machine that receives chicken as input and nuggets as output. The process of supervised machine learning is to identify what this unknown machine (function) is.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_2_Picture_3.jpeg" alt="Figure" />
+
+This technique is also called *function approximation*. The name of this unknown function is often called the *target function*. We do not know this function, and therefore, we use machine learning to approximate this function. We can refer to deep learning models as *non-linear function approximation methods*. We will learn more about non-linearity later.
+
+*The Universal Approximation* theorem states that a neural network can approximate any continuous function with a high degree of accuracy (given the right configuration). This theorem is often cited to explain the potential of neural networks to capture complex patterns within data. Deep learning, which involves neural networks with multiple hidden layers (we will explain hidden layers shortly), allows for the modeling of highly complex functions.
+
+However, there are practical limitations to consider, such as the computational resources required as network complexity increases. Although, theoretically, neural networks can approximate any functions, in practice, the feasibility of constructing such models depends on having sufficient data, as well as the computational capacity to train large networks. Therefore, while neural networks hold a universality in function approximation, this does not imply they can model absolutely everything without constraints.

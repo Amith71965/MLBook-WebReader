@@ -1,0 +1,67 @@
+---
+chapter: "ch8"
+order: 10
+slug: "evaluating-the-fitness-of-training-sets-in-linear-models"
+title: "Evaluating the fitness of training sets in linear models."
+wordCount: 1552
+---
+Once we have implemented our regression, we must (as with all machine learning algorithms) evaluate the accuracy of our model. Such an evaluation in regression algorithms is called *model evaluation*, a.k.a., measuring *model fitness*. In the this section, we describe common approaches used for evaluating linear models, including Residual Standard Error (RSE), Coefficient of Determination or R-squared (R<sup>2</sup>), Root Mean Square Error (RMSE), and Mean Square Error (MSE).
+
+These metrics are applied to both the *training set* to understand how well the model fits the data it was trained on, and the *test set* to assess how well the model generalizes to unseen data. Although the same metrics are used for both sets, the interpretation of these metrics can vary depending on whether we are evaluating model performance during training or testing.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_13_Picture_10.jpeg" alt="Figure" />
+
+### Residual Standard Error (RSE)
+
+RSE is an average number of data points that deviated from the regression line. It is called the *lack of fit* measures and is calculated as follows:
+
+$$RSE = \sqrt{\frac{RSS}{n-p-1}} = \sqrt{\frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{n-p-1}}$$
+
+Here, n is the number of data points, p is the number of model parameters (not including the intercept), and thus n - p - 1 is the degree of freedom from error. If we have one input variable and one intercept, we can write the degree of freedom as n - 2.
+
+In fact, RSE measures the differences between  $y_i$  and  $\hat{y}_i$  ( $y_i$  is the original data point and  $\hat{y}_i$  is the predicted value, which is a data point located on the regression line). The closer two variables  $y_i$  and  $\hat{y}_i$  are, the better the model will be at the end. Thus, a smaller RSE is better. The *RSE* for Mr. Nerd's linear regression (Figure 8.1) is 5.074 on 7 degrees of freedom.
+
+What is the degree of freedom in the context of regression analysis? The degrees of freedom, in this context is equal to the number of data points minus the number of parameters that will be estimated by the model. In the context of regression analysis, a parameter is estimated for every model's variable, and each parameter costs one degree of freedom. Therefore, including lots of variables in a regression model reduces the degrees of freedom available to estimate the parameters' variability. For example, if our sample size is 12 and our model has 3 parameters. The degree of freedom is 12 - 3 = 9.
+
+#### $R^2$
+
+Another measure for model fitness is the *Coefficient of determination* or  $R^2$  (R squared). RSE depends on the value of y strongly. Therefore, it is not clear what part of the linear regression equation contributes more to the RSE score.  $R^2$  tries to mitigate this challenge by using the *total sum of squares* (TSS), i.e.,  $\sum_{i=1}^{n} (y_i - \bar{y})^2$  divided by the *regression (or residual) sum of squares* (RSS), i.e.,  $\sum_{i=1}^{n} (y_i - \hat{y}_i)^2$ . Therefore,  $R^2$  will be written as follows:
+
+$$R^{2} = 1 - \frac{RSS}{TSS} = 1 - \frac{\sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2}}{\sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}$$
+
+Recall that y is a dependent (output) variable,  $\bar{y}$  is the mean of y, and  $\hat{y}$  is the predicted value of y. The predicted value is presented with the hat symbol "^", e.g.  $\hat{y}$ .
+
+ $R^2$  returns a value between 0 and 1, which describes how close the data points are to the regression line. Higher values of  $R^2$  indicate that our data points are closer to the regression line, and thus, the model is performing well. Mr. Nerd's  $R^2$  is 0.9039 (based on data from Figure 8-1), and since it is near 1, which means that the  $R^2$  evaluation shows high accuracy.
+
+### Root Mean Square Error (RMSE) and Mean Square Error (MSE)
+
+For polynomial regressions, we can use RMSE to measure the accuracy. It is recommended to do the experiment for several different polynomial degrees and select the lowest RMSE. RMSE is the standard deviation of residuals or prediction errors. Check Figure 8-2 to recall what is residual. In short, residuals are the distance of data points to the regression line. Assuming  $\hat{y}_i$  as a predicted value and  $y_i$  is the *i*th observed data points, the formula is written as follows:
+
+$$RMSE = \sqrt{\frac{\sum_{i=1}^{n} (\hat{y}_i - y_i)^2}{n}}$$
+
+When we encounter *Mean Square Error (MSE)*, it is the same as RMSE, just its square root has been removed.
+
+$$MSE = \frac{\sum_{i=1}^{n} (\hat{y}_i - y_i)^2}{n}$$
+
+These tests are also called *goodness-of-fit* tests, similar to the Chi-square that has been explained in Chapter 3, which is another test for goodness-of-fit.
+
+#### NOTE:
+
+- \* By increasing the number of labeled data or sample data for a regression algorithm, the chance of getting a wrong prediction decreases because we are increasing the likelihood of newly arrived data points being considered to be similar to already labeled data.
+- \* Depending on the goal of our prediction, we might use more than one regression model or even algorithm to estimate the output variable. Therefore, do not hesitate to experiment with more than one model and then choose the best one. We will discuss this later in this chapter.
+- \* Linear regression and polynomial regression are called *parametric methods*. Parametric methods assume that our prediction function has a form or shape. Non-parametric methods, such as Piecewise regression, do not make any assumption about the prediction function form or shape. The model that we choose might not correctly reflect the underlying dataset, which is the disadvantage of parametric methods. Nevertheless, since the non-parametric method does not have any assumptions about the model, we might end up using a large number of data points (train dataset) to create the correct non-parametric model, and it is hard to prepare a large number of labeled data points.
+- \* Linear models, especially linear regression, are one of the most popular machine learning algorithms. Interestingly, in terms of quality, they are as good as non-linear models, which we will explain later. Since they are parametric, they do not need a large amount of data to train the model, and operating with a small dataset makes them very attractive algorithms.
+- \* The simplest form of linear regression is Ordinary Least Squares (OLS), which estimates the relationship between X and Y by minimizing the sum of squares between real values (the blue dots in Figure 8-2) and predicted ones (the blue dots projections on the red line in Figure 8-2).
+
+- \* Sometimes, to identify which model from a set of models can fit better into our dataset, we need to plot their residuals. Residuals are useful to identify the linearity of the model. After plotting residuals, we can check if the residuals are linear or not, and we can find a pattern in residuals. If there is a pattern in residuals, this is a sign that the dataset is non-linear. However, we described that linear regression is amazingly efficient. To enforce linearity in the data, we can apply a transformation on the data, e.g., log transformation or *L*2 norm transformation. Check Chapter 6 to recall transformation. Another useful application of plotting residuals is plotting them based on time to ensure that errors are not correlated. Correlated residuals based on time is a phenomenon called *tracking* [James '13]. If there is tracking exists in our residuals, then we have no guarantee about the confidence of our model, and thus, we should think about another model. Tracking phenomena is common in time series analysis.
+- \* Having two highly correlated variables negatively affects the accuracy of the multilinear regression and it is better to remove one of the highly correlated variables. Another recommended approach is to combine *collinear variables* (highly dependent variables) and create a new input variable, i.e., feature engineering, which we described in Chapter 6.
+- \* Despite the attractiveness and flexibility of polynomial regression, it is prone to the overfitting problem, and therefore, it is not widely in use, unlike linear regression, which everybody loves. More about overfitting will be described later in this chapter; now, keep in mind that polynomial regression is prone to overfitting.
+- \* Polynomial regression is more sensitive to outliers and noise in comparison to linear regression. It could be another reason that linear regression is usually favored over polynomial regression.
+- \* Mathematicians are in a constant struggle to *estimate something that is non-linear by using linear tools*. It can be another motivation behind using linear regression significantly more than other regressions, especially among data scientists with a good understanding of math. Nevertheless, we should not forget that linear models assume the structure of the data will remain the same, which is not the case for real-world applications.
+- \* Regression is a type of approximation. Approximation is the process of finding an efficient estimate of the value of the function at a certain unknown point by leveraging the information we have at a known point about the function.
+
+
+### AutoRegressive Integrated Moving Average (ARIMA)
+
+
+ARIMA [Box '70] is a popular algorithm used to predict or model time series. Since we are talking about linear regression, it is good to describe this popular algorithm. If you are not interested in working with time series, feel free to skip this section. Before we describe the details of ARIMA we need to become familiar with two concepts, *extrapolation* and *interpolation*.

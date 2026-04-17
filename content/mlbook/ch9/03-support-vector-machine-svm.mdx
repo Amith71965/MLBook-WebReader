@@ -1,0 +1,145 @@
+---
+chapter: "ch9"
+order: 3
+slug: "support-vector-machine-svm"
+title: "Support Vector Machine (SVM)"
+wordCount: 4120
+---
+An old but popular machine learning algorithm for classification is the Support Vector Machine (SVM) [Cortes '95]. It can classify linear and nonlinear data and performs very well despite its complex approach to classifying data. Besides, SVM can be used for regression as well, but it is commonly used for classification purposes, and we have rarely seen it used for regression.
+
+To explain SVM, let's start with a simple example: we use SVM for binary classification. This example will give us intuition about the rationale of SVM. Then, we explain how a binary classifier extends into a multi-label classifier. Take a look at Figure 9-7 (a). it shows fairly well-separated datasets of blue and red dots. SVM can draw a line and separate them. Let's draw a random line that separates these two sets from each other, as shown in Figure 9-7 (b). After we have this separation line, we would like to test the separation quality and assume we get one new data point as a test, i.e., the grey data points in Figure 9-7 (c). We can see that this data point stays in the blue region, which does not seem correct because it stays closer to the red data points. We draw another separator line in Figure 9-7 (d), and this separates points better because the grey data point, which is closer to the red dots, stays in the red region now. The motivation of the SVM algorithm is to find the best possible *separation line* (or *hyperplane* for multidimensional data) that can separate data points from each other.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_17_Figure_3.jpeg" alt="Figure" />
+
+Figure 9-7: (a) sample data points that we intend to find a line to classify the space into the blue region and red region. (b) A random line has been drawn that it seems the space is well separated. (c) a new data point (from test set) is added and based on the drawn line if went into the blue region. However, it doesn't seem at the right place (d) another separator line is drawn and the data point fits into the red region.
+
+To be more accurate from now on, we refer to this separator as a hyperplane instead of dots, lines, etc. The hyperplane for p dimensional space is formalized with a line equation as follows:  $\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p = 0$ . In Chapter 8, we explained that  $\beta_0$  is an intercept, and others are the slopes of the hyperplane.  $\vec{\beta} = \{\beta_1, \beta_2, \ldots\}$  is called a *weight vector*, and some literature uses  $\vec{w}$  to present it. Thus, assuming X is a set of features (feature vector),  $X = \{x_1, x_2, \ldots, x_p\}$  and  $\beta_0 = b$  (bias), the hyperplane equation is written as:  $\vec{w} \cdot X + b = 0$ .
+
+Our objective in the given example is to specify the new data points' label as blue or red (classify data points from the test set), and it is a binary classifier, i.e., y = -1, y = 1. Unlike other binary classifiers, instead of using 0 and 1, SVM uses -1 and 1. Therefore, we can say one side of the hyperplane is blue (y = -1), and the other side is red (y = 1) and formalize it with the following equations:
+
+$$\begin{split} \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots \beta_p x_p &amp;\leq 1 \quad or \quad \overrightarrow{w} \cdot X + b \leq 1 \rightarrow y = -1 \\ \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots \beta_p x_p &amp;> 1 \quad or \quad \overrightarrow{w} \cdot X + b > 1 \rightarrow y = 1 \end{split}$$
+
+The test observation data point  $x^*$  can be classified by substituting its features  $\{x_1, x_2, ...\}$  into the hyperplane equation  $f(x^*) = \beta_0 + \beta_1 x_1^* + \beta_2 x_2^* + ... + \beta_p x_p^*$ . If  $f(x^*) > 1$  then the new test data point  $x^*$  will get the label 1 (e.g., red), and if  $f(x^*) \le 1$ , then, x will get label -1 (e.g., blue).
+
+In other words, when a new data point from the test dataset  $\{x_1, x_2, \dots\}$  arrives, the algorithm substitutes these x values into the hyperplane equation, and the result will be a number (either  $\leq 1$  or > 1), which is used by the algorithm to decide about the label of this data point. Therefore, the output will be something like the following:  $\{x_1 = -1, x_2 = 1, x_3 = 1, \dots\}$ . Now, the question is, how do we draw this separator hyperplane? Or how do we identify weight vectors  $\vec{\beta}$  or  $\vec{w}$  of the hyperplane equation?
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_18_Figure_4.jpeg" alt="Figure" />
+
+Figure 9-8: (a) The sample data points used by the maximum margin classifier support vectors (points on the line construct support vector) and the decision hyperplane were identified and highlighted. (b) Three sample data points (they have shadows) stay inside support vectors, and one data point stays on the wrong side of the hyperplane (slack variable). A good margin classifier should reduce these issues as much as possible.
+
+The answer is to use the *Maximal Margin Classifier*. Here, the *margin* refers to the distance between a data point and the separator hyperplane. The maximal margin classifier uses a hyperplane with the largest margins (largest distance between data points and hyperplane). Figure 9-8 (a). shows another dataset with blue and red classes. It looks like a street; the centerline is called the decision hyperplane, and the sidelines parallel to it are called support
+
+vectors. Figure 9-8 (b) shows the margin lines and the hyperplane, but there are some data points inside the street, which we explain later how to deal with.
+
+The separator hyperplane will be identified with algorithms such as the *Sequential Minimal Optimization* algorithm (check Chapter 8 to recall optimization), which we put under the rug, not to explain it. You might not need to learn SVM optimization unless you intend to design an optimization algorithm or do research on mathematics and theories of optimization.
+
+In short, the SVM optimization algorithm tries to find the hyperplane based on two objectives: (i) it makes the maximum margin possible (making the street wider in Figure 9-8) while limiting margin violations. Data points between vector spaces mean margin violation (see Figure 9-8 (b)). However, since this phenomenon is unavoidable in real-world datasets where data is noisy, we tolerate it and call the classifier that tolerates these points a *soft margin classifier*. (ii) There is a constraint that specifies that each side of the hyperplane should cover most data points from each class. The hyperplane must stay between two classes to separate the data points.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_19_Figure_3.jpeg" alt="Figure" />
+
+Figure 9-9: A decision hyperplane that has a very large separator margin, but it doesn't make sense. Because the separator constraint does not exist.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_19_Picture_5.jpeg" alt="Figure" />
+
+Otherwise, this hyperplane can stay far away on the other side of the world and thus make a very large margin, but it doesn't make sense. For example, look at Figure 9-9; the margin is very large but does not classify the dataset.
+
+The loss function used by optimizations for maximum margin classification algorithms (including SVM) is called *hinge loss*. Some implementations of SVM enable the user to choose a different loss function as a hyperparameter for the algorithm.
+
+We have explained that optimization will take care of hyperplane creation. Now, take a look at Figure 9-8 (b). In reality, outliers and data points can not stay in the correct class, either between decision boundaries or on the wrong side of the hyperplane. We have no other choice than to tolerate their misclassification in hyperplane. Data points that stay between support vector lines or on the wrong side of the hyperplane are called *slack variables* . Figure 9-8 **(**b) highlights three [3](#page-20-0) slack variables three between support vectors, and one of them stays on the wrong side of the hyperplane. The objective function of SVM is not only to maximize the margin but also to minimize these slack variables, which essentially means reducing the hard margin violations as much as possible.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_20_Figure_2.jpeg" alt="Figure" />
+
+Figure 9-10: (a) A sample dataset and C=0.1 present a very small margin. Therefore, the variance is low, but as you can see, we have high bias. (b) A larger value has been set for C=10, and the bias is getting lower, but the variance has increased.
+
+The *C* hyperparameter in SVM controls the trade-off between the model's margin width and the tolerance for margin violations; the lower *C* means less tolerance for any misclassification is allowed. Figure 9-10 presents two different values for *C.* We can not set *C* to *0,* its value must be positive, and a low but positive *C* value would indicate a high tolerance for margin violations, not zero tolerance. The choice of the C hyperparameter indeed represents a bias-variance tradeoff. A higher *C* value (resulting in a "narrower street") minimizes the number of margin violations, aiming for higher accuracy on the training set at the risk of overfitting, thus exhibiting low bias but high variance. On the other hand, a lower *C* value (resulting in a "wider street") allows for more margin violations. This approach prioritizes generalization over training set accuracy, potentially leading to a model with higher bias but lower variance due to its increased tolerance for misclassifications.
+
+In the context of optimization to convert an inequality to equality, we can use a slack variable. For example, if [3](#page-20-1) *x* + 2*y* &lt; 3, by using a slack variable *ξ* (read it as ksee), it can be written as: *x* + 2*y* + *ξ* − 3 = 0
+
+Adjusting the C hyperparameter in SVMs is crucial for balancing the bias-variance trade-off. Higher values of C focus on reducing training errors, potentially at the expense of generalizability, while lower values of C aim for better generalization, potentially at the expense of increased training errors.
+
+### **Handling Non-linear Data with Maximum Margin Classifier**
+
+Until now, all examples we have defined have been easily separable from a line. Take a look at Figure 9-11 (a); how can we use a maximum margin classifier and draw a hyperplane to classify it? To handle non-linear data, we must transform the feature space into quadratic (to the power of two), cubic (to the power of three), or higher-order polynomials. In other words, we need to increase the dimensionality of the data. Back in Chapter 6, we explained that dimensionality reduction is very useful, but in this particular scenario, we need to increase the dimension of the data to classify it. To our knowledge, this is the only place in machine learning where we increase the dimensionality.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_21_Figure_3.jpeg" alt="Figure" />
+
+Figure 9-11: (a) A sample dataset that has two different labels. (b) The maximal margin classifier can not handle the data in two dimensions, and you can see that the maximal margin classifier line can not separate the data. (c) After applying the kernel function and bringing the data into a higher dimension, a hyperplane can separate the blue from red dots.
+
+To implement such a high-dimensional transformation, we use the *Kernel* function. Therefore, the kernel function transforms a non-linear, inseparable dataset into a linear and separable dataset*.* For example, without applying a kernel function in Figure 9-11 (a), we can see that the maximal margin classifier lines cannot be classified as blue and red dots, as shown in Figure 9-10 (b). However, by transforming each data point into its polynomial degree, Figure 9-10 (c), we can project them in a higher dimensional space where blue and red dots can be separated with a linear hyperplane that acts as a border between red and blue dots. Imagine we draw a page (2D hyperplane) between red and blue dots, and this page separates them from each other.
+
+To summarize, SVM uses a computationally efficient kernel function that transforms the input dataset into non-linear higher-dimension data. In the next section, we describe some details about the kernel functions.
+
+### **Kernel Trick**
+
+As we have explained before, the kernel function is used by the SVM algorithm to create an extended representation of the data, and it *converts* a *non-linear separable dataset into a linear separable dataset*. In other words, we use the kernel function, which is a similarity calculation function, to bring our dataset into a higher dimensional space and thus make it separable with a linear hyperplane. After transforming the dataset into a higher dimensional space, the SVM can separate them with a linear hyperplane (see Figure 9-10).
+
+Assume we have a dataset X with each of its data points has two features  $x_1$  and  $x_2$ . Data points in this dataset do not have linear relations.  $\Phi(X)^4$  is a function that creates a representation of X in the higher dimensional space<sup>5</sup>, let's say, with two polynomial degree dimensions. Therefore, we can write the following:  $\Phi(X) = \{x_1, x_2, x_1^2, x_2^2, x_1x_2\}$ . A linear hyperplane might separate the dataset in this higher dimensional space. This means that from smaller dimensions, which were not linear, we transform the data to have higher dimensions, and data in the higher dimensional space have a higher chance of getting separated with a linear hyperplane.
+
+If the dataset's data points have many features, a simple second-degree polynomial transformation increases the number of features quadratically, i.e.,  $X^2$ . What happens if the algorithm still can not separate them? We can increase the degree of polynomiality. For example, using a third-degree polynomial will result in  $X^3$  features to process. For example, if we have 10 features and 3000 data points, we end up having  $10^3 \times 3000 = 3,000,000$  features to deal with, and this is computationally very inefficient or even infeasible. This shows that the polynomial transformation increases the computational complexity, and we need a more subtle approach to deal with this problem.
+
+Since transforming data into a higher dimension is computationally expensive, the kernel trick is used. SVM employs a kernel function to compute the similarity (or inner product) between data points directly in the original space, avoiding explicit transformation into a higher dimension. This kernel function is a similarity measure that facilitates the identification of patterns or structures in the data, particularly in SVM and other kernel-based algorithms. The process primarily involves labeled data in supervised learning to determine the decision boundary or classification rules.
+
+Computing the similarity between data points can be considered as a *dot product* in a high-dimensional feature space without explicitly mapping the data to this space. If you can't recall from math what is an inner product, assume we have two vectors a = [3,2,4] and b = [1,4,0], and we would like to compare them together. The inner product of a and b is written as  $a \cdot b = 3 \times 1 + 2 \times 4 + 4 \times 0 = 11$ . In particular, a kernel trick allows the comparison of two data points by converting the complex dot product in the high-dimensional space into a simpler calculation in the original input space. This is a good thing because instead of computing the dot
+
+ $<sup>^4 \</sup>phi$  is a greek letter and read it as 'fee' like feel.
+
+<sup>5</sup> There is a theory called the *Mercer theorem*. It states if there is a continuous function that is symmetric, i.e., F(x, y) = F(y, x), there is a function  $\phi$  that can bring F(x, y) into another dimension that can be represented as the inner product of  $\phi(x)^T$  and  $\phi(y)$ , i.e.,  $F(x, y) = \phi(x)^T$ .  $\phi(y)$ .
+
+product between high dimensional features, we can calculate a dot product in low dimensional space and raise it to the power of polynomials. For example, assume we have a labeled train-set  $X = \{x_1, x_2, x_3\}$  and we have an unlabeled test-set  $X' = \{x_1', x_2', x_3'\}$ . Two degrees of polynomiality transformation are  $\Phi(X) = \{x_1^2, x_1x_2, x_1x_3, x_2x_1, x_2^2, x_2x_3, x_3x_1, x_3x_2, x_3^2\}$  and  $\Phi(X') = \{x_1'^2, x_1'x_2', x_1'x_3', x_2'x_1', x_2'^2, x_2'x_3', x_3'x_1', x_3'x_2', x_3'^2\}$ . Now, we would like to compare  $\Phi(X)$  with  $\Phi(X')$  to label  $\Phi(X')$  set from  $\Phi(X)$  the labeled set. We can see that we have too many features to compare because, from a three-dimensional space, we moved into a nine-dimensional space.
+
+By using the kernel trick, we avoid the explicit computation of the dot product between  $\Phi(X)$  and  $\Phi(X')$ , in the transformed higher dimensional space. Instead, the kernel function calculates a value representing this dot product, but it does so based on the original data, i.e., X and X'. Therefore, we can write that  $K(X, X') = \langle \Phi(X), \Phi(X') \rangle$ .
+
+Let's summarize how a kernel trick works: To compute the similarity between two data points as if they were in a higher-dimensional space, the kernel function calculates a dot product (or another similarity measure) in the original, lower-dimensional space. This process simulates the comparison in the higher-dimensional space without explicitly performing the transformation, thus efficiently achieving the same result as if the data were compared in that higher-dimensional space.
+
+#### **Kernel Functions**
+
+Now we have understood the advantage of the kernel trick; congratulations, you have learned a secret in mathematics; if you think mathematicians' secrets are also very boring, we agree with you. There are several popular kernel functions used for SVM. The popular ones are listed as follows.
+
+*Linear kernel*: it is written as  $K(X, X') = X \cdot X'$ , which is a simple dot product of two vectors.
+
+*Polynomial kernel:* it is written as  $K(X, X') = (X \cdot X' + r)^p$ . Here, r presents the polynomial coefficient, and p presents the polynomial degree, which both are hyperparameters of the polynomial kernel function.
+
+Gaussian Radial Basis Function (RBF) kernel: RBF Kernel is written as follows:  $K(X, X') = exp(-\gamma || X - X' ||^2)$ . In this equation,  $\gamma$  is a hyperparameter that controls the spread and smoothness of the kernel. A higher  $\gamma$  leads to a narrower kernel, which responds more strongly to nearby data points and less to distant ones), and a lower  $\gamma$  responds more uniformly to nearby and distant data points.
+
+Sigmoid kernel: it is written as  $K(X, X') = tanh(\gamma X^T X' + r)$ . Here, r presents the polynomial coefficient and  $\gamma$  is a hyperparameter representing the curvedness of the separation area (similar to the Gaussian RBF kernel, tanh is a hyperbolic tangent function.
+
+RBF is the most common kernel function used for the SVM algorithm. Figure 9-12 shows an SVM algorithm run with three values for  $\gamma$ . Gaussian RBF kernel is a popular kernel function for SVM. Geron [Geron '19] states that  $\gamma$  acts as a regularization parameter. If the SVM model is
+
+overfitting, this means the decision boundary is too complex and closely fits the minor fluctuations in the training data. By decreasing the value of we might resolve it. If the model is underfitting, the decision boundary is too simple and cannot capture the complexity of the data. By increasing we can resolve the underfitting. *γ γ*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_24_Figure_1.jpeg" alt="Figure" />
+
+Figure 9-12: Different values for gamma of the RBF kernel function and their impact on the classification quality of the SVM. Setting gamma high improves the separation capability of the classifier, but setting gamma too high, like the most right figure makes the model prone to overfitting.
+
+Unless you would like to be a kernel function designer, you don't need to understand the mathematics behind any of these kernel methods, but it might be useful to know their equation. However, we heard from our students that a psycho-recruiter asked a poor candidate to describe Kernel equations at job interviews for data science.
+
+While using SVM, we can specify the kernel function as a parameter of the SVM algorithm and hyperparameters of the kernel function. A question might arise: How does the kernel function decide the polynomial degree, or how were polynomial parameters determined? By using the cross-validation the algorithm performs hyperparameter tuning, and some implementations automatically choose the best possible parameters for the selected kernel method. In other implementations, we should give the parameter as an input variable. Therefore, this depends on the SVM library or package we are using. It is better to start with a linear kernel, and as we have explained before, linear models are always favored over non-linear models because of their resource efficiency.
+
+### **Multi-label Classification for SVM**
+
+Binary classification is straightforward. But what if we want to use SVM to classify a dataset based on four labels, such as \{blue, red, green, orange\}? In this case, SVM can perform binary classification in a one-versus-all manner. This means the SVM will first classify blue against all other labels \{red, green, orange\}. Then, it will classify red against all other labels, followed by green against the rest, and finally orange against the others.
+
+In each iteration, each data point receives a label. For example, data point *x* might be classified as green in one iteration and as not orange, not blue, and not red in the others. Ultimately, *x* will receive the green label. This approach to handling multi-class classification is called one-versusall classification.
+
+### **How Does the SVM Perform the Prediction?**
+
+We have explained that SVM uses an optimizer to determine the support vector and hyperplane equation parameters. We have not explained how the optimizer works. Very briefly, a Lagrangian equation is constructed first, and then the optimizer solves the solution using Karush-Kuhn-Tucker (KKT) conditions. In particular, the Lagrangian function introduces multipliers ( $\alpha_i$ ) for each data point, which helps in transforming the problem into a form that can be solved using optimization techniques. The optimization problem is then solved using the Karush-Kuhn-Tucker (KKT) conditions, which provide the necessary conditions for a solution to be optimal. These conditions help find the support vectors and determine the coefficients of the hyperplane. Based on the quadratic optimizerthe following equation can be used to calculate , the maximal margin classifier.
+
+$$d(X') = \begin{cases} -1 &amp; if &amp; \sum_{i=1}^{l} y_i \alpha_i X_i X' + \beta_0 \le 0\\ 1 &amp; if &amp; \sum_{i=1}^{l} y_i \alpha_i X_i X' + \beta_0 > 0 \end{cases}$$
+
+In this equation,  $\alpha_i$  (the Lagrangian multiplier) and  $\beta_0$  (bias) parameters are determined by the optimizer.  $y_i$  is the class label of input data points  $X_i$  (training set), and X' is the test set. Therefore, the X' data points will be substituted into this equation, and the sign of the equation will determine which side of the hyperplane X' belongs (what label it receives).
+
+### **SVM** Computational Complexity
+
+Calculating the computational complexity of SVM is dependent on the optimization algorithm to identify the maximal margin classifier and the kernel method we choose to use for SVM. For example, for the training phase, the computational complexity depends on the optimization algorithm, which is a quadratic problem-solving that has  $O(n^3)$  complexity [Bordes '05]. For the testing phase, the computational complexity depends on the kernel method; assuming n presents the number of data points and m presents the number of features, linear kernel SVM has  $O(n \times m)$  computational complexity. Polynomial kernel SVM with p degree of the polynomial has  $O(n \times m^p)$ . Therefore, there is no constant complexity that we can report on SVM; it is one of the most accurate traditional classification algorithms, but it has a high computational complexity.
+
+#### NOTES:
+
+- \* Both kNN and SVM can handle nonlinear data structures, and when a dataset is small, they are good options for classification.
+- \* kNN is not good for higher dimensional data; SVM is particularly known for its effectiveness in high-dimensional spaces, even with a small number of samples.
+- \* SVM is sensitive about scaling, and scaling the data will result in a change in SVM behavior. Therefore, if your dataset changes frequently, be careful when using SVM.
+
+- \* The Support Vector Classifier (SVC) algorithm is the SVM that is used for classification. SVM alone can be used for both regression and classification.
+- \* If classes are highly overlapped, logistic regression is performing better than SVM. If they are well separated, SVM usually performs better than logistic regression. However, the best approach is to try many algorithms and observe which performs better or use ensemble learning methods, which we will explain later in this chapter.
+- \* If you remember, we discussed that if the optimization has a convex shape, local minima are the global minima as well. SVM parameter optimizations also use a convex shape function.
+- \* In comparison to other classification algorithms, the SVM algorithm is generally slow, but it is fairly robust against overfitting, which is a common problem in classification algorithms.

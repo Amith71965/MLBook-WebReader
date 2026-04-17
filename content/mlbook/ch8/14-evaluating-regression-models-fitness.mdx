@@ -1,0 +1,34 @@
+---
+chapter: "ch8"
+order: 14
+slug: "evaluating-regression-models-fitness"
+title: "Evaluating Regression Models Fitness"
+wordCount: 449
+---
+The output of softmax regression is *k* number of distinct classes. The output of logistic regression is a binary classification result, which could be 0 or 1; unlike linear and polynomial regression, there is no traditional residual exists to compute the accuracy.
+
+Logistic and softmax regression (classification) evaluation methods focus on assessing *how good is the model fits the data*. In this section, we list methods used to evaluate these regressions' results. Some of them are very important, not limited to regression methods, and will be used for other classification algorithms as well. Therefore, please tune your brain in full attention mode and learn them very carefully.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_30_Picture_9.jpeg" alt="Figure" />
+
+## *k***-fold cross-validation**
+
+The most popular approach to evaluate classification results is the use of *k*-fold cross-validation (check Chapter 1 if you can't recall it). To implement k-fold cross-validation, we should make *k* subsets of the dataset, one set will be used as testing, and the other *k-1* sets will be used as training. We redo this process *k* times, and in each iteration, we change the testing set to another subset. Then, we evaluate the accuracy of each iteration. Next, we take an average of these accuracies and report the final accuracy.
+
+The logistic regression has only two outputs for prediction and it could be written as the confusion matrix in Table 8.1. (left). The softmax regression has more than two predicted variables and its confusion matrix could be something like Table 8.1. (right), which has four possible outputs. We have explained confusion matrix back in Chapter 1.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_31_Figure_3.jpeg" alt="Figure" />
+
+|        |   | Predicted |   |    |   |  |
+|--------|---|-----------|---|----|---|--|
+|        |   | a         | b | c  | d |  |
+| Actual | a | 5         | 1 | 0  | 1 |  |
+|        | b | 1         | 7 | 2  | 3 |  |
+|        | c | 0         | 3 | 12 | 1 |  |
+|        | d | 2         | 2 | 1  | 6 |  |
+
+Table 8-1: (Left) Confusion matrix example for binary logistic regression. (Right) A confusion matrix example for more multi-logistic regression, such as softmax, which has four possible output variables.
+
+As we have explained in Chapter 1, some literature [Grus '19] and [Ng '18] recommend splitting datasets into three distinct sets including; 'training', 'validation', and 'test', instead of just two (training and test). The validation set is used for parameter tuning, feature selection, and
+
+more, facilitates the selection of the optimal model among various candidates or configurations. It's particularly crucial to ensure that the validation and test sets come from the same distribution to maintain the integrity of the model evaluation process.

@@ -1,0 +1,445 @@
+---
+chapter: "ch10"
+order: 6
+slug: "neural-network-optimizers"
+title: "Neural Network Optimizers"
+wordCount: 7279
+---
+Before starting to read this section, it is worth taking a look to Chapter 8 and reviewing the optimization section we have explained. In Chapter 8, we have explained that the cost function measures how far the true value is from the actual value. The optimizer's job is to reduce the cost. In other words, the goal of the optimizer is to increase the accuracy of the algorithm by changing the model parameters. In the context of the neural network algorithm, this will be achieved by minimizing the cost function through changing weight and biases. At the end of each epoch (each iteration on the dataset), the optimizer changes weights and biases in such a way that the loss score will be reduced in the next epoch. In other words, by adjusting weights and biases, the algorithm can reduce the loss score.
+
+Now, a question arises: What is the best combination of weights that increases the accuracy of the result? To answer this question, we can try every possible combination of weights and biases and see which one is the best. We have bad news; this is not possible. To understand why, let's assume we have a fully connected neural network that has one input layer with four neurons, two hidden layers, each with five neurons, and two output neurons. In this case, we will end up with weights to configure. Besides, each neuron in the hidden layers and output layer has its bias, so this adds five (for the first hidden layer) plus five (for the second hidden layer) plus two (for the output layer), which results in 12 biases. (4 × 5) + (5 × 5) + (5 × 2) = 55
+
+As we have explained, the algorithm starts by assigning a random weight. Let's say we limit the weight changes to a number that can vary between 0 to 100. Therefore, only to find the best weight configurations and not biases, we need to test possible combinations for experimenting and identify which combinations lead to the best minima. It is definitely not computationally possible, even with the strongest supercomputer in the world. Besides, note that neural network optimization is non-convex, and thus, it is very complex to identify good minima or global minima. 100<sup>67</sup>
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_21_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-12: (left) Using an optimization to reach the minima and therefore very few data points will be processed. (right) Not using an optimization and thus many data points will be experimented on the function to find the minima.
+
+We need a subtle approach to determine weights and biases. Take a look at Figure 10-12. Here, we have a very simple convex function. This figure presents the differences between using optimization and not using optimization to find the minima. By using blue dots in the right plot, we try to show that there are too many data points to experiment with, but in the left plot, there are few red dots, and instead of experimenting with any possible value, the algorithm can make some jumps toward the minima. This figure is a convex function, and we show it for the sake of simplicity; in the real world, it is much more complicated, and while working with neural networks, there is no convex shape.
+
+Therefore, instead of experimenting with all possible points on the curve, we can experiment with some random points on the function. We use a method such as Gradient Descent to determine the next point and skip some points that are not useful. In other words, from the current data point, we need to find (i) *direction* and (ii) *step size* toward reaching the global minima and avoid experimenting with every single data point. As we have explained in Chapter 8, Gradient Descent helps us to determine the direction by using the partial derivative, which is shown on the left plot in Figure 10-12. At each point, the Gradient Descent algorithm calculates
+
+the dervative, and if the gradient sign does not change, it means that it should take the next move in this direction to move toward minima. If the sign changes (from negative to positive), it means the gradient jump is too big, and it should take the next move in the opposite direction to reach the minimum.
+
+Figure 10-13 visualizes the behavior of the Gradient Descent based on the slope of the line. The *X-*axis in this figure presents a model parameter, and the *Y*-axis presents the cost of different values for the parameter. However, having constant size jumps is inefficient because if step sizes are small, it takes a long time to reach the minima, and if they are large, it might pass
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_22_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-13: Gradient Descent decides the direction of the next point to move toward minima.
+
+the minima. Also, if the jump is too big, the gradient sign will change. Therefore, a better approach is customizing the step size, and it is done through a *decaying learning rate*, which we will explain later.
+
+In Chapter 8, we explained three types of Gradient Descent, including SGD, BGD, and Mini BGD. Gradient Descent is the most popular optimization approach for neural network optimization, but it has some limitations. It can identify the direction of the movement, but it does not specify the step size. In this section, we introduce other optimization algorithms that use SGD, and mini BGD, and improve them.
+
+#### Stochastic Gradient Descent with Momentum
+
+Although mini batch Stochastic Gradient Descent (SGD) has some limitations, it is a very popular optimization algorithm used in deep learning as well. In Chapter 8, we have explained that, while using Gradient Descent, the next value for the parameter is calculated as follows:
+
+ $next\ point = current\ point - (learning\ rate \times slope\ (a\ derivative\ of\ that\ particular\ parameter)$ 
+
+Assuming  $w_{t+1}$  is the weight (or any other parameter 5) at the next epoch,  $w_t$  is the weight of the current epoch,  $\alpha$  is the *learning rate*, and  $\nabla G(.)$  is the vector of gradients. We estimate a value of  $w_{t+1}$  via the following equation:
+
+
+$$w_{t+1} = w_t - \alpha \cdot \nabla G(w_t)$$
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_23_Picture_5.jpeg" alt="Figure" />
+
+In simple words,  $\alpha$ .  $\nabla$   $G(w_t)$  specifies the amount of the move for the next step.
+
+There are two problems with SGD. First, we can see from the described equation that the direction is changing, but the step size is fixed. A fixed step size might trap the optimizer into a local minimum. Second, as seen in Figure 8-25 from Chapter 8, the noise of SGD is high due to its stochastic (random) behavior. This problem can be reduced by using an *exponentially* weighted average ( $\beta$ ). In other words, the exponentially weighted average introduces a *decay* coefficient to a series of numbers. Therefore, applying this exponentially weighted average
+
+<sup>5</sup> While reading text for optimization in the context of the neural networks, some literature refers to parameters as  $\theta$  or  $\beta$ , we use w to present weight. Nevertheless, bias b is also a parameter for the neural network. Besides, based on the literature, these parameter names change and we do comply with the name change to avoid confusing you while reading other resources as well.
+
+reduces the impact of older data points and, thus, the noise. This type of SGD is called SGD with momentum [Polyak '64]. In the following, first, we describe the exponentially weighted average, and then, we explain SGD with momentum.
+
+#### Exponentially Weighted Average
+
+Weight  $(\beta)$  is a number between 0 and 1, usually set to 0.9. Multiplying a number less than one to another number makes it smaller. For example, let's assume we set  $\beta=0.7$ , if we multiply  $\beta$  to something, the result value will be 70% of the original value. If we multiply  $\beta^2$  by a number, the result will be 49% of the original value, etc. To understand the mathematic intuition of exponentially weighted average, assume we have a sequence of numerical data, i.e.,  $\{s_1, s_2, \ldots s_n\}$ . Using a weighted average, we can have a sequence of transformed numerical data, i.e.,  $\{s_1', s_2', \ldots s_n'\}$  and each s' at position t is calculated as  $s_t' = \beta s_{t-1}' + (1-\beta)s_t$ .
+
+For example, three sequential data in the transformed sequence with a weighted average will be written as follows.
+
+$$s'_{t} = \beta s'_{t-1} + (1 - \beta) s_{t}$$
+
+$$s'_{t-1} = \beta s'_{t-2} + (1 - \beta) s_{t-1}$$
+
+$$s'_{t-2} = \beta s'_{t-3} + (1 - \beta) s_{t-2}$$
+
+Therefore, by combining these series and applying some mathematical simplification to them, we have the following:
+
+$$s'_{t} = \ldots + \beta \beta (1 - \beta) s_{t-2} + \beta (1 - \beta) s_{t-1} + (1 - \beta) s_{t}$$
+
+As the data gets older in the series, its impact on the equation gets smaller because more numbers of  $\beta$ s multiplied. Note that the previous sentence is true only for  $\beta$  between 0 and 1.
+
+That is enough to understand the impact of exponentially weighted average, and now we can switch back to the SGD with the momentum algorithm.
+
+#### SGD with Momentum
+
+SGD with momentum uses an exponentially weighted average to create a *velocity*. To understand velocity, assume we are rolling a ball inside the bowl shape function, and we intend to get the ball into global minima in Figure 10-14. The derivative of the ball specifies the acceleration of the moving ball, and momentums add to the velocity of the moving ball (*v* or *retained gradient*).
+
+Momentum ( $\eta$  or *momentum coefficient*) is used to increase the velocity of the optimization ball, and thus, it will be fast enough to jump out of the local minima and move toward global minima. In
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_24_Figure_12.jpeg" alt="Figure" />
+
+Figure 10-14: A ball with low velocity stuck in the local minima, but having high enough velocity can helps it jump out of local minima and move toward global minima.
+
+other words, momentum reduces the oscillation of the optimizer algorithm, and thus, it can reach the minima faster. The SGD with momentum algorithm is written as follows:
+
+```
+# velocity
+        # momentum coefficient
+          # learning rate
+                                 # e.g., converged in this context: loss &lt; 0.1
+Don't be afraid to see these equations inside an algorithm. They are very easy to understand.
+                        , means: 
+next_velocity = current_velocity×momentum + learning_rate× gradient
+Respectively , means: 
+next_weight = current_weight - learning rate × next_velocity
+vt = 0
+η = 0.9
+α = 0.01
+while (wt not converged ) {
+      vt+1 = vt . η + ▿G(wt)
+      wt+1 = wt − α . vt+1
+      vt = vt+1
+      t = t + 1
+}
+vt+1 = vt . η + α . ▿ G(wt)
+            wt+1 = wt − α . vt+1
+```
+
+You can see that current velocity, momentum, and learning rate are all hyperparameters, and they have been given by the user of the algorithm. Nevertheless, they usually have common predefined values, and the only hassle for the user is choosing the optimization method and calling it. For example, at the time of writing this chapter in 2021, in Keras[6,](#page-25-0) we only need to write the following for the model, and the SGD is the SGD with momentum.
+
+```
+model.compile(loss='categorical_crossentropy', optimizer='SGD')
+```
+
+if we need to give some parameter value, we use the following code in Tensorflow [:](#page-25-1) [7](#page-25-1)
+
+```
+tf.keras.optimizers.SGD(
+    learning_rate=0.01, momentum=0.0, nesterov=False, 
+name='SGD', **kwargs)
+In pytorch , it is written as follows: 8
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+```
+
+To summarize our explanation here, momentum increases the convergence speed toward global minima and also increases the chance of reaching local minima by introducing a velocity component.
+
+[<sup>6</sup>](#page-25-3) https://keras.io
+
+[<sup>7</sup>](#page-25-4) https://www.tensorflow.org
+
+[<sup>8</sup>](#page-25-5) https://pytorch.org
+
+### **Nesterov Momentum**
+
+Using momentum significantly improves the convergence speed of SGD. However, using classical SGD with momentum, the gradient is always moving toward the correct direction, but momentum may not necessarily move in the correct direction. Nesterov Accelerated Gradient (NAG) or Nesterov momentum [Nesterov '83] improves the next step, and if the momentum goes in the wrong direction, then the gradient can go in the correct direction.
+
+Take a look at Figure 10-15 to better understand the differences between the classical and Nesterov approach. In both examples, the momentum moves in the wrong direction, but in the Nesterov momentum, the gradient is started after the momentum, and thus, it moves more toward the correct direction. Therefore, the next data point is selected closer to the minima in the right figure.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_26_Picture_3.jpeg" alt="Figure" />
+
+Figure 10-15: (left) Classical momentum for calculating the next parameter, (right) Nesterov momentum is used to calculate the next parameter on cost function. The blue line presents a small part of the cost function, and each new *w* is moving toward minima.
+
+While using pure SGD, the next point on the cost function will be determined by the following equation:
+
+$$w_{t+1} = w_t - \alpha \cdot \nabla G(w_t)$$
+
+By using SGD with the momentum, the next point on the cost function will be determined as:
+
+$$w_{t+1} = w_t + v_{t+1} \cdot \eta - \alpha \cdot \nabla G(w_t)$$
+
+The Nesterov momentum calculates velocity and weight differently from classical momentum, and it uses the following equations to calculate them.
+
+$$v_{t+1} = v_t \cdot \eta - \alpha \cdot \nabla G(w_t + \eta v_t)$$
+
+$$w_{t+1} = w_t + v_{t+1} \cdot \eta$$
+
+Based on Figure 10-15 [Sutskever '13], we can see that by using Nesterov momentum, if the momentum goes in the wrong direction, the gradient has the chance to move in the correct direction, which results in faster convergence. It is a small difference, but it increases the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_27_Picture_0.jpeg" alt="Figure" />
+
+convergence speed, and in some cases, Nesterov momentum performs better than classical momentum.
+
+### **Adagrad**
+
+The neural network optimization deals with a cost function that is a non-convex shape because the neural network includes many weights and biases (model parameters or dimensions). Until now, we have assumed that the learning rate is constant. A constant learning rate, a hyperparameter given by the user, could not be useful for all scenarios and all types of networks.
+
+Experiments show that the learning rate in a multi-dimensional dataset (or features) in some dimensions (or features) is changing very fast, and in some dimensions (or features), it is changing very slowly. For example, usually, weights change more frequently than biases, which change less frequently. Therefore, employing separate learning rates for different types of parameters (e.g., one for weights and another for biases) can facilitate a more efficient approach to reaching the minimum of the cost function. It means a neural network could benefit from a dynamically changing learning rate that adapts its change pace to each feature.
+
+One of the practical algorithms that introduce a dynamically changing learning rate is Adagrad [Duchi '11]. The Adagrad algorithm adaptively scales the learning rate for each parameter. It adapts the learning rate by scaling them inversely proportional to the square root of the sum of their historical/previous squared values.
+
+We are sure you did not understand the previous sentence, so we explained it with the equation, which is easier to understand. Recall that SGD uses the following equation to estimate the next weight. . The learning rate (shown as ) is constant in all epochs of traditional SGD, but the Adagrad algorithm uses a *dynamic learning rate* that can change based on the magnitude of the target parameter gradients until the current time. *wt*+1 = *wt* − *α* . ▿ *G*(*wt*) *α*
+
+Assuming  $\alpha'$  is a learning rate for Adagrad, we can re-write the previous equation as  $w_{t+1} = w_t - \alpha_t'$ .  $\nabla G(w_t)$ . Here  $\alpha_t'$  is specified based on the previous epoch and previous weights. Therefore, we add a subscript as t, which presents the learning rate in t iteration (epoch). The value for  $\alpha_t'$  will be calculated as follows:
+
+$$\alpha_t' = \frac{\eta}{\sqrt{G_t + \epsilon}}$$
+
+In this equation,  $\epsilon$  is used to be sure the denominator will never be zero, and it is recommended to set it to  $10^{-8}$ , which is an extremely small number.  $\eta$  is a constant value, and we can use a small value, such as 0.001.  $G_t$  is the variable that is performing the magic. It is the sum of squares of all previous gradients up to the current t, as it is calculated by using the following equation.
+
+$$G_t = \sum_{i=1}^t \nabla G(w_i)^2$$
+
+In other words,  $G_t$  enables Adagrad to reduce the impact of parameters with large gradients (features that are frequent in the dataset) and increases the impact of parameters with low gradients (features that are not frequent in the dataset). Because the denominator part of the equation  $(G_t)$  will be large for small gradients and small for large gradients. Recall that in primary school, we learned that having a large denominator makes the number small and vice versa.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_28_Figure_5.jpeg" alt="Figure" />
+
+Figure 10-16: Adagrad parameter calculation equations.
+
+To get an overview, take a look at Figure 10-16, which shows the described equation in this figure. If you still don't get the point, let's substitute the equation with some number and see the result. Assume we have a frequent feature  $(f_1)$  and its  $G_t = 3.46$  and another less frequent feature  $(f_2)$  that its  $G_t = 0.16$ .
+
+$$\alpha_t'(f_1) = \frac{0.01}{\sqrt{3.46 + 10^{-8}}} = \frac{0.01}{1.86} = 0.005$$
+
+and
+
+$$\alpha'_t(f_2) = \frac{0.01}{\sqrt{0.16 + 10^{-8}}} = \frac{0.01}{0.4} = 0.025$$
+
+By comparing 0.005 and 0.025 we can realize the magic that Adagrad does is based on the sum of previous gradients of a parameter.
+
+Adagrad works well when the dataset is sparse, which means some features include lots of zeros, and those features do not frequently appear in the dataset. For example, constructing a bag-ofwords (Chapter 6) creates a sparse dataset of terms, and to process a bag-of-words with a deep learning algorithm, it is recommended to use Adagard as an optimizer.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_29_Picture_3.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_29_Picture_4.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_29_Picture_5.jpeg" alt="Figure" />
+
+To summarize this algorithm, make some space in your brain about Adagrad and write the following there: Adagrad reduces the focus on the parameter that is always happening by decreasing their learning rate and allows parameters that with of zeros (sparse features) to have a larger learning rate*.*
+
+There is an optimized version of Adagrad, called Adadelta [Zeiler '12] and it restricts the number of past gradients to a specific window size, which is given by the user as a hyperparameter. It is late night now, and the author doesn't have the energy to explain Adadelta.
+
+### **RMSprop**
+
+RMSprop (Root Mean Square propagation) is an optimization algorithm and introduced by Hinton [Hinton '12], one of the pioneers of deep learning in his online course . Similar to [9](#page-29-0) Adagrad, RMSprop focuses on mitigating the challenge of having gradients of different sizes (too large or too small). RMSprop builds on top of the *Rprop* [Riedmiller '93], in which Rprop uses (i) the sign of gradient and (ii) adapting the step size to each gradient. To understand the RMSprop, we need to understand the Rprop first.
+
+Rprop first checks the sign of two consecutive gradients. If the sign has been changed (similar to the two red dots in Figure 10-13), it means the jump was too large, and thus, the minima have
+
+[<sup>9</sup>](#page-29-1) Interestingly they did not publish any scientific paper about RMSprop
+
+been passed and not reached. In the next step, it decreases the jump size by multiplying it by a number less than 1, e.g.  $\eta^- = 0.5$ . If the sign has not been changed in two consecutive gradients, the jump is correct, and we are moving in the correct direction. Therefore, the step size will increase by multiplying it by a number larger than 1, e.g.,  $\eta^+ = 1.2$ . For example, if  $\nabla G(w_t) = -1$  and  $\nabla G(w_{t+1}) = -2$ , it means the algorithm is moving in the correct direction, and step size can increase, and it calculates the next weight as follows:  $w_{t+1} = w_t + \eta^+ \nabla G(w_t) = 1.2$ .
+
+Rprop is very good when we have a small dataset. As soon as the dataset gets large, we should go for mini batch Gradient Descent (mini BGD), and Rprop cannot handle mini BGD properly. For example, we have five mini-batches, whose gradients are as follows: -0.4, -0.3, -0.25, -0.2, -0.14, -0.1, 0.7, and 0.9. Here, Rprop increases the weight six times and decreases it only once from (-0.1 to 0.7). This means that instead of RProp coefficients canceling each other, the weights grow larger despite insignificant changes in gradient.
+
+Instead, RMSProp performs a small improvement on the Rprop to resolve it. RMSProp benefits from using Rprop decision based on sign, but additionally, it can handle the issue existing in mini batches. RMSprop is similar to Adagard with slight differences. While using Adagrad, the next weight will be determined by the following equation:
+
+$$w_{t+1} = w_t - \frac{\eta}{\sqrt{G_t + \epsilon}} \cdot \nabla G(w_t)$$
+
+While using RMSprop, the next weight will be determined by the following equation:
+
+$$w_{t+1} = w_t - \frac{\eta}{\sqrt{E[G_t^2] + \epsilon}} \triangledown G(w_t)$$
+
+In this equation  $E[G_t^2]$  presents the squared of exponentially weighted average gradient and is calculated as follows:  $E[G_t^2] = \beta E(G_{t-1}^2) + (1-\beta) \nabla G(w_t)^2$ .
+
+ $\beta$  is the exponentially weighted average parameter that is assigned by the user, and it is usually 0.9.  $\nabla G(w_t)$  (the gradient of the cost function with respect to  $w_t$ ),  $\eta = 0.01$  and  $\epsilon = 10^{-8}$  are similar to Adam's equation and hyperparameters, but they usually have default values.
+
+In summary, RMSprop divides the learning rate by an exponentially decaying average of squared gradient and benefits from the sign-based decision of Rprop.
+
+### **Adam**
+
+Adam (adaptive Gradient Descent) [Kingma '14] is another popular optimization algorithm that combines the advantages of both SGD with momentum and RMSprop. It operates by taking large jumps at the beginning, and as the slope gets closer to zero, it starts to take smaller jumps.
+
+Adam introduces two  $\beta$  parameters  $(\beta_1, \beta_2)$ , which are used to *control the decay rate* of exponentially weighted averages of the (i) gradient (used in momentum) and (ii) squared gradients (used in RMSProp).
+
+The following algorithm describes Adam. While reading this algorithm, note the # sign is used for commenting and is written in blue.
+
+```
+\alpha = 0.001, \beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8} while \ (w_t \quad not \quad converged) \ \{ g_t = \nabla G(w_t) m_t = \beta_1 . m_{t-1} + (1-\beta_1)g_t \quad \text{#first moment estimate (momentum)} v_t = \beta_2 . v_{t-1} + (1-\beta_2)g_t^2 \quad \text{#second moment estimate (RMSProp)} \hat{m}_t = \frac{m_t}{1-\beta_1^t} \quad \text{# corrected first moment estimate} \hat{v}_t = \frac{v_t}{1-\beta_2^t} \quad \text{# corrected second moment estimate} w_t = w_{t-1} - \alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon} \}
+```
+
+In this algorithm,  $m_t$  presents the first moment estimate (to support the functionality of momentum) and  $v_t$  presents the second moment estimate (to support the functionality of RMSProp).  $\beta_1^t$  and  $\beta_2^t$  mean  $\beta_1, \beta_2$  to the power of t. Other hyperparameter values were recommended by the authors of the Adam algorithm. We can see that a squared gradient is used to scale the learning rate like RMSprop, and a moving average of the gradient is used instead of the gradient itself, as it is done in SGD with momentum.
+
+There is not much to explain about Adam, and it seems that in the golden era of Gradient optimizer algorithms (approximately from 2012 to 2015), authors of these algorithms, with small changes, made a big improvement in algorithm accuracy.
+
+### **Optimizers Summary**
+
+Congratulations! Now, you are an optimizer expert and know these mathematical definitions. Since this section was very exciting, has no theoretical discussion and mathematics, and is full of real-world examples, let's do a summary before you completely fall asleep.
+
+SGD will change the model parameter per sample data point, which is too frequent, and this could cause a lot of oscillation on the optimizer. To handle this problem, we can use mini-BGD, which updates mode parameters after a few samples. Nevertheless, still, a few examples could change the model parameters, and this leads to being stuck in a local minima. Therefore, we use classical momentum to reduce this noise.
+
+Since the noise is reduced with classical momentum, the optimizer could make a wrong move and get away from minima, and the Nesterov momentum can mitigate this challenge by introducing an acceleration term into the model parameter. In simple words, if momentum makes the optimizer too fast, the Nesterov momentum slows it down. With these approaches, the learning rate for all model parameters is the same, but Adagrad and RMSprop use a history of the gradient to find a different learning rate for each model parameter.
+
+Adagrad tunes the learning rate per model parameter, which makes it a good choice for sparse datasets. RMSProp also tunes the learning rate per model parameter, which makes it a good choice for noisy data and non-stationary data (check Chapter 8 to recall the meaning of nonstationary time series).
+
+RMSprop and Adagrad do not update the momentum, Adam updates the momentum (in addition to the learning rate) for each model parameter as well [.](#page-32-0) [10](#page-32-0)
+
+Only 150 more optimizers remaining that you can learn on your own [Schmidt '20]. All jokes aside, it was the madness of making better optimizers, and many students are struggling to make impactful optimizers. For example, add a decaying coefficient on the momentum parameter as well, called demon (decaying momentum) DemonAdam [Chen '19], or develop an automatic tuning approach for the momentum, such as YellowFin [Zhang '17]. We skip to explain them, and you really don't need to learn them unless you want to research optimizers.
+
+#### NOTE:
+
+- \* There is no best optimizer that can perform perfectly in all problems. However, some background knowledge might be helpful to decide about the optimizer. There are some platforms used to benchmark different optimizers, such as DeepOBS [Schneider '19], which is open source [,](#page-32-1) and you can install and use them to decide on the optimizer based on your [11](#page-32-1) dataset.
+- \* If you have a mathematic or algorithmic background and love this topic, invest in making a good optimizer that is not based on Gradient Descent; think about it twice. To date, many optimization algorithms, especially genetic algorithms, have been proposed, and none have been as good as the Gradient Descent ones. You can search online and see that an optimizer algorithm has been developed for every single animal or insect on this planet. However, gradient descent algorithms are performing better than any other algorithm, but there might be an opportunity to explore and identify a new one. At the time of writing this part in 2021, genetic algorithms lost badly the optimization war to gradient descent ones.
+- \* Convex optimization problems are easier to solve than non-convex problems. If a concave problem can be reformulated into an equivalent convex problem, it may enable the use of more efficient convex optimization algorithms.
+
+Alec Radford has an amazing visualization of some of these optimizers in a gif file and we highly recommend you to check his [10](#page-32-2) animation, here: https://imgur.com/a/Hqolp.
+
+[https://deepobs.readthedocs.io/en/stable/index.html](https://deepobs.readthedocs.io/en/stable/index.html)[11](#page-32-3)
+
+### Backpropagation
+
+The Backpropagation (Backprop) algorithm was introduced in 1960 [Kelley '60, Bryson '62], and later, in 1986, it was generalized and popularized by [Rumelhart '86]. At the time of writing this part, it is the backbone of deep learning. It is not a complex algorithm to understand, and we will try our best to explain it clearly here, so do not worry if you don't understand it the first time. Try reading this section more than once. Backpropagation is nothing more than applying a chain rule on the neural network neurons to change weights to reduce the loss score.
+
+We have explained that the objective of the cost function is to change weight and biases toward improving the output's accuracy (reducing the loss score) and thus making a better prediction. How does the neural network change weight and biases to improve its accuracy? Starting from the output, it *goes back* to the network after each epoch and then reconfigures weight and biases to reduce the loss score.
+
+Before beginning the Backpropagation explanation, take a look at Figure 10-17 (a). We did not add hidden layers for the sake of simplicity. In this Figure, we have two input neurons and one output neuron. The output of this network provides a loss score, i.e., error. The next epoch should reduce this error by changing the weights  $w_1$  and  $w_2$  values. Now, the question is, which one of these input nodes contributes to the error: input A or input B, or both?
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_33_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-17: (a) Very simple network with two input and one output. (b) Based on the weight of each node in the previous layer, the contribution of each node to the output has been identified.
+
+We could say both A and B contribute to the error, but the amount of their contributions is estimated based on their weights. In other words, neurons' contributions to the error will be measured by their weights. For example, in Figure 10-17 (a), the contribution of input neuron A
+
+to the error can be calculated as  $\frac{0.3}{0.3 + 0.6} = 0.33$  and the contribution of input neuron *B* will be calculated as  $\frac{0.6}{0.3 + 0.6} = 0.66$ .
+
+Figure 10-17 (b) presents the contribution of each neuron to the error (based on their weight) in red color. We can see in Figure 10-17 (a) that we have used weights to forward the signal to the output layer, this process is referred to as the *forward step*. Next, after the output error has been identified, a neural network uses the weight to *propagate* back the signal from the output layer to the input layer, as shown in Figure 10-17 (b). This process is called *Backpropagation* or *Backprop*. To summarize, the Backprop algorithm splits the error of output neurons across the previous neurons proportional to the incoming weights to this neuron.
+
+Note that while the Backpropagation algorithm is propagating back the error, input values do not change, and the only thing that will be changed is the weights used in the hidden layers. In this example, for the sake of simplicity, we show only two neurons and hidden layers are not separated from input layers. The network of Figure 10-17 is too simple, and we can extend the described approach to hidden layers as well.
+
+The Backpropagation algorithm assumes the *error in a neuron (hidden or output) is the sum of the splits errors in all other previous nodes linked to this neuron*. For example, the blue lines in Figure 10-18 visualize the propagation of the error from the blue output neuron to the first layer
+
+neurons. If there is more than one hidden layer (as the case in Figure 10-18), the errors of hidden layers split again proportional across all previous links between input and hidden layers connected to that particular neuron.
+
+The weights of all links are known, and with the same mathematical approach, we can calculate the contribution of each input neuron to the output's neuron error. If you believe it helps you to understand the Backpropagation better, take some pen and paper, assign random weights to each node and a random error to the end node, then try to calculate each node's contribution to the error until you reach an input layer.
+
+In summary, the Backpropagation, specifies the contribution of each neuron to
+
+input layer hidden layers output layer
+
+Figure 10-18: Propagation of error from the blue output neuron to the input neurons is shown in blue color.
+
+the error, and in the next epoch, weights will be changed to reduce the output error.
+
+To implement Backpropagation, matrix multiplication is used<sup>12</sup>. Therefore, the errors of layer n could be written as a matrix  $(e_n)$ , which is the multiplication of the transpose of weight matrix  $(w^T)$  time matrix of errors for the next layer  $(e_{n+1})$ , as follows:  $e_n = w_{n+1}^T \cdot e_{n+1}$ 
+
+For example, we have a simple network like Figure 10-19, the output layer errors are  $e \ out_1$ ,  $e \ out_2$ , which are specified at the end of each epoch, and thus, the errors of the hidden layer  $(e_h)$  can be calculated as follows:
+
+$$e_h = \begin{bmatrix} e &amp; h1 \\ e &amp; h2 \end{bmatrix} = \begin{bmatrix} w_1^{(2)} &amp; w_2^{(2)} \\ w_3^{(2)} &amp; w_4^{(2)} \end{bmatrix} \times \begin{bmatrix} e &amp; out_1 \\ e &amp; out_2 \end{bmatrix}$$
+
+Respectively, errors of the input  $(e_{in})$  layer are calculated as follows:
+
+$$e_{in} = \begin{bmatrix} e &amp; in1 \\ e &amp; in2 \end{bmatrix} = \begin{bmatrix} w_1^{(1)} &amp; w_2^{(1)} \\ w_3^{(1)} &amp; w_4^{(1)} \end{bmatrix} \times \begin{bmatrix} e &amp; h_1 \\ e &amp; h_2 \end{bmatrix}$$
+
+We have learned that the Backpropagation error is presented and calculated as matrix multiplication. Now, that big fat question arises again: How do we update weights to reduce the error (loss score)?
+
+By looking at Figure 10-18, we can see many neurons are connected to a single output. Therefore, it is not a trivial mathematical process to identify a better weight assignment for the next epoch. We need to go deeper into mathematical explanation, but first, we should review some conventions and concepts.
+
+The output of the neuron in the first layer is written as z = wx + b. Here x is the input, but in the other neurons after the input layer, we do not have x. Instead of input neuron data, we only have the output of the activation function. Therefore, we refer to the neuron output as z. In other words,  $z^{(l)}$  is defined by
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_35_Figure_8.jpeg" alt="Figure" />
+
+Figure 10-19: A simple neural network with one hidden layer.
+
+weight and biases at level *l* for the given input that comes from the previous layer.
+
+In the context of a neural network, the predicted value presents the *activation function result* in layer l of neuron number j, which is presented as  $a_j^{(l)}$ . We can generalize it (removing layer and node information) and write it as  $a = \sigma(z)$ , here, z presents the output of the previous layer,  $\sigma$  presents the activation function, and thus we can say  $z^{(l)} = w^{(l)}a^{(l-1)} + b^{(l)}$ . For example, if we
+
+<sup>12</sup> Matrix multiplication is also implemented with inner loops, but this is very resource-intensive. There are other approaches that make it more efficient to implement it, and if somebody discovers a new matrix multiplication the resources used by GPU will be drastically reduced.
+
+refer to the very last layer of the network as L, and for the last layer we have  $z^{(L)} = w^{(L)}a^{(L-1)} + b^{(L)}$ , we know that  $a^{(L)} = \sigma(z^{(L)})$ .
+
+We have explained that error = predicted - actual. Assuming the actual value of neuron j is presented as  $y_j$ , and the error is presented as E we can write the following equation for an error of neuron j and the last layer (output layer) L:  $E_j^{(L)} = a_j^{(L)} - y_j$  also note that  $\hat{y}_j = a_j^{(L)}$ . We consider them as a matrix (generalizing it), and thus remove the jth parameter, and end up with  $E^{(L)} = a^{(L)} - y_j$ , to calculate the error matrix in the last layer L.
+
+We hope you recall from Chapter 8 the partial derivative concept. To recall that, check Figure 10-20, which presents a concept called *Computation Graph*. It is used to visualize the chain rule with a partial derivative. Assume we have y = g(f(x)), and by using the chain rule, we can present the partial derivate of y over x, as follows:
+
+$$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial g} \times \frac{\partial g}{\partial f} \times \frac{\partial f}{\partial x}$$
+
+Now that we have learned enough conventions and concepts let's get back to what we need to understand for Backpropagation. We should understand *how* much loss score (or error) changes as weight and biases change. Or how sensitive is the loss score to changes in w and b?
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_36_Figure_5.jpeg" alt="Figure" />
+
+Figure 10-20: a very simple computation graph for a nested function y = g(f(x))
+
+We can write the error equation as a partial
+
+derivative (check Chapter 8 to recall partial derivative) of the error to the weight at layer l, i.e.,  $\frac{\partial E}{\partial w^{(l)}}$ . In other words, we are calculating the error with respect to the weights at layer l. Based on the mathematical notation we have described above, and by using the "chain rule" of derivative (again, say our hello to Chapter 8), we can rewrite  $\frac{\partial E}{\partial w^{(l)}}$  with the partial derivative as follows:
+
+$$\frac{\partial E}{\partial w^{(l)}} = \frac{\partial E}{\partial a^{(l)}} \times \frac{\partial a^{(l)}}{\partial z^{(l)}} \times \frac{\partial z^{(l)}}{\partial w^{(l)}}$$
+
+If you take a look at Figure 10-20, this equation seems easy to understand. It just applies chain rules and simply uses z and a to find how sensitive the loss score (E) is to changes in weight (w).
+
+However, in this equation, we only considered weights; for biases, we can use the same equation as follows:
+
+$$\frac{\partial E}{\partial b^{(l)}} = \frac{\partial E}{\partial a^{(l)}} \times \frac{\partial a^{(l)}}{\partial z^{(l)}} \times \frac{\partial z^{(l)}}{\partial b^{(l)}}$$
+
+By using a Hadamard product (it is denoted with o sign and you can check Chapter 7 to recall it), these two equations will be written for one single layer, and we can do this for the entire network. These equations use gradients to go back through the network and adjust weight and biases to minimize the output error at the output layer. By output error, we mean a vector of errors (or loss score).
+
+Assuming our network has L layers and the training dataset has m data points, the following pseudocode describes the Backpropagation algorithm. While reading this algorithm, note that the # sign is used for commenting and is written in blue.
+
+```
+#----Step 1 (initialing parameters)-
+# This step initializes the learning rate, weights, and biases, and also, the
+threshold for stopping criteria will be specified.
+initialize w, b, \alpha &amp; stop criteria # \alpha is learning rate
+for i = 1 to m  f m is the number of data points in the training set
+    #----Step 2 (forward propagation)-----
+   This step computes the activation for all layers.
+   \it a is the predicted value extracted from the activation function and \it x is
+    the input variable.
+   for j = 1 to L  { # L is the number of layers
+       if (j=1) then a^{(1)}=x^{(i)} # Since the activation function does not exist at
+              the first layer, which is the input layer, at this layer z = wx + b
+              and a^{(1)} is the input.
+        else a^{(j)} = \sigma(z^j) # Now there is no x available (because we are talking
+              about layer 2 and other layers) for each layer, the algorithm
+              computes z and a, recall that z^{l} = w^{l}a^{l-1} + b^{l}
+   # -----Step 3 (Calculate error vectors)-----
+   E^{(L)}=a^{(L)}-y^{(i)} # In the last layer, we know y, which is the actual output.
+   for k = (L-1) to 2 {# this loop computes other error vectors (E^{(L-1)}, E^{(L-2)}, \dots E^{(2)})
+   for other layers (except the last one) until it reaches layer 2, there is
+   no error for layer 1, because the input layer does not have an error.
+        E^{(k)} = (w^{(k+1)})^T \times E^{k+1} \odot \sigma'(z^{(k)}) \# \odot \text{ presents a Hadamard product of two}
+        matrices. (w^{(k+1)})^T is the transpose of weights for the next layer (to
+        prepare them for matrix operation, they are transposed). \sigma'(z^{(\bar{k})}) is a
+        vector of derivatives of activation function results at layer k.
+        \odot \sigma'(z^{(k)}) moves the error backward through the activation function in
+        layer k.
+   }
+   #---- Step 4 (compute gradients and update weight and biases) -----
+   # This step computes partial derivation of the gradient with respect to
+   weight and biases.
+   for all (w and b) {
+       w_{new}^{(l)} = w_{old}^{(l)} - \alpha \frac{\partial E}{\partial w_{old}^{(l)}} \# \frac{\partial E}{\partial w_{old}^{(l)}} is the partial gradient of the cost function
+       result (loss score) with respect to w. At the first run, we assume it
+```
+
+is 0. This gradient will be acquired using the chained rule of partial derivative.
+
+```
+b_{new}^{(l)} = b_{old}^{(l)} - \alpha \frac{\partial E}{\partial b_{old}^{(l)}} \# \frac{\partial E}{\partial b_{old}^{(l)}} \text{ is a partial gradient of the cost function} result (loss score) result with respect to b. At the first run we assume it is 0.
+```
+
+ $}$  # closes 'for i = 1 to m' loop
+
+\}
+
+We can see that the partial gradients with respect to weights and biases are computed using the chain rule. The loss score is calculated by using a cost function. For example, a cost function could be binary cross entropy,  $\hat{y}$  is the predicted and y is the actual value; the loss score after one pass on the network will be calculated as follows:
+
+$$Loss = -[y log(\hat{y}) + (1 - y)log(1 - \hat{y})]$$
+
+For the sake of simplicity, we did not incorporate regularization in step 4, but regularization can be involved as well.
+
+We can summarize that a neural network is a chain of differentiable functions. Differentiable functions mean we can get a derivative of it, and the parameters of these functions can be trained. The process of training involves computing the gradient of network parameters (for each batch) with respect to the cost value (for each batch). Therefore, we can say a neural network is a combination of nested functions,  $F(X) = f_1(f_2(f_3(x)))$ , each of the f functions could be a vector function  $f_l(Z) = a(xw + b)$ , a is the activation function, l is the layer index, and it could span from 1 to any number of layers. More about this will be explained later in the Backpropagation section.
+
+### Forward and Backward Pass Example
+
+Some might better understand the forward and backward pass on the network with mathematical examples. If you find it too complex, feel free to skip this section.
+
+Consider a forward pass starting from  $x_0$  as input and three layers with activation function  $\sigma_R$  we can formalize the forward pass f follows  $f(x_0; w) = \sigma_R(w_3, \sigma_R(w_2, \sigma_R(w_1x_0 + b_1) + b_2) + b_3)$ .
+
+To perform the backward pass and compute the gradients, the Backpropagation algorithm uses the chain rule of differentiation. It starts by computing the gradient of the loss with respect to the output of the network:
+
+ $\nabla f = \nabla \sigma_R(w_3 \cdot \sigma_R(w_2 \cdot \sigma_R(w_1x_0 + b_1) + b_2) + b_3)$  where  $\nabla$  denotes the gradient and  $\sigma_R$  is the activation function.
+
+Next, it applies the chain rule to compute the gradient of the loss with respect to the parameters of the last layer:
+
+$$\nabla w_3 = (\nabla f) \cdot \sigma_R'(w_3 \cdot \sigma_R(w_2 \cdot \sigma_R(w_1 x_0 + b_1) + b_2) + b_3) \cdot \sigma_R(w_2 \cdot \sigma_R(w_1 x_0 + b_1) + b_2)$$
+
+$$\nabla b_3 = (\nabla f) \cdot \sigma_R'(w_3 \cdot \sigma_R(w_2 \cdot \sigma_R(w_1 x_0 + b_1) + b_2) + b_3)$$
+
+Here  $\sigma_R'$  is the derivative of the activation function. Next, it uses the chain rule again to compute the gradient of the loss with respect to the parameters of the second layer:
+
+$$\nabla b_2 = (\nabla f) \cdot \sigma_R'(w_3 \cdot \sigma_R(w_2 \cdot \sigma_R(w_1 x_0 + b_1) + b_2) + b_3) \cdot w_3 \cdot \sigma_R'(w_2 \cdot \sigma_R(w_1 x_0 + b_1) + b_2)$$
+
+Finally, it computes the gradient of the loss with respect to the parameters of the first layer:
+
+$$\nabla w_1 = (\nabla f) \cdot \sigma_R'(w_3 \cdot \sigma_R(w_2 \cdot \sigma_R(w_1x_0 + b_1) + b_2) + b_3) \cdot w_3 \cdot \sigma_R'(w_2 \cdot \sigma_R(w_1x_0 + b_1) + b_2) \\ \cdot w_2 \cdot \sigma_R'(w_1x_0 + b_1) \cdot x_0$$
+
+$$\nabla b_1 = (\nabla f) \cdot \sigma_R'(w_3 \cdot \sigma_R(w_2 \cdot \sigma_R(w_1x_0 + b_1) + b_2) + b_3) \cdot w_3 \cdot \sigma_R'(w_2 \cdot \sigma_R(w_1x_0 + b_1) + b_2) \\ \cdot w_2 \cdot \sigma_R'(w_1x_0 + b_1)$$

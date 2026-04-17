@@ -1,0 +1,70 @@
+---
+chapter: "ch10"
+order: 3
+slug: "artificial-neural-network"
+title: "Artificial Neural Network"
+wordCount: 1917
+---
+The concept of the first digital neuron, that is inspired by biological neurons, was proposed by McCulloch and Pitts in 1943 and is known as the MCP neuron [McCulloch '43], and it is known as the MCP neuron. Nevertheless, it was too limited, and thus it is not used anymore. Later, the Perceptron algorithm was created in 1958 [Rosenblatt '58], and it is the simplest artificial neural network (ANN).
+
+Figure 10-5 shows a simplified biological neuron and a simple artificial neuron known as a perceptron. Intuitively, we can observe and realize the similarity of the perceptron to the biological neuron. An artificial neuron is a mathematical model with a set of inputs (similar to biological dendrites); each input is associated with a weight and a bias as parameters of a neuron, similar to regression parameters ( ) we have described in Chapter 8. Thus, we can write them as . Then, a function called the activation function is applied and sends the result to the output. Activation function could be written as *a,* and thus, we have . A neuron outpu[t](#page-4-0) can be written as . [2](#page-4-0) *βs x*1*w*<sup>1</sup> + *x*2*w*<sup>2</sup> + . … + *b a*(*x*1*w*<sup>1</sup> + *x*2*w*<sup>2</sup> + . …) *y* = *a*(*w*1*x*<sup>1</sup> + *w*2*x*<sup>2</sup> + . . . )
+
+**Weight:** We have explained that each signal inside a biological neuronal network could have a different amplitude (e.g., micro-voltage), and these will be simulated in artificial neurons by weights. To better understand the need for weight, consider the prediction error, written as *error = predicted value - actual value.* If the *error* is non-zero, the perceptron algorithm changes the *w*  of input variables and redoes the process to reduce the prediction error. Weights are very similar to coefficients in regressions, as we explained in Chapter 8.
+
+You might think it is nothing that multi-linear regression inside an activation function; that is correct a simple [2](#page-4-1) artificial neuron (perceptron) can be interpreted as a multi-linear regression inside an activation function.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_5_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-5: (left) a biological neuron, (right) a simple perceptron which its architecture is inspired by biological neuron.
+
+Usually, weights are initialized with a random value, e.g., 0.1 to 0.9. There are different weight initialization methods (at random, with all zeroes, with small values close to zero, and so forth), and the user should decide on the weight. In other words, initial weights could be considered hyperparameters. Increasing the weight increases the complexity of the network, and thus, it is better to keep weights small. Usually, weights are initialized close to zero values or randomly assigned, but there are other approaches that we will explain later in this chapter.
+
+**Bias**: Similar to linear regression, which has a constant value, each neuron also has a bias, presented as *b*. Weights adjust the strength of the connections between neurons. Biases, on the other hand, adjust the output of a neuron before it is passed through the activation function.
+
+**Activation function:** It is a function that receives the sum of weighted inputs and calculates a threshold value (take a look at Figure 10-4). Based on the result of the threshold value, the activation function decides the output value. This function could be linear or non-linear. Linear here means that a hyperplane exists to model with an algebraic equation, and this hyperplane can classify the dataset (separate data points). However, non-linear activation functions such as the Sigmoid function (Check Chapter 8 for explanation about Sigmoid) are more popular. There are different choices for activation functions, which we will describe later.
+
+We could say that an artificial neuron is nothing more than linear regression and that its result is fed into an activation function, i.e., , and the activation function imposes nonlinearity on this linear regression. *y* = *a*(*wx* + *b*)
+
+A neural Network is a set of connected neurons in which the output of its neurons is the input of other neurons, see Figure 10-6. All neural networks have three layers: input, hidden, and output.
+
+**Input layer:** The input layer is the input variable(s) we feed into the neural network. Often, each feature is presented as one input neuron. For example, a table with 10 numerical columns will have 10 input neurons, and they are independent variables, e.g., one row of a table presents one set of input, and each row is composed of *n* columns (features). Therefore, the input layer has *n* features (one neuron for each feature). Besides, remember that the only input type we can use for
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_6_Picture_0.jpeg" alt="Figure" />
+
+Figure 10-6: A simple presentation of neural network and its layers. You can realize it is also look a like Figure 10-2 but with artificial signal.
+
+the neural network is *numeric,* and other data types, such as text, image, audio, etc., should be converted into numeric data types. For example, pixel data from images can be scaled (e.g., between 0 and 1), standardized, and then fed into a neural network, or words (in a textual format) should be converted into a vector of numbers and then fed into the neural network.
+
+**Hidden layers:** They are layers that are located between the input layer and the output layer. The simplest neural network has one neuron as a hidden layer. Deep learning algorithms have two or more hidden layers, and because of that, they are called *deep neural networks*. Hidden layers are connected and construct the neural network, along with input and output layers. Each layer is responsible for transforming the received data for the next layer. Since they transform the data and different from the known input or output, we cannot interpret hidden layers. Therefore, deep neural networks are *black box* models. In other words, a layer takes the input as a set of tensors *[3](#page-6-0)* (Check Chapter 1 to recall tensors), and the output of each layer is also a set of tensors, which is a numerical dataset. However, we can not interpret the tensor transformations between hidden layers.
+
+**Output layer:** It presents the result of the neural network model. Similar to the input, the output of a neural network is also a number, i.e., tensor, which we can convert back into its original value by decoding.
+
+Three common technical tasks could be done with an artificial neural network: binary classification, multi-class classification, and scalar regression. Therefore, the type and number of neurons in the output layer depend on the problem we intend to solve. A regression neural network can have one single neuron as the output layer. A binary classification neural network
+
+There are methods for interpreting the hidden layers, such as activation maps, feature visualization, etc. We [3](#page-6-1) describe in Chapter 16, briefly some common tools for data interpretation.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_7_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-7: Artificial Neural Network flow of operation. The output value will be analyzed by the cost function and the loss score is calculated, then based on the loss score, the optimizer reconfigure weights of the neural network.
+
+can have a single output, which provides zero or one or a probability. The result is determined from the probability, e.g., less than 0.5 is zero, and larger than 0.5 is one. A multi-class classification neural network has multiple output neurons.
+
+Now that we have learned the neurons and layers of the neural network let's discuss the objective of a neural network algorithm. The objective of a neural network is to assign a correct label to the unlabelled data or make predictions or decisions based on the input data. This objective will be achieved by assigning proper values to weights and biases, testing the network, then reconfiguring weights and biases, and reevaluating the network. This process occurs in several epochs until the neural network provides satisfactory accuracy or a maximum number of iterations is reached.
+
+**Cost (objective) function:** To measure neural network accuracy, we measure how different the machine-assigned labels (predicted values) are from the correct labels (actual values). This will be identified by the cost (objective) function. We have described the cost function in Chapter 8, and use that definition here as well. To review: the cost function is used to measure loss in the neural network. The neural network algorithm identifies a loss score for the output layer. Then, after each iteration, it reconfigures the network's weights and biases to reduce the loss score.
+
+**Optimizer:**It is the algorithm that is responsible for reconfiguring the network's weights and biases, such as SGD, which we have explained in Chapter 8. In other words, the optimizer uses the loss value to update weights in the network and thus reduces the loss value for the next round (epoch).
+
+Based on this explanation, a neural network has three core components: *hidden layers*, *cost function***,** and the *optimizer algorithm*. Figure 10-7 describes the process of how a neural network works and its components. The design of this figure was inspired by an excellent explanation provided in Chollet's book [Chollet '18].
+
+Learning in the context of a neural network means finding weights and biases that minimize the cost function result (cost score) for the given dataset. Updating the weights toward improving the accuracy of the neural network is the task of the optimizer. The process of changing weight and calculating the cost continues iteratively until the number of specified epochs reaches the neural network. We have explained in Chapter 8 that epoch refers to one round of scanning the dataset, and it is usually given to the neural network by the user as a hyperparameter.
+
+Now, we understand that a neural network algorithm assigns the weights, runs the network, measures the cost, and then updates the weights to reduce costs via optimizer.
+
+#### NOTE:
+
+- \* It is uncommon to report the computational complexity of neural network algorithms anymore because they are known to be very complex and require lots of resources, especially for training them.
+- \* The format of data that is transferred between layers in the neural network is a tensor, and a tensor is a multidimensional array of numbers (scalar is a 0D tensor, a vector is a 1D tensor, a matrix is a 2D tensor, and Rank 3 tensor is 3D tensor). For example, an image could be a 3D tensor (x, y coordinates, and one value for color channel, i.e., RGB value), or a video could be a 5D tensor (images' data plus the timestamp of each frame, and audio wave of each frame).
+- \* A neural network does not feed all members of the training dataset once into the network; it either feeds input data one by one or a set of input data as mini-batches into the neural network.
+- \* The neural networks' input and output variables present the same observation, but the output has a label assigned to the same information.
+- \* We can say a single neuron network is nothing more than a linear regression ( , but here we use *b* and *w* instead of and ) that its output will be fed into an activation function. Therefore, the input will be a value for , the neural network assigned , and to that identify a *y*. This *y* will be fed into an activation function, and the result will be the output. Therefore, considering the content of the bracket is what is happening inside a neuron, we can formalize a single-neuron network as follows: *y* = *β*<sup>0</sup> *x* + *β*<sup>1</sup> *β*<sup>0</sup> *β*<sup>1</sup> *x w b x* (*input*) → [*z* = *wx* + *b* → *σ* (*z*)] → *y*(*out put*)

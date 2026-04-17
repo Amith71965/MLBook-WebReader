@@ -1,0 +1,59 @@
+---
+chapter: "ch8"
+order: 26
+slug: "gradient-descent"
+title: "Gradient Descent"
+wordCount: 1195
+---
+Gradient descent is a first-order iterative optimization algorithm that focuses on *minimizing a function by moving its direction toward the steepest descent* (negative of gradient). We will explain Gradient descent in 2D space, which is easier to understand. Previously, we have explained that an optimization problem is the process of finding a good minima that is close to global minima. Now, assume we have a function, and we would like to optimize it, i.e., finding minima close to the global minimum. We knew from the previous section that the gradients of minimum points are zero. Also, the more we move forward toward the minimum point, the closer the gradient gets to zero. Thus, it gets a random data point and calculates its derivative (slope). Then, based on the slope value, another jump toward minima is made.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_58_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-24: A gradient descent approach step by step in a non-convex cost function.
+
+For example, look at Figure 8-24, which presents the cost of an imaginary function based on its model parameter. At the beginning of Figure 8-25 (a), a random point (red dot) is chosen on the function. Next, the optimization algorithm makes a jump, and another point is chosen on the function, as it has been shown in Figure 8-24 (b). Nevertheless, the sign of the derivative of the new point is changed, and this shows that the jump was too big. Thus, the optimization function discards this jump and makes another jump, but smaller, as shown in Figure 8-24 (c), and calculates its steepness. Since the absolute value of the derivative is smaller than the previous point, the algorithm realized that it was a correct jump toward minima. As the derivative of selected points gets closer to zero, the next jumps will get smaller, which means the function is close to a minima. This approach is adaptive step size computation, which is a commonly used policy optimizer. With enough repetitions, the gradient descent function can identify a good minima, which is close to the global minima or could be itself the global minima.
+
+Gradient descent stops either (i) a specific threshold (maximum epoch) reaches, or (ii) the step size gets very small (derivative gets too small and close to zero), which means we reach the minima.
+
+Now, a question might arise: why do we not take the step at the beginning small enough to avoid jumps like Figure 8-24 (b)? The answer is that although taking small steps makes the minima identification more accurate, it makes the gradient calculation process very time-consuming as well.
+
+As another example, let's take a look at a surface plot in Figure 8-25, which shows a cost function of a linear regression model for both and . We can observe this simple surface [8](#page-58-0) plot has one minimum. To calculate the gradient descent, the first random point will be chosen, let's say ( ). This figure shows that the first jumps are large (the size of the green line between two red dots), then they get smaller and smaller as the gradient descent function moves toward the minimum point (which in this case is global minima, but in complex real-world problems, the cost function is usually not convex and therefore it is not that simple). *β*<sup>0</sup> *β*<sup>1</sup> *β*<sup>0</sup> = 0, *β*<sup>1</sup> = 0, *RSME* = 1000
+
+The visualization provided in this figure is adapted from the code provided at [https://github.com/dolittle007/](https://github.com/dolittle007/am207_2018/blob/master/wiki/gradientdescent.md) [8](#page-58-1) [am207\\_2018/blob/master/wiki/gradientdescent.md](https://github.com/dolittle007/am207_2018/blob/master/wiki/gradientdescent.md)
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_59_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-25: Visualization of step sizes of the gradient descent in green line. Each step starts with a red dot and stops in the next red dot. You can see that step sizes are getting smaller as we move toward the global minima in this convex function.
+
+These step sizes were calculated by a parameter called *learning rate* times *slope* of that particular point for each parameter:
+
+*next point = current point - (learning rate slope (a derivative of that particular parameter).*  ×
+
+In particular, the learning rate specifies the step in each iteration*.* A learning rate is usually not constant, and it is given as a hyperparameter. Usually, the gradient descent algorithm starts with a small learning rate of 0.001 and improves it as they experiment more with the dataset. Learning rate, , is a hyperparameter of gradient descent algorithm. *α*
+
+To summarize this discussion, we can take the following five steps to calculate the Gradient Descent as follows:
+
+- (1) The objective is to select a cost function for the given parameter values. For example, we chose to calculate RMSE for the given and . *β*<sup>0</sup> *β*<sup>1</sup>
+- (2) A random value for each parameter will be selected and the cost for these parameters will be calculated.
+- (3) If the model has only one parameter, then its derivative, otherwise gradient, which gives us the slope of this particular cost value (from step 2) will be calculated.
+- (4) The algorithm calculates the next data point by using the following equation: . As the new data point will be specified, the algorithm uses this data point. The slope is equal to the cost function's gradient at the current point. Assuming the is the learning rate, we can write the next point will be calculated as follows: *new point* = *current point* − *lear ning rate* × *slope α*
+
+$$x_{t+1} = x_t - \alpha_t \cdot \nabla f(x_t)$$
+
+(5) The optimization algorithm checks whether a given threshold for iteration has been reached or the slope size of this new data point is zero (it means we reach the minima), or both values are converged ( $\beta_0$  and  $\beta_1$ ) and not changing anymore. If none of these two conditions were true, then again it goes to step 3 and continues to step 4 and then 5. Otherwise, it stops.
+
+We should be careful with setting the threshold as well. If it is too small, we might never reach a good minima, and if it is too large, it could consume too much of our resources to find a good minima. Each time one training set is analyzed we say one epoch passed.
+
+As a formalized example, let's say the linear regression has the following equation:  $y = \beta_0 x + \beta_1$ . We intend to use the Sum of Squared Residuals (SSR) error as a cost function.
+
+We do not know the values for  $\beta$ s and both parameters should be identified to minimize the, which is written as  $l = \sum_{i=1}^{n} (\hat{y}_i - (\beta_0 + \beta_1 x_i))^2$ .
+
+Gradient descent starts with calculating a partial derivative for every parameter, based on the chain rule:
+
+$$\frac{\partial l}{\partial \beta_0} = -2(\hat{y}_i - (\beta_0 + \beta_1 x_i)) \text{ and } \frac{\partial l}{\partial \beta_1} = -2x_i(\hat{y}_i - (\beta_0 + \beta_1 x_i))$$
+
+Instead of SSR we can use RMSE (Quadratic cost function) or other cost functions as well, including cross-entropy cost, which is used for classification, and its equation is written as follows:
+
+$$l = -\sum_{j} (\hat{y}_{j} log(y_{j}) + (1 - \hat{y}_{j}) log(1 - y_{j}))$$
+
+Gradient descent can use other cost functions which have been described (in Chapter 3 and Chapter 6), and we will learn more about other cost functions in upcoming chapters.

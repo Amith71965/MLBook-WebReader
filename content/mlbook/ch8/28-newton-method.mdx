@@ -1,0 +1,55 @@
+---
+chapter: "ch8"
+order: 28
+slug: "newton-method"
+title: "Newton Method"
+wordCount: 754
+---
+Gradient descent algorithms and other first-order iterative algorithms (first-order means using the first-order derivative) can determine the direction toward a minima (good local or global). However, a limitation of first-order optimization algorithms is that they cannot determine the right step size. Gradient descent depends on a learning rate, and we describe how to identify the learning rate later in Chapter 10. Besides, the step size is a parameter that should be given to gradient descent algorithms. Nevertheless, it is still the best algorithm used for optimization, and no other algorithm can provide a better result than Gradient Descent.
+
+Second-order optimization algorithms, i.e. Newton, is another iterative method that allows us to determine the *'*approximate step size' toward a minima.
+
+Gradient descent uses the derivative at a randomly chosen point to determine the direction o f t h e s t e e p e s t d e s c e n t , effectively moving opposite to the gradient. On the other hand, Newton's method approximates the function by a parabol[a](#page-63-0) at [10](#page-63-0) the current point, leveraging both the first and second derivatives, see Figure 8-27. This approximation is helpful
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_63_Figure_6.jpeg" alt="Figure" />
+
+Figure 8-27: The differences between Gradient Descent and Newton method
+
+A symmetric bowl-shaped curve is called a parabola. [10](#page-63-1)
+
+because it allows the method to find the zero of the derivative more accurately by considering the curvature of the function, which is reflected in the second derivative.
+
+Since a parabola is either convex or concave, depending on its coefficients, it generally presents a clear path to a minima or maxima when it is convex. As is shown in Figure 8-28 after three iteration Newton method gets into the minima. In Newton's method, the minimum of the approximating parabola can be found at the vertex, which is derived from the roots of the first derivative using the second derivative for refinement. The newly identified x-coordinate of this vertex becomes the next point in the iterative search for a minimum.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_64_Figure_2.jpeg" alt="Figure" />
+
+Figure 8-28: Newton method optimization example. We can see with a few steps, the global minima will be identified. Nevertheless, for the sake of simplicity, we assume the optimization function as a convex function.
+
+To understand this concept, we go a bit deeper into its mathematical concepts. Assuming the current point is  $x_t$  how did we calculate the next point,  $x_t + 1$  in gradient descent? If you remember, we use this equation:
+
+$$x_{t+1} = x_t - \alpha_t \cdot \nabla f(x_t)$$
+
+Based on the Taylor series, a (quadratic) approximation function can be used to define the Newton method. Here, f(x) is the quadratic approximation, and with the Taylor series we can write it as follows:
+
+$$f(x) = f(x^{(k)}) + (x - x^{(k)}) \cdot f'(x^{(k)}) + \frac{(x - x^{(k)})^2}{2} \cdot f''(x^{(k)}) + \dots$$
+
+To calculate the next point, instead of using the slope, we substitute the target point with the Hessian matrix of that point. Therefore, we will have:
+
+$$x_{t+1} = x_t - Hessian^{-1}$$
+. Gradient
+
+Or we can write it as follows:
+
+$$x_{t+1} = x_t - [\nabla^2 f(x_t)]^{-1} \cdot \nabla f(x_t)$$
+
+ represents the Hessian matrix at , which is the matrix of second-order partial derivatives. Similar to previous examples, for the sake of simplicity, we explain the univariate form of a function. ∇<sup>2</sup> *f*(*xt*) *xt*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_65_Figure_1.jpeg" alt="Figure" />
+
+Figure 8-29: Newton method optimization example. We can see in Figure (c) that the parabola falls outside, and thus, minima will not be identified. This is a common problem that occurs a lot if we only rely on Newton's method.
+
+The major problem with Newton method is its complexity of computing second-order derivative. Besides, sometimes the cost function is fairly flat, and the parabola takes a too large step that falls outside the function. This is another drawback of the Newton method. For example, look at Figure 8-29, in which we can see the parabola is too large for the mimina of the function. Therefore, the Newton method works when we are close to the minimum.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_65_Picture_4.jpeg" alt="Figure" />
+
+Some suggest using gradient descent, and when we get close to the minima, we can take some Newton steps to jump earlier toward the minima. Nevertheless, we do not see Newton's method implemented in modern algorithms because of its huge computational cost. Even algorithms that must deal with second-order optimization, such as TRPO and PPO (we will describe them in Chapter 13), use a trick to simulate Newton's method because constructing a Hessian matrix is computationally very expensive.
