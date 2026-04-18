@@ -1,0 +1,40 @@
+---
+chapter: "ch3"
+order: 11
+slug: "normalization"
+title: "Normalization"
+wordCount: 744
+---
+While working with data in different ranges, we should make them comparable by adjusting values on different scales to a relevant scale. Besides, if the data are on large scales, it is better to scale them down for the machine learning algorithm while maintaining their characteristics, e.g., bring them into a smaller number range. These processes are referred to as normalization.
+
+To better understand the need for normalization, consider the following scenario that describes the need to bring data into a common scale. Mr. Foo is a wise CEO of a giant corporation. Recently, his corporation faced new challenges in sales that require lots of new resources to solve. It means he should consider hiring more data scientists and machine learning engineers for his data science division. However, similar to other super-riches, he loves to keep his money for himself and not spend it on new hiring. On the other hand, it is essential to have a robust solution for these new issues.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_36_Figure_1.jpeg" alt="Figure" />
+
+He looks at other businesses and finds a wise way to get a cheap workforce to solve his problems. He plans to launch a competition in his corporation, and data scientists worldwide can compete to see which group can solve his problem most efficiently. As a reward, they will receive a certificate of success from the Foo Enterprise, which is very prestigious for their CV, a few thousand dollars, and a T-shirt. With these over-generous gifts, Mr. Foo saves millions, and instead of hiring new staff, he launches a data science competition every year.
+
+One secret of Mr. Foo's success is to show off himself as a very fair entrepreneur and respect diversity. Therefore, he mandates competitors to build teams, including international data scientists. There is a problem in evaluating participants, who are primarily juniors. The only way to judge their qualifications is through their university grades. The grading system is different around the world. In China and the US, it is based on alphabets, e.g., A, B, C. In India, it is ranked from 100 (best) to 0 (worst); in Germany, it is ranked from 1 (best) to 5 (failed); in Iran, it is ranked from 20 (best) to 0 (worst), and so forth.
+
+There should be a way to show all these grades into a unique score so that participants' qualifications can be easily compared together. The process of such a grade scale transformation to a common score is normalization.
+
+# **z-score**
+
+One of the known standard approaches to normalizing numerical values is using the *z-score* or *standard score*. The z-score is calculated for each data point, and the difference from the mean is divided by the standard deviation. Note that each data point in the dataset has a single z-score, and there is no z-score for the entire dataset.
+
+Mr. Foo's competition administrator can use the z-score to transform the participants' grades into a number that enables them to compare them with different measurement systems.
+
+When we transform all data points of a dataset to their z-score, the mean of the new z-score is always 0, and the standard deviation is always 1. Often, a normalization (z-score or other normalization) tries to transform the data between the range 0 and 1 or -1 and 1.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_37_Figure_4.jpeg" alt="Figure" />
+
+z-score is useful when we must compare two different distributions (e.g., one is a normal distribution, but the other is not). We can transform them both into z-scores to be able to compare them.
+
+If we plot the z-score normalized data points, we will encounter a specific kind of normal distribution called *z-distribution* . A z-distribution is a normal distribution with a mean of zero [6](#page-37-0) and a standard deviation of one (Recall that distributions are shown with mean, variance, and other parameters).
+
+There is another distribution similar to the z-distribution with similar characteristics called the *tdistribution*. It is bell-shaped and symmetric, similar to z-distribution. However, it is shorter than the z-distribution, and its curve is flattened, as shown in Figure 3-23. The t-distribution is used to study the mean of a population if the dataset is normally distributed.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_37_Figure_8.jpeg" alt="Figure" />
+
+Figure 3-23: t-distribution and standard z-distribution, t-distribution is always flatter than the normal distribution.
+
+You might ask why we explain normalization so late, because we would be sure that you understand the concept of distribution, [6](#page-37-1) then we are able to describe normalizations. Otherwise, you didn't know what z-distribution or t-distribution means.

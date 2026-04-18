@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# colab — commit notebook + README, ignore downloaded extraction artifacts
+colab/output/
+colab/*.zip
+.ipynb_checkpoints/
+
+# local PDF extraction artifacts (regenerated from colab notebook)
+tmp/
+.venv/

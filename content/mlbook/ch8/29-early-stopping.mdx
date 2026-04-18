@@ -1,0 +1,32 @@
+---
+chapter: "ch8"
+order: 29
+slug: "early-stopping"
+title: "Early Stopping"
+wordCount: 531
+---
+In optimization algorithms such as gradient descent or Newton, the epoch number should be given by the user as a hyperparameter. Usually, in each epoch, the error is reduced until a threshold is reached, and then again, it starts to increase; see Figure 8-30. When such a thing happens, to preserve resources, it is better to force the model to stop its optimization and not go until the maximum number of iterations. It means that before all the requested number of epochs finishes when the error rate starts to get higher, we should stop; this phenomenon is called *early stopping*. An increase in the error rate is a sign of overfitting on the training data, and the algorithm passes the minima. Most implementations of the gradient descent objective function enable the user to specify having or not having an early stopping as a hyperparameter.
+
+Figure 8-30 visualizes the need for early stopping; the more epoch encounters by the algorithm,
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_66_Figure_3.jpeg" alt="Figure" />
+
+Figure 8-30: Increasing the number of iterations decreases the error until epoch 60, then the error starts to increase. This is where it is recommended to enable the algorithm stops by implementing "early stopping".
+
+the error gets reduced until epoch number 60, in which the error starts to increase. A few iterations later, the algorithm should spot this and stop at epoch 60. This is called early stopping, and it can be categorized as a regularization method.
+
+#### NOTE:
+
+- \* The minima data point is where the gradient is zero, but a zero-gradient does not imply necessary optimality.
+- \* Inflection points are when the curve of the function goes from downward to upward or vice versa. Where the derivative is zero, but there are not necessarily local or global minima points. Figure 8-31 presents some examples of inflection points that are not minima or maxima.
+- \* According to Geron [Geron '19], a model is composed of a set of features, and while using gradient descent, we should ensure that all features have a similar scale.
+
+- \* Gradient descent for linear regression easily gets to the global minima because the cost function of linear regression is a convex function and it has a bowl shape. Therefore, there is no challenge of being stuck in local minima, never reaching global minima, etc.
+- \* SGD is good for non-convex cost functions and reduces the chance of getting stuck in local minima.
+- \* Gradient descent optimization algorithms assume the training dataset data objects are independent and identically distributed (i.i.d). Therefore, to ensure they are not used by the algorithm in any sorted or ordered approach, shuffling the dataset before feeding it into the gradient descent algorithm is recommended.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_67_Figure_3.jpeg" alt="Figure" />
+
+Figure 8-31: Some examples of inflicting points. At the inflicting point, the curve direction changes from upward to downward or vice versa.
+
+\* Gradient descent is a type of *hill climbing* algorithm, a popular optimization algorithm. However, gradient descent uses the slope in the local neighbors and then chooses the point with the steepest slope; hill climbing uses a cost function in the local neighbors and chooses the point with the lowest cost score.

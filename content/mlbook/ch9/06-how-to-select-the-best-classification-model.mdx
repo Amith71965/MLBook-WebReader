@@ -1,0 +1,10 @@
+---
+chapter: "ch9"
+order: 6
+slug: "how-to-select-the-best-classification-model"
+title: "How to Select the Best Classification Model?"
+wordCount: 271
+---
+We have learned several classification algorithms in this chapter and logistic regression in the previous chapter. Now, assume we have experimented with a set of algorithms, and then we would like to decide which models perform better. The first approach that can be used for model selection relies solely on the model's accuracy. In particular, by comparing the cost (falsenegative, false-positive) with the benefit (true-positive, true-negative) or using the ROC curve of different models (check Chapter 8 to recall what the ROC curve is) or other evaluation metrics. What if the accuracy differences appeared by chance? To have a better estimate of whether there is a real difference between the two models, we should use the *significance test* (check Chapter 3 if you can't recall). For example, we performed a 10-fold cross-validation, and it resulted in ten different error rates, one for each model. We can use the t-test to compare the mean and variance of these error rates set (each model has 10 error rates) and check whether there is a significant difference between the error rates of these models.
+
+Nevertheless, sometimes the accuracy is not as important as execution time. Thus, execution time is another parameter to decide about a model from a set of models. For applications that require making decisions in real-time and close to the real-time execution time, it plays a crucial role. In some cases, we are dealing with limited resources, such as algorithms that run on any battery-powered devices, from fitness trackers to electric vehicles; in these cases, resource utilization of the algorithm also plays a crucial role in deciding the best classification model.

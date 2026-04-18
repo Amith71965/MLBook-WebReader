@@ -1,0 +1,71 @@
+---
+chapter: "ch3"
+order: 14
+slug: "bias-in-sampling"
+title: "Bias in Sampling"
+wordCount: 1320
+---
+An incorrect sampling causes an unforgivable sin, which is called *bias. Bias in statistics refers to a systematic error that skews results and leads to inaccurate conclusions*. This can arise from various sources, including how data is collected, processed, or analyzed. In the sampling context, bias occurs when the sampling method systematically favors certain outcomes, leading to samples that do not accurately represent the whole population.
+
+Bias can be unintentional due to methodological errors and intentional, where data is manipulated to achieve a desired outcome. Ensuring random and representative sampling is one of the key ways to minimize sampling bias. More about bias and methods used to mitigate bias will be explained in Chapter 16.
+
+### **Confidence Interval**
+
+The analysis we perform on a sample is an estimate of the population (entire dataset). In other words, we work with an estimate of the dataset and not the entire dataset. We are not sure about the accuracy of this estimate and how close the sample is to the population. In short, we should find a way to check: *How good is our estimate?* 
+
+Two approaches are used to measure the correctness of sample data: *confidence interval* and *significant test*. To gain a better understanding of the accuracy of our sample, we use *Confidence Interval (CI)* [Neyman '37]. A CI provides a range of values within which the correct population parameter (like a mean or standard deviation) is likely to fall. It gives an estimate of the uncertainty surrounding a sample statistic. In other words, CI is presented as a range, and it is used to identify the *interval* or a *range of values* from the sample to estimate the chance of whether our sample reflects the data in the population.
+
+CI is operated based on a *confidence level*. The confidence level is the probability (in percentage) that the population's mean falls within the given interval. In simple words, if we make a sample dataset, a certain percentage of the sampled data points (confidence level) will contain the mean equal to the original dataset (population) mean.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_40_Figure_5.jpeg" alt="Figure" />
+
+Figure 3-25: Confidence Interval, which shows a range marked with a and b. In this figure 95% of data located between a and b.
+
+The confidence level usually is 90%, 95%, or 99%. There are other levels as well, but 95% is the most commonly used value for confidence level in computer science. In biology and other fields, it might be different. In the rest of this book, if we talk about confidence level, we mean 95% .
+
+Figure 3-25 presents the distribution of the sample dataset. The area between points 'a' and 'b' includes the data from the population with 95% percentage of accuracy. Here, accuracy is defined as the mean of data in the interval is equal to the mean of the population. Therefore, we can say 95% of the data from the population are in a range between 'a' and 'b'. Since we don't know the mean of the entire population, we can use our sample dataset and estimate the range for the mean of the population, i.e., between 'a' and 'b'. In other words, between 'a' and 'b' is a range that is called a confidence interval. 'a' is referred to as the lower bound, and 'b' is referred to as the upper bound.
+
+The larger the size of the sample dataset, the smaller the width of the confidence interval, which means the sample dataset provides a more precise estimate of the population parameter. In the ideal case, assuming the sample size is equal to the population size, the confidence interval becomes extremely small, approaching zero, and both 'a' and 'b' overlap on the . *X*¯
+
+Let's repeat again: it is hard to identify the mean of the entire population. Otherwise, we don't perform sampling from the dataset, and we use the entire population (original dataset). If the sample size has a normal distribution, CI is calculated based on the mean of the "sample" with the following equation:
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_41_Figure_4.jpeg" alt="Figure" />
+
+| Desired Confidence Interval<br/>(Confidence Level) | Z-score |
+|---------------------------------------------------|---------|
+| 90%                                               | 1.65    |
+| 95%                                               | 1.96    |
+| 99%                                               | 2.58    |
+|                                                   |         |
+
+Table 3-4: Conventional z-score for confidence interval calculation.
+
+*Z* is a constant value or z-score associated with the CI, and we get its value from Table 3-4. We do not describe how it gets calculated, and you don't need to learn it. Remember, the confidence interval expresses the range of population mean; it means it quantifies the margin of error. The is called the *margin of error*. In other words, CI is nothing more than a statistic variable that is mean plus/minus margin of error. *Z*(*σ* / *n*)
+
+It is essential to understand the concept of a confidence interval. Most programming languages include math libraries that can easily calculate it, just as they do for other statistical formulas. Here, we present the equation to give you insight into how it's derived. We believe there's no need to memorize equations—save your valuable brainpower for understanding concepts and algorithms, which are numerous enough on their own.
+
+To understand the usage of the confidence interval in a real-world scenario, consider the following example. The insect farmer we introduced earlier would need you to quantify the quality of his edible bugs, but he can't identify the average weight of his bugs.
+
+They have different sizes and weights. Can you help him? Yes, of course, you can do this excellent humanitarian work for social good and save our planet while leaving corporations to continue their money-making businesses.
+
+As the first step, you go to his farm and collect 30 of those lovely edible bugs. Then, you calculate the mean weight of these 30 bugs, i.e., 3.2 grams, and the standard deviation, i.e., 2.7 grams of the 30 insects. Next, you calculate the CI by the described formula. Based on a 95% confidence level, we can say the mean of his insect is between 2.234 and 4.166. Then, you show this to the farmer, and he answers you: "*It is too vague; the difference between 2.2 and 4.1 highly deviates.*"
+
+How can you resolve this by increasing the sample size and thus reducing the confidence interval until it is convincing for him? You go to the farm and collect more bugs. Now, you collect 50 bugs, and based on a 95% confidence level, the mean of their weight will be between 2.9 and 3.4. Then, the farmer is convinced and happy because he knows the average weight of his bugs is in this range.
+
+Based on the confidence interval, we can estimate the number of samples we require. The equation to estimate *n* is as follows:
+
+$$n \ge \left(\frac{Z.\sigma}{Margin \quad of \quad Error}\right)^2$$
+
+For instance, if we decide on confidence, e.g., 95% with a z-score of 1.96 (see Table 3-3). Then, we use a small sample set to identify the standard deviation. Yes, we are sampling to estimate the correct sample size, and it seems weird. Also, we should provide our desired margin of error. The
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_42_Picture_9.jpeg" alt="Figure" />
+
+result of this equation will be rounded up, and the correct number of samples will be shown for the given margin of error, standard deviation, and confidence level.
+
+For instance, we would like to know the optimal weight of a bug at the farm, with a CI of 90% (Z=1.65), and we don't want the margin of error to be more than 0.5 grams. We sample 10 bugs and compute the standard deviation as 1.8. Therefore, using the above equation, we can say that the number of samples should be as follows:
+
+$$(\frac{1.6 \times 1.8}{0.5})^2 = 33.17$$
+
+This means at least 33 bugs should be sampled.
+
+Usually, the more we sample, the larger the confidence interval until, at a point, it does not get larger. This is due to the *Law of Large Numbers (LLN)*.

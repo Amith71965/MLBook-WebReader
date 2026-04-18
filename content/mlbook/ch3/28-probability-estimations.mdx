@@ -1,0 +1,18 @@
+---
+chapter: "ch3"
+order: 28
+slug: "probability-estimations"
+title: "Probability Estimations"
+wordCount: 199
+---
+A large part of the modern artificial intelligence community is dedicated to self-supervised learning algorithms. Many generative models use self-supervised learning. We describe generative models in Chapter 11 briefly; generative models aim to learn the distribution of the data. They can generate new data instances that resemble the training data. Many generative models start with estimating (guessing) the probability of data. Then, compute the error of their guess and later refine their guess based on the error.
+
+There is a baseline method to estimate the probability of data, i.e., *Maximum Likelihood Estimation (MLE)*, and a very common approach to implement it is *Expectation Maximization (EM)*.
+
+Before we explain the details of the MLE approach, we describe two concepts of MLE: *probability* and *likelihood*.
+
+*Probability* means what is the chance of observing *X* in the given sample dataset.
+
+*Likelihood* means, given the observed subset X of a dataset, what are the best distribution parameters (e.g., mean, variance, …) that fit the given dataset?
+
+In simple words, probability is a measure of how likely is (likelihood) an event will occur. On the other hand, the likelihood measures how well a particular set of data points fits a specific model or hypothesis.

@@ -1,0 +1,44 @@
+---
+chapter: "ch8"
+order: 30
+slug: "summary"
+title: "Summary"
+wordCount: 745
+---
+Supervised learning involves regression and classification. In this chapter, we have explained regression algorithms. First, we introduced some concepts, including objective function, epoch, and batch. The objective function is used to maximize or minimize cost model parameters. The cost function is an objective function that tries to minimize a variable. The loss function is similar to the cost function but only for one single data point. A loss score is a quantitative value to measure the difference between the real function and our fitted function.
+
+When an entire dataset is read by the machine learning algorithm, in the context of regression analysis and neural networks, we call each pass an epoch. The number of data points used for training is referred to as a batch. Batch size specifically refers to the size of the subsets the dataset is divided into. For example, dividing a dataset of 1000 data points into two subsets means we can have two batches, and analyzing these two batches takes one epoch to complete.
+
+Linear regression is the simplest and most classical regression model. It is a parametric model. We generally estimate the parameters (slope and intercept) of this model based on its cost function; a basic and common cost function is RSS (Residual Sum of Squares). Whether it is a univariate linear regression model or a multivariate linear regression model, they are basically the same. However, Multiple regression involves knowledge of F-statistics, Forward Stepwise Selection, and Backward Stepwise Selection.
+
+Polynomial regression is also a regression, except that the linear regression plot is linear, while the polynomial regression plot is non-linear. Nevertheless, due to its computational complexity, it is less popular than linear regression.
+
+| Condition                                                   | Regression Algorithm                                         |
+|-------------------------------------------------------------|--------------------------------------------------------------|
+| Continous Dependent Variable                                | Linear Regression                                            |
+| Not Continous Dependent Variable                            | Pieceweise or Polynomial Regression                          |
+| Categorical Dependent<br/>Variable with Binary output        | Logistic Regression                                          |
+| Categorical Dependent<br/>Variable with more than two output | Multinomial Logistic Regression<br/>(e.g. Softmax regression) |
+
+Table 8-3: Regression algorithm and their use cases.
+
+Logistic and softmax are called regression, but in reality, they are classification models. Logistic Regression and Softmax Regression are such models. "Logistic Regression" is a well-known binary classifier whose function is also frequently seen in neural networks. Parameter estimation of "Logistic Regression" generally uses the MLE method, which requires a logarithmic likelihood function. "Softmax Regression" is a multi-classification model, and its relationship with logistic Regression is similar to that between ordinary linear Regression and multiple linear Regression. In addition to these regression algorithms, we described the ARIMA model, to complete your mental shock. ARIMA is used for time series extrapolation (or time series forecasting).
+
+Table 8-3 summarizes when to use which regression algorithm. Afterwards, we describe model parameter estimation for each algorithm. Besides, we described methods to evaluate the result of regressions, including k-fold cross-validation, ROC Curve, Pseudo R2, Wald Test, Information Criterion (AIC and BIC), and Likelihood Ratio Test.
+
+Next, we list challenges related to training models, including bias-variance tradeoffs, overfitting, and underfitting. Then, we moved to regularization algorithms, which are used to reduce model parameters, and described Ridge, LASSO, Elastic Net, and Non-Negative Garrote regularization algorithms.
+
+The last part of this chapter explained some algebraic concepts required for optimization and two optimization approaches: Gradient Descent and Newton. Gradient descent is used when we cannot use an algebraic optimization algorithm to calculate the best minima, and we should search for the solution (similar to the heuristic problems explained in Chapter 6). We have explained three types of gradient descent, which are listed as follows:
+
+- Batch Gradient Descent: Batch size is equal to the training set.
+- Stochastic Gradient Descent: Batch size is equal to one data point.
+
+• Mini-Batch Gradient Descent: 1 &lt; Batch size &lt; Training set size.
+
+We also explained Newton, which could be used in combination with Gradient descent. Newton is second-order derivative optimization and, unlike Gradient descent, it is independent of step size. However, due to its computational complexity, we should avoid using it directly. Some mathematical tricks could be used to approximate Newton optimization while not using secondorder derivatives.
+
+From now on most of the algorithms we learn in machine learning, operate as follows:
+
+- (i) makes some random guess about model parameters.
+- (ii) Use objective function to compute an error.
+- (iii)Until specified maximum epoch reaches or the error is less than some specific value, use a method to change guess parameters in step (i) and continue step (ii).

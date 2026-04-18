@@ -1,0 +1,49 @@
+---
+chapter: "ch8"
+order: 24
+slug: "integral"
+title: "Integral"
+wordCount: 748
+---
+Many physical and non-physical entities, such as acceleration, force, and velocity, are defined as a rate of change. The derivation is used to quantify the rate of change in mathematics.
+
+However, the rate of change is not enough to force us to learn mathematics, and some devils, who named themselves mathematicians, introduced the concept of the integral. Integral has many physical and non-physical entities, such as specifying a region's weight with respect to the overall weight of a function.
+
+The integral of a function is the 'area under the curve', which we use to 'specify the weight of the function in a certain range'. Integral is the opposite of derivative, and it is also called anti-derivative. The process of finding the integral is called *integration*. Both differentiation and integration are used to study changes in a function (integration is the opposite of differentiation). Differentiation is about finding the rate of change, while integration is about finding the initial function that was changed.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_54_Picture_1.jpeg" alt="Figure" />
+
+Figure 8-21: Comparison between derivative (left) and integral (right).
+
+Figure 8-21 presents the derivative and integral of a function. The area under the curve is its integral. We have a plot that represents the speed of a car over time. The area under the curve presents the distance traveled by the car over a given period. To compute this distance, we can use integral.
+
+Another application of integrals is finding the volume of an object with a complex shape. For example, we want to find the volume of a complexed-shaped swimming pool. We could use an integral to calculate the volume by dividing the swimming pool into smaller slices, finding the volume of each slice, and then adding them up to identify how much water this pool requires.
+
+Assume we are filling this pool with water from a tap. The rate at which water flows from the tap can be considered the derivative of the water volume in the pool with respect to time. Thus, the total volume of water added to the pool over time can be found by integrating this rate over the relevant time period.
+
+Assume we are filling this pool with water from a tap. The rate at which water flows from the tap can be considered the derivative of the water volume in the pool with respect to time. Thus, the total volume of water added to the pool over time can be found by integrating this rate over the relevant time period.
+
+For example, if the tap is open and it provides a constant amount of water every second, e.g., 1 ml, the water volume inside the pool will increase at a constant rate, mathematically represented as V(t) = t ml after t seconds. If the tap's rate of delivering water increases such that each second it doubles the previous second's rate—represented as  $\frac{dV}{dt} = 2t$  ml per second, then the total volume of water in the pool over time will be  $V(t) = t^2$  ml after t seconds.
+
+### **Taylor Series**
+
+A *series* in mathematics is referred to as a group of several terms that are all about the same thing. For example, the following is a series:
+
+$$\frac{1}{1} + \frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \frac{1}{16} + \dots$$
+
+Taylor series or Taylor expansion is a function that has an infinite sum of terms. These terms, however, were calculated based on the repeated derivate at a single point. In mathematics, any function can be represented with a Taylor series.
+
+For example, the Taylor series of functions  $e^x$  and sin(x) are written as follows:
+
+$$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots$$
+ or  $sin(x) = x - \frac{x^2}{2!} + \frac{x^4}{4!} - \dots$ 
+
+Generally, the Taylor series of the function f(x), that is differentiable at a real number a, is approximated as follow:
+
+$$f(x) \approx f(a) + \frac{f'(a)}{1!}(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \dots \approx \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$
+
+Taylor series is used in the approximation function and approximation functions try to approximate a target function that is either hard to calculate or unknown, by a simpler function that is easy to calculate or known function.
+
+Linear approximation refers to the first-order Taylor approximation, and quadratic approximation refers to the second-order Taylor approximation.
+
+We learn some mathematical concepts required for optimization. There is more to explain about optimization, but we will postpone it to Chapter 10 where we describe neural networks and deep learning. To continue this section, knowing derivative, gradient, hessian, integral, and Taylor series are enough.

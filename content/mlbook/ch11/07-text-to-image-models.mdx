@@ -1,0 +1,378 @@
+---
+chapter: "ch11"
+order: 7
+slug: "text-to-image-models"
+title: "Text-to-Image Models"
+wordCount: 9077
+---
+In the summer of 2022, when we revised this chapter to add Text-to-Image models, at that time, OpenAI released DALL-E, which was the top model at that time that got the text and constructed an image from the text, a.k.a. *text2image* or *text-to-image* models. Since the author of this book has a mental disorder and is obsessed with learning new models, we list some of the popular textto-image models here that will be introduced and in use by the end of 2024.
+
+You might have difficulties understanding the architecture of some of them, then, please come back here after reading Chapter 12. There, you will learn transformers and thus be able to understand these models. Before we explain models, we follow our tradition and explain some concepts used in text-to-image models.
+
+### **Text-to-Image Related Concepts**
+
+In this section, we introduce key concepts and models used in text-to-image generation. Among these, diffusion models have gained significant popularity, surpassing GANs in synthetic data generation. Although we provide only a brief overview of diffusion models, this should not diminish their importance. Diffusion models have demonstrated remarkable success in text-toimage, text-to-audio, and even image-to-video generation.
+
+### Zero-Shot Learning
+
+Zero-shot learning enables a model to label data it has not encountered during the training phase. However, based on given instructions and other auxiliary information, it generates a label for the unseen data not included in the training set [Larochelle '08, Chang '08]. In other words, in zero-shot learning, the model is trained to recognize and classify objects it hasn't previously seen. This is achieved by providing the model with descriptions or attributes of the objects rather than actual examples.
+
+How is such a thing possible? For example, a model receives a text input. There are many descriptions of horses, and these texts are labeled as 'horse' during the training phase. Therefore, the model can easily label a text segment about a horse during its testing phase. Now, consider a text about a zebra. Although there is no label for 'zebra' provided, when it encounters a text about a zebra, it recognizes that the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_65_Picture_9.jpeg" alt="Figure" />
+
+description is similar to that of a horse but with stripes (auxiliary information). By analyzing the text, it recognizes the horse and infers from other parts of the text that a horse with stripes is called a zebra. The model then assigns the label 'zebra' to that text based on this information.
+
+In summary, zero-shot learning enables the model to assign labels to unseen data in the training phase. While large corporations have historically had access to such extensive datasets, there are now publicly available resources that can be used for zero-shot learning. Open-source contributions democratize access to the technology, enabling more entities beyond just large corporations to explore and implement zero-shot learning.
+
+### Autoregressive Models
+
+The term autoregressive (AR) is often used in time series and refers to a model whose future values are regressed on previous values. In simple words, the autoregressive model predicts a variable based on its past values, or a model is AR if it predicts future behavior based on leveraging past behaviors. For example, ARIMA (Chapter 8) is an AR model. We can formalize the prediction of variable *x* at time *t*, by using *k* previous variables: *xt* = *f* (*xt*−1, *xt*−2, . . . *xt*−*k*)
+
+There are differences between RNN and AR neural network models. RNN model connections can go forward and backward, but AR model connections are feedforward only. RNNs maintain hidden layers, but AR models do not use hidden layers, and thus, they have limited output responses. There are more differences, but we don't need to learn them to understand text-toimage generative models.
+
+### Diffusion Models
+
+Another category of generative models is referred to as *Diffusion models*. Diffusion models are inspired by physics, and in the context of physics, diffusion is the movement of a particle from a high concentration to a lower concentration area until a thermal equilibrium is achieved; recall that the Boltzmann machine we have explained earlier uses something similar.
+
+For example, consider a spoonful of salt that we put into the water. The salt molecules move in the water (diffuses) until the salt concentration inside the water is equal at every point.
+
+Diffusion models define a Markov chain (check Chapter 5), and in each Markov state, they gradually add noise (usually Gaussian noise, which will be explained in Chapter 16). A diffusion model
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_66_Picture_8.jpeg" alt="Figure" />
+
+starts with the original data, such as an image, and progressively adds noise over a series of steps until the image becomes indistinguishable from random noise, specifically following a Gaussian distribution with a mean of zero. Then, a neural network is trained to invert this process (get back from noise to the image). Once this network is trained, it can generate synthetic data with reasonable quality.
+
+The process of adding noise gradually to data at each Markov state is referred to as a *diffusion process* or *forward process/path*. Then, the diffusion model tries to reconstruct the original data from the noise, which is known as the *reverse (denoising) path/process* or *generative path*. The process of Diffusion is presented in Figure 11-36. A trained diffusion model learns to generate new synthetic data by reversing a gradually added noise. The forward path is essential because it creates the training pairs (original data and noisy data) used in training the model. The model then learns how to reverse this process during the reverse path, where it learns to reconstruct the original data from the noisy data.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_67_Picture_1.jpeg" alt="Figure" />
+
+Figure 11-36: A diffusion model that gradually adds a noise at each Markov state (forward process), and then from *z* state, noise gradually reverse to reconstruct a data similar to the original data (reverse process).
+
+Diffusion models differ from other generative approaches, including VAE or GAN models, which use latent spaces and adversarial dynamics. Diffusion models instead directly learn the transformation from noise to data, maintaining the original data dimensionality throughout the process. In other words, diffusion models are trained to de-noise the noise (z) and return to something similar to the original data  $(x_0)$ .
+
+Forward path: To formalize the forward process and reverse step, we assume the given input data as  $x_0$  sampled from a real distribution, i.e.,  $x_0 \sim q(x)$ . The forward process gradually adds a Gaussian noise  $\mathcal{N}$  to the sampled data at T steps, which results in the sequence of noisy images,  $x_1, x_2, \ldots x_T$ , and  $x_T$  will be the pure Gaussian noise with a mean of 0 and variance of I. Assuming  $e_t$  is sampled from this noise distribution,  $e_t \sim \mathcal{N}(0,I)$ , and  $\alpha_t$  is a variance schedule, and decrease over time. Therefore, we can formalize the forward process as follows:
+
+$$x_t = \sqrt{\alpha_t} x_{t-1} + \sqrt{1 - \alpha_t \epsilon_t}$$
+
+In the context of the diffusion model,  $\alpha_t$  is a sequence of values that dictate how much noise is added to the data at each step of the forward process.  $\alpha_t$  is usually computed as a product of terms of the form  $1 - \beta$ , where  $\beta_t$  is a small value that defines the noise increment at each step. Usually  $\alpha_t$  is computed as  $\alpha_t = \prod_{s=1}^t (1 - \beta_s)$ .
+
+Reverse path: The reverse process is where the diffusion model generates synthetic data by learning to reverse the noising process. This entails reconstructing the original data from its
+
+noise-corrupted state step-by-step, based on learned predictions of the noise  $\epsilon_t$ , that was added at each stage of the forward process. The reverse step can be formalized as follows:
+
+$$x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{1 - \alpha_t}{\sqrt{1 - \alpha_t}} \epsilon_{\theta}(x_t, t) \right)$$
+
+Here,  $\alpha_t$  is defined at the forward process,  $\epsilon_{\theta}(x_t, t)$  is the predicted noise by the model at step t and parameterized by  $\theta$ . In other words,  $\theta$  is the trainable parameter of the neural network. The learning objective is to adjust  $\theta$  so that  $\epsilon_{\theta}(x_t, t)$  matches the actual noise, enabling effective reversal of the noise addition to reconstructing the original data.
+
+**Training:** The training of the diffusion model involves optimizing  $\theta$  that the model's predicted noise  $\epsilon_{\theta}(x_t, t)$  matches the actual noise  $\epsilon_t$  that was added during the forward process. This is usually achieved through an MSE between these two values:
+
+$$L(\theta) = \frac{1}{N} \sum_{i=1}^{N} \| \epsilon_t - \epsilon_{\theta}(x_t, t) \|_2^2$$
+
+Here,  $L(\theta)$  represents the loss as a function of the model parameters  $\theta$  and N represents the number of training examples. We have explained that  $|\cdot|_{1}$  means  $L_{2}$  norm.
+
+The diffusion process can also be seen from an energy-based perspective, where the model learns an energy function that assigns low energy to data-like samples and high energy to non-data-like samples. The training of diffusion models involves learning the reverse of the diffusion process. This is typically achieved by training the model to predict the noise added at each step of the forward process to undo the diffusion.
+
+A common choice for the neural network architecture in diffusion models is the U-Net, which consists of a series of downsampling layers followed by upsampling layers, with skip connections between corresponding layers.
+
+### Inpainting and Outpainting
+
+Inpainting generates or fills in content within a user-defined mask in a specific area of an image, typically to alter or complete parts of the image based on the surrounding context. Outpainting extends the existing content of an image beyond its original boundaries, using the provided prompt and context to generate coherent, expanded visuals. These features are integrated into image editing and image restoration tools.
+
+### CLIP (Contrastive Language-Image Pre-training)
+
+CLIP [Radford '21] is a model that can understand images in the context of textual descriptions, proposed by OpenAI in 2021. In layman's terms, CLIP can match the given image to a range of textual descriptions, facilitating zero-shot learning. It is a very popular model and is used in many text-to-image models.
+
+The authors explain the usefulness of CLIP for two reasons. First, image classification approaches are bound to a predefined set of user-defined labels used in their training set. For
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_69_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-37: CLIP Pre-training phase, each pair of text and image gets into separate encoder and the green diagonal of the result matrix (it is a matrix of cosine similarity) includes positive samples and the white ones are negative samples.
+
+example, in the MNIST dataset, we are limited to 10 labels, whereas ImageNet has 22,000 labels. Each time a new image is added that has never been seen in the dataset before, it must be manually labeled. We have recently learned that zero-shot learning can resolve this need. Second, the labeling process in the classification task is limited to one single label. A text caption (prompt text) contains more useful information than a single class label. For example, instead of the label "chihuahua" for a chihuahua dog image, we can have a text caption as *"The boss's chihuahua, whose bark sounds better than the voice of his owner, a.k.a., my boss"*.
+
+CLIP implements bot zero-shot learning and text prompt labeling by matching images with textual descriptions. It is trained on many images paired with their text captions, which are collected from the Internet . Similar to CLR methods, CLIP input is also a set of image-text [14](#page-69-0) pairs.
+
+### Contrastive Pretraining
+
+In the first step, CLIP applies an encoding to both texts and images. Texts are encoded by Transformer (in Chapter 12, we will explain attentions and transformers), trained with BPE (in Chapter 14, we will describe BPE) with 49k vocabulary size. Images are encoded by ViT Transformer (with additional layer norm) or ResNet-50 (we will explain them in Chapter 12), whose pooling layers are substituted by the Attention pooling mechanism. You can find more details about the encoding process and its configuration in their paper. After both image and text data are encoded, the representation (feature vectors that are the result of encoding) matches together.
+
+Figure 11-35 shows the pre-training phase of the CLIP. Each image and text in the Image-text pairs set uses a separate encoding, resulting in a vector. The main diagonal of the matrix in this
+
+CLIP has trained (they call it pre-training) 400 million pairs of image-text pairs. Authors build 500,000 queries [14](#page-69-1) and use a web search to find image and text pairs. Words for queries are selected based on some condition such as occurring at least 100 times on Wikipedia, etc.
+
+figure (shown in green cells) presents positive samples (the cosine similarity should be maximized), and other cells on the matrix (white cells) present negative samples (the cosine similarity should be minimized). CLIP uses cross entropy as a cost function for pre-training and implements it as a symmetric loss function, which results in the matrix shape shown in Figure 11-37
+
+### **Training**
+
+To train the model, authors experiment with different ResNet and Transformer models with different resolutions and embedding (feature vector) sizes. Instead of pairing each image model with a specific text Transformer, CLIP uses one image encoder and one text encoder that work together. In other words, the authors complemented the image encoder with a Transformer-based text encoder. Through experiments, the authors identified that a larger Vision Transformer model (ViT-L) paired effectively with the text Transformer, yielding the highest accuracy.
+
+The optimizer of the training is Adam, and it is trained for 32 epochs. CLIP has a hyperparameter, i.e., *temperature parameter*, equivalent to 0.07. This hyperparameter is used to clip and prevent scaling the logits by more than 100. The batch sizes used for training are 32,768.
+
+For this setting, the authors trained their model on only 256 NVidia V100 GPUs for 12 days. Yes, it is very affordable, and you can train a small model with a small budget in your basement. Joke aside, such pre-training is only possible by a large corporation that has a large number of resources, and even at the time of describing this model, to our knowledge, even universities can not afford to provide such an infrastructure for pre-training.
+
+### **Experimenting Zero-Shot Learning**
+
+CLIP can be used to build both image classifiers and text classifiers. The authors present the zero-shot learning capability of CLIP by using class labels with some manually added prompt text. This capability stems from its ability to understand images and textual descriptions through its dual-encoder architecture. For example, in Figure 11-38, when an image of a chicken is fed
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_70_Figure_7.jpeg" alt="Figure" />
+
+Figure 11-38: Zero-shot learning of CLIP for text prompt prediction. Note that text labels have no information about images. The label will be assigned based on comparing the similarity of the encoded text to the encoded image.
+
+into CLIP, the model does not generate a caption. Instead, a predefined text prompt (e.g., 'A picture of'), manually provided by a model engineer, is used. The model then iterates through possible class labels, combines them with this prompt (like 'A picture of a chicken'), and computes the embeddings of these text phrases. CLIP then compares these text embeddings with the image's embedding. The text whose embedding is closest to that of the image is selected as the best description.
+
+Note that zero training is needed on the actual task of matching the text caption to the image. In other words, the output of the text encoder in Figure 11-36 could be entirely different from the dataset built in Figure 11-37. CLIP identifies the best match by finding the closest text (blue part in Figure 11-38) to the image encoder (red part in Figure 11-38) based on similarity comparison.
+
+In summary, CLIP ensures high similarity between the encoded image and text. This model is very popular in generative AI architecture, and its new variants, such as openCLIP , are trained [15](#page-71-0) on a larger number of data.
+
+### **VQGAN (Vector Quantized GAN)**
+
+CNN architecture is capable of identifying local relationships correctly, but not able to capture complex higher-level information. In other words, CNN is good at capturing spatial information from pixels close to each other, such as the texture of the object.
+
+VQGAN [Esser '21] combines both architectures to produce high-resolution synthetic images. To explain it, we separate our explanation into two stages: one stage focuses on its GAN architecture, and the second stage focuses on its transformer.
+
+**Stage 1:** VQGAN is inspired a lot by VQ-VAE [Van Den Oord '17]. The primary motivation behind VQ-VAE was to replace the continuous latent space typical of Variational AutoEncoders (VAEs) with a discrete latent space. This discrete latent space provides several advantages, such as enabling more controlled and stable image generation.
+
+To implement this discretization, the authors of VQ-VAE use a vector quantization and construct a codebook from training images. Please check Chapter 16 to read about vector quantization from the image and how a codebook is constructed. In short, a codebook is a dictionary of discrete vectors all in the exact dimensions. VQGAN's codebook is a dictionary that is used to reconstruct images. For example, it has a vector for a sunny sky, a vector for the garden, a vector or more than a vector for a dog, etc. Then, if a query asks to build "a dog in the garden at the sunny sky," these vectors are retrieved from the codebook, and the decoder will use the codebook to construct the image by using these vectors. It is a simplified example, and keep in mind that vectors in the codebook typically represent various visual patterns or textures, not items or scenes.
+
+Why use a codebook? Because, instead of dealing with patches of images, which result in too many different values in latent space, the model can learn from a limited number of values in latent space, and thus it can index them. Besides, the training images are fed into a CNN encoder
+
+[<sup>15</sup>](#page-71-1) https://laion.ai/blog/large-openclip
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_72_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-39: VQGAN architecture.
+
+whose output  $(\hat{Z})$  reduces the size of the input image while maintaining its spatial information and feature information.
+
+Now, we have trained quantized images into codebook (Z) and reduced size into  $\hat{Z}$ . Next, a tensor ( $Z_q$ ) with the same size as the CNN output will be constructed as follows: each vector of CNN is compared (via Euclidean distance) to a vector inside a codebook, and the closest vector in the codebook will be used to substitute the CNN vector value. As a result, instead of the continuous output from the CNN encoder ( $\hat{Z}$ ), we now have a discretized tensor  $Z_q$  of the same size as  $\hat{Z}$ . Note that  $Z_q$  includes vectors from the codebook rather than CNN Encoder.
+
+Figure 11-39 Visualizes the construction of the codebook from the image. For example, we highlight one channel vector on the  $\hat{Z}$  tensor in red. This vector will be compared to the vectors in the codebook, and the one that has the shortest distance from the codebook ( $i_1$  the one with a light green color) will substitute the vector of  $\hat{Z}$  in  $Z_q$ .
+
+VQGAN, similar to other GAN models, includes a synthetic image generator and a discriminator. The generator is a CNN decoder, as shown in Figure 11-39.
+
+Now, the generator (CNN decoder) constructs a synthetic image from the codebook. The encoder learns to map images to discrete codes, while the codebook learns to store useful feature vectors that can reconstruct the input effectively.
+
+The backpropagation flows through the entire model, including the encoder, but the quantization step introduces a challenge because it is non-differentiable. Since  $Z_q$  is derived from discrete
+
+codebook values, direct backpropagation through this step is not possible. Besides,  $Z_q$  includes discrete values, and discrete values are non-differentiable and do not have a meaningful gradient. This means the optimizer cannot backpropagated through the encoder during training. To address this, the authors use the *straight-through estimator* (proposed in VQ-VAE). This approach allows gradients from the decoder to be copied to the encoder as if the quantization step were differentiable, ensuring the encoder and decoder can be trained effectively.
+
+For the CNN discriminator, there is not much to explain except that the authors recommend starting the CNN discriminator later in the training because the generator has time to learn. Otherwise, the discriminator can easily recognize the synthetic image, and thus, the generator can not learn.
+
+**Stage 2:** Until now, we have only had a GAN reconstruct the data. However, the goal is to generate large synthetic images with high resolution. The encoder and decoder are typically invariant to image size, but the transformer can assist the decoder in building larger images. Therefore, a transformer will be used in an autoregressive manner.
+
+We have explained that the codebook acts as a reference that includes elements of synthetic image construction. The task of the transformer is to learn which codebook vector members (codeword) are required for the image construction and add them into a sequence of patches for image generation in Zq. For example, as it can be seen from Figure 11-37, the transformer orders codewords as  $i_{14}, i_5, i_{12}, i_2, \ldots$  in  $Z_q$  and sends them to the CNN decoder for synthetic image construction
+
+Why do we feed the codebook to the transformer and not the output of the Encoder? The transformer requires sequential data as input. However, since it uses self-attention (check Chapter 12), it is computationally very hard to feed a large sequence to a transformer. Therefore, the codebook is fed into the transformer, and the authors use a sliding window for the attention model to reduce the size of the image and the computational cost. The transformer processes the sequences of discrete codebooks in an autoregressive manner. This autoregressive approach allows the transformer to sequentially predict different parts of the image, using the output of one step as the input for the next, thus enhancing the overall quality and coherence of the generated images.
+
+The VQGAN transformer acts as a decoder and upsamples data from the codebook. In other words, it is used to enrich the content of the codebook and thus enable the generator to build larger than input synthetic images. For training, the transformer uses cross-entropy loss and compares the codebook's original value with the modified codebook, which is a result of training.
+
+In summary, instead of constructing images from pixels, VQGAN uses the discrete variables extracted from the codebook, and the transformer improves the content of the codebook. Therefore, the synthetic images of the Generator are high resolution and can be larger than the original ones.
+
+If you would like to bluff about your deep understanding of VQGAN, say the following in front of others: Using the concept of the codebook and feeding it into a transformer makes VQGAN
+
+very attractive and shows its high accuracy in generating high-resolution images*.* Jokes aside, using a codebook is a popular trick, and we will encounter it later in upcoming chapters.
+
+We do not explain the cost functions of the VQGAN in detail; it uses two cost functions: one is discriminator cost, and the other one is codebook cost. The discriminator cost is a standard GAN cost function whose goal is to train the discriminator to successfully identify the generator's synthetic images from real training images. The codebook cost encourages the discrete latent code to stay close to the encoder outputs. *Zq*
+
+### **VQGAN-CLIP**
+
+We have explained CLIP and VQGAN to reach this interesting and practical approach. Crowson et al. [Crowson '22] use a CLIP to guide VQGAN and build a practical text-to-image approach. They make their trained model openly accessible, allowing it to be fine-tuned for other tasks. VQGAN-CLIP is an interaction between VQGAN and CLIP networks, which results in using the following neural networks: the generator and discriminator of VQGAN and a separate neural network of CLIP.
+
+The objective of VQGAN-CLIP is to generate images from the given text prompt. Recall that the VQGAN network generates a high-quality image from the text prompt, and then the CLIP network assesses the fitness of the text (image caption) to the image by comparing it to other captions.
+
+In short, VQGAN-CLIP operates as follows: the user inputs a text (prompt) for the desired image generated. In the beginning, VQGAN generates a completely random, noisy image, which includes only random pixels. Then, this image will be assessed by the CLIP to see if it matches the user-given prompt. A loss score will be reported to explain how far the generated image is from the text prompt. The loss calculated by CLIP is backpropagated to the VQGAN generator. Then, VQGAN improves its image generation process. This process continues iteratively until the loss reaches the maximum threshold.
+
+We skip the small details of the original paper, but one thing that is worth explaining is the challenge that existed with CLIP loss. The updated gradient from CLIP is noisy if it is calculated on a single image. To overcome this issue, the authors apply several image augmentation techniques (we will discuss them in Chapter 16) to the generated image to have several images. Their image augmentation technique includes first taking random crops of the candidate image and then applying flipping, noising, etc.
+
+### **DALL-E Models**
+
+DALL·E models are neural networks designed by OpenAI that generate images from textual descriptions, leveraging the power of diffusion models and transformers to create detailed and imaginative visuals.
+
+### DALL-E v1
+
+DALL-E version 1 [Ramesh '21] was introduced back in early 2021 by OpenAI. The authors use a transformer architecture and autoregressive model. They assume text and image as a single stream of data. DALL-E v1 includes 12 billion parameters and uses a dataset of 250 million textimage pairs collected from the Internet. As you can see, it is very small, and you can train this model on your phone while going to sleep.
+
+Earlier, we explained that autoregressive models are used for sequential data (token). The authors described that they could not consider the pixel of an image as a token of data for the autoregressive model. Because then the model focuses on capturing short-range dependencies between pixels, and thus, long-range relations between pixels will be neglected.
+
+To capture long-range relations, DALL-E v1 operates in two stages. The first stage is focused on training a discrete variational autoencoder (dVAE) to compress image data. The resulting images are encoded and thus smaller but hold the feature of the original images. In particular, the resulting images are encoded into a sequence of 1024 tokens, each of which can take one of 8192 possible values. The codebook contains 8192 vectors.
+
+The dVAE is similar to VQ-VAE, which builds a codebook. The difference is that, unlike VQ-VAE, which selects one codeword (a codebook vector) from the codebook, dVAE can express some uncertainty by outputting a distribution over codewords for each latent variable instead of a single codeword. In simple terms, the dVAE can output a distribution over codewords. However, since backpropagation is not able to work with discrete data (discrete data are not differentiable), to transform them into continuous forms and make them differentiable, authors use a method called Gumbel-softmax [Maddison '16, Jang '16]. Gumbel-softmax enables gradient-based optimization despite having discrete data. It approximates the discrete distribution with a smooth one that can be sampled and differentiated. The result of this stage is to convert a RGB image into a grid of tokens. 256 × 256 32 × 32
+
+The second stage first concatenates image tokens to BPE-encoded text tokens (in Chapter 14, we will explain BPE). This enables the model to process both text and image data in a similar manner. Then, they trained an autoregressive transformer to model the joint distribution over text and image tokens using their 12-billion parameter transformer.
+
+As a result, a model is trained on a large dataset of image and text token pairs. Then, they can be used in an autoregressive fashion and predict the next image token in a sequence, and a decoder builds the entire image from a given text.
+
+### DALL-E v2
+
+DALL-E version 2 [Ramesh '22] was released in 2022, it can construct significantly more realistic and accurate photos than its version 1. DALL-E 2 uses a diffusion model for the decoder, while DALL-E v1 uses an autoregressive model for generating images.
+
+DALL-E 2 is composed of two main components: Prior and Decoder. First, a CLIP model [Radford '21] is trained, and each pair of images and text will be encoded to match image embeddings ( ) and text embedding ( ). The objective of CLIP is to learn a joint embedding space for images and text, enabling it to match text descriptions with relevant images. The top part of Figure 11-40 presents the CLIP training for DALL-E 2 architecture. After the CLIP model is trained, it gets frozen. *zi zt*
+
+Next, the prior network uses the frozen CLIP and produces the image embeddings ( ) that are conditioned on the caption (*y*), i.e., . In simple words, Prior maps the text embedding to the image embedding using the CLIP frozen model. The output of the prior is which is an image embedding. The authors stated that they used both diffusion and autoregressive for the Prior. *zi P*(*zi*| *y*) *zt zp*
+
+Afterward, the diffusion decoder produces images conditioned on image embedding (from the prior) and optionally on the caption, i.e., . This means that unlike the diffusion we have explained earlier, this diffusion model does not start from noise. Instead, it starts with the image embedding produced by the prior. The objective of the decoder is to generate an image that corresponds to the image embedding produced by the prior. Figure 11-40 *P*(*x*̂|*zp*, *y*)
+
+Why does the decoder perform inverting (the process of reconstructing an image from its latent representation)? The goal is to generate a new image from a text prompt rather than build an identical image as it is encoded by the Prior. The inversion assists the decoder in creating a new image. To implement the decoder with inversion, they use a modified version of the GLIDE [Nichol '21] (another text-to-image from OpenAI). The authors call the combination of prior and GLIDE-based decoders to *unCLIP* because it reverses the mapping learned by the CLIP image encoder. By stacking the Prior and Decoder, DALL-E v2 builds a generative model of images given captions *y. P*(*x*̂| *y*) *x*̂
+
+Why do authors of DALL-E 2 use prior and not simply a CLIP encoder with a decoder? The reason for this design choice is that, through experiments, the authors found that having a Prior network in between produces better images. They stated that the Prior creates a summary of the image, and the decoder inverts images given their CLIP image embeddings. During this process, the decoder learns the useful details for image reconstruction, but prior (frozen model of CLIP inside Prior) does not consider them.
+
+DALL-E 2 generates high resolution images, and to generate high resolution images, they train two diffusion up-sampler models. The first one upsamples images from to resolution (with Gaussian blur to improve the robustness of the upsampling), and the second one applies further upsampling to make a resolution (with something called BSR degradation [Rombach '22, Zhang '21] to improve robustness of the upsampling). We do not explain the details of BSR degradation here. 64 × 64 256 × 256 1024 × 1024
+
+To train, the encoder authors use CLIP and DALL-E v1 datasets, which include about 650 million images. To train the encoder, upsamplers, and prior, they used about 250 million images of the DALL-E dataset.
+
+To summarize, DALL-E 2 operates in three steps. First, a text encoder is trained to convert the user input text (text prompt) into a text embedding (vector instead of text). In the second step,
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_77_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-40: DALL-E 2 architecture, which is composed of three networks, CLIP, Prior and a decoder, which is a GLIDE model with some changes.
+
+Prior maps the text encoder result (text embedding) into a corresponding image embedding. The image created by Prior has semantic information from the input text. In the third step, the "Decoder" generates images from the image encoding created by the Prior<sup>16</sup>.
+
+#### DALL-E v3
+
+In 2024, OpenAI released DALL-E 3 [Betker '23]. Authors claimed that one problem with the DALL-E 2 is the prompt text given by the user, and if there is a mechanism to improve the descriptiveness of the prompt, the text-to-image model can generate high quality images with more details related to the prompt. To handle this issue, they trained an *image captioner* and a text-to-image model to build DALL-E 3.
+
+**Image Captioner:** The image captioner is a model that is similar to a language model (we will explain in Chapter 12) is used to predict text. It begins by using a tokenizer to break down strings of text into discrete tokens, representing these tokens as sequences, which can then be processed to generate captions for images. This approach is often used to address shortcomings in existing captions found on the internet, which may be incorrect or only tangentially related to the content of the image. The image captioner is jointly trained along with CLIP to leverage CLIP capabilities in measuring text and image similarity, thus ensuring that generated captions closely align with the visual content and human interpretation of images.
+
+When an image captioner is trained alongside CLIP, it can optimize its captions to be more aligned with the actual content of the images. This is particularly useful because it enables the
+
+<sup>16</sup> You can also check the Blogpost of one author to better understand DALL-E 2, http://adityaramesh.com/posts/dalle2/dalle2.html
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_78_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-41: Imagen architecture.
+
+model to generate captions that not only describe the images accurately but also in a way that resonates with how humans interpret the images.
+
+**Synthetic Captions:** The authors stated that first, they build a small dataset (not clear what they mean by small) of captions that describe only the main subject of the image. Then, they trained their image captioner model on this dataset to produce what is referred to as *short synthetic captions*.
+
+Afterward, they repeat the fine-tuning process for the second time with a new dataset that contains long, highly-descriptive captions. These captions include details about not only the main subject but also the surroundings, background, text found in the image, styles, and coloration. The result of the second fine-tuning is referred to as *descriptive synthetic captions*. GPT-4 is utilized to upsample these captions further, enhancing them to include even more detailed descriptions, thereby improving the model's ability to generate images
+
+To train the DALL-E 3, at the end, they use the descriptive synthetic captions on their image dataset to build the final model. Authors claimed they used 95% synthetic captions and 5% ground truth captions. This blending of captions helps balance between creativity and accuracy, improving the model's ability to generate relevant images.
+
+OpenAI does not release any information about where they get the data, and most probably, they use the copyrighted data available on the Internet.
+
+### **Imagen**
+
+Do you recall rich family or friends who do not have anything to do except try to copy what other rich people did and show off their life, which includes more luxury than others? If you think those behaviors belong to people and big corporations don't do the same thing, you are wrong. Anyway, this explanation has nothing to do with the relationship between Google and OpenAI, and we wrote it accidentally here.
+
+A few weeks after the release of Open AI's DALL-E 2, Google released Imagen [Saharia '22], and a few days later, it released Parti [Yu '22], both of which are text-to-image models. The Imagen architecture is significantly easier than DALL-E 2, and in its paper, the authors also introduce an evaluation method, DrawBench, to evaluate the result of text-to-image algorithms. DrawBench evaluates key aspects such as the fidelity of the generated images to the original text, the creativity and diversity of the outputs, the detail and resolution of the images, and their internal consistency and coherence.
+
+Figure 11-41 presents the architecture of Imagen. Imagen uses a large language model, T5-XXL (we will explain the T5 model in Chapter 12), pre-trained on a text corpora (Check Chapter 12 to learn about language models) to map input text into a text embedding (word embedding). Authors experimented and observed that using this language model outperforms CLIP accuracy.
+
+Next, they adapt a conditional diffusion model provided in [Dhariwal '21] that gets the text embedding and constructs the image. Their diffusion model introduces a concept called *dynamic thresholding*, which is a sampling method to leverage weight guidance. This weight guidance results in having more photo-realistic images at the end.
+
+Afterward, they use two super-resolution diffusion models for generating  $256 \times 256$  and  $1024 \times 1024$  images. Their super-resolution architecture is based on their customized U-Net model (Efficient U-Net).
+
+To train the T5 XXL, they use 800 GB of textual data, and the model has 11 billion parameters. Their  $64 \times 64$  diffusion model is trained on a 300 million parameters model, which is conditioned on text encoding. Their UNet models have 300 million to 2 billion parameters.
+
+#### **Parti**
+
+Parti [Yu '22] stayed for the "Pathways autoregressive text-to-image model", and it was introduced a few days after Imagen. Unlike Imagen, which uses a diffusion model, it is an autoregressive model. Recall that an autoregressive model takes a sequence of tokens as input, and predicts an upcoming token(s).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_79_Figure_7.jpeg" alt="Figure" />
+
+Figure 11-42: Parti architecture.
+
+Parti treats text-to-image generation as a seq2seq model used for machine translation (check Chapter 12 for seq2seq models). Unlike DALL-E 2, which provides a decoder only, it provides both an image encoder and image decoder by using ViT-VQGAN [Yu '21], and the authors claimed it had outperformed models only with the decoder. We have already explained VQGAN earlier here, and ViT (we will explain in Chapter 12) stayed for the vision transformer. Parti has a transformer-based architecture, and it operates in two stages: an image tokenizer and an autoregressive model.
+
+*Image Tokenizer:* The first stage trains the image tokenizer to convert an image into a sequence of discrete visual tokens (image embedding). We could assume this as an encoder because the tokenizer's role is to compress the image into tokens effectively, which are then used for generating images.
+
+As explained in the VQGAN section, tokenizing an image into a sequence of pixels results in an extremely large sequence. VQGAN and DALL-E 2 handle this challenge with discrete types of VAE, and instead of using patches on the input image, they use codebook values. Authors of Parti downsample an input image of the size to . Then, they give it for training to ViT-VQGAN. ViT-VQGAN plays a role similar to an encoder in Seq2Seq models (check Chapter 12), as it encodes images into a tokenized format suitable for the autoregressive transformer. The resulting codebook in this model has 8192 entries (codewords). ViT-VQGAN encodes images as a sequence of discrete tokens (codewords), which come from the codebook (not image patches). To train ViT-VQGAN, the authors follow the DALL-E model. After training is done at this stage, the model freezes ViT-VQGAN, which is presented as the red component of Figure 11-42. 1024 × 1024 256 × 256
+
+Since the frozen model of ViT-VQGAN operates with image size, later, the synthetic image that is reconstructed by ViT-VQGAN will be fed into a super-resolution layer and upsamples the reconstructed image to a size of . 256 × 256 1024 × 1024
+
+*Autoregressive model:* In the second stage, an autoregressive model Transformer Decoder (presented as a blue box in Figure 11-42) receives the sequence of embedded tokens from the text encoder (yellow box in Figure 11-42) and generates an image token-by-token, predicting each subsequent token based on all previous ones. In other words, this stage focuses on training autoregressive encoder and decoder transformers (the yellow and blue transformers in Figure 11-42) by treating text-to-image as a seq2seq modeling. The input for training is the image and text pair. The Image Decoder, shown in Figure 11-42, gets the (i) sequence of image tokens (extracted by ViT-VQGAN from the image) and (ii) the encoded text prompt that the Text Encoder (yellow box in Figure 11-42) converts to text embedding. Then, it tries to predict the next image token. The text embedding acts as a target for attention (attention and transformer will be explained in Chapter 12).
+
+After the second stage of training, they freeze the encoder and codebook and fine-tune the model, which results in a 600 million-parameter model. After the model is trained, it can generate images by feeding the text prompt.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_81_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-43: The simplified architecture of LDM training, which is the first version of the Stable Diffusion. The blue texts on this figure are used for inferences, and they mean LDM can get an image as input and generate another output, such as editing the given input based on the given text prompt.
+
+The Parti model that provides most photo-realistic images has 20 billion parameters. The superresolution module has about 15 million parameters for the version and about 30 million parameters for the version. Their image-text paired datasets are vaguely explained, but it seems they use several internal Google and public datasets, and they use about 6 billion text-image pairs. 512 × 512 1024 × 1024
+
+### **Stable Diffusion Models**
+
+In 2022, Rombach et al. [Rombach '22] provided a text-to-image model, later known as Stable diffusion. Unlike Google and OpenAI, released their model weights open so that others can benefit from their model and further tune it. Their approach leads to the introduction and advancement of many research and applications that can benefit from text-to-image.
+
+Their explanation of their architecture is not easy to understand; we spent reasonable time simplifying their approach, and the simplified version of their architecture is presented in Figure 11-43. In this figure, we use the blue color in the text to emphasize that Stable Diffusion can indeed be used to edit or modify an existing image based on a given text prompt, a capability often referred to as t*ext-guided image editing* or *inpainting*.
+
+### Latent Diffusion Model
+
+The first version of Stable Diffusion is called the *Latent Diffusion Model (LDM)*. Authors described that previous diffusion models operate on the original image data, which is too large to process and thus computationally expensive. LDM utilizes an autoencoder, which compresses high-dimensional data into a lower-dimensional space (light red encoder in Figure 11-43). Later, after the diffusion process is trained, the decoder (light red decoder in Figure 11-43) translates the clean vector *z* into the output (synthetic image). By using autoencoder architecture, the computational cost for both training and inferences is reduced significantly.
+
+The reverse process (diffusion process) includes a U-Net with a cross-attention model. The use of cross-attention allows the model to integrate additional contextual information (e.g., text descriptions, bounding boxes) directly into the diffusion process. We will describe some attention mechanisms in Chapter 12. Similar to self-attention, the cross-attention mechanism involves three main components: queries (Q), keys (K), and values (V). In the context of LDMs, the diffusion model's intermediate layers generate queries (Q), while the encoded conditioning inputs (like text or bounding box descriptions) generate keys (K) and values (V). Note that this U-Net works only with the latent representation of the data and not the original data.
+
+The encoder shown in yellow in Figure 11-41 is used to convert different modalities (text, image, or even audio), but to our understanding and by checking other resources, this is a CLIP encoder that aligns text with the image. This means the encoder constructs the 'conditioning signal' that represents the transformation of text input into a *conditioning signal* , which is used to guide the image generation process via U-Net. *τ* (*θ* ) *θ τ*
+
+The result of the denoised U-Net is passed to the Reverse Network (shown in green in Figure 11-43), which implements the reverse process of a diffusion model. The output of the reverse network will be given to the decoder that converts the latent space data into pixel space, which means it constructs the output (i.e., synthetic image).
+
+#### **Training LDM**
+
+We explain the training process with respect to the figure because there are different components to train, some trained in a sequence and some in parallel.
+
+*Encoder Training:* The training starts with an encoder that compresses high-resolution images into a lower-dimensional latent space. The encoder is usually a part of a denoising autoencoder (DAE) or a variational autoencoder (VAE) that learns to encode the image into a latent vector *z*, which retains the essential information but in a more compact form.
+
+*Forward Diffusion Process:* Next is the training of the forward process. During this phase, Gaussian noise is incrementally added to the latent vectors (encoded input image) over several steps, transforming the data from its structured latent representation to a completely noisy state. This creates a sequence of increasingly noisier versions of the latent vector, represented by , where *T* is the final time step. *z*1,*z*2, . . . ,*zT*
+
+*Reverse Network (Denoising Network):* Parallel to the forward process, the Reverse Network is trained. This network learns to perform the reverse of the diffusion process, denoising the latent vectors. The network starts from noise (the noisiest state) and trains to predict the less noisy previous state . By training on many such pairs, the network learns to reverse the entire diffusion process, recovering the original latent vector from noise. *zT zT*−1
+
+*Integration with Text Prompts:* If the LDM is conditioned on text prompts, a separate component, such as the CLIP Encoder, is used to convert text prompts into embedded vectors . These embeddings are used during the reverse diffusion process. The Denoising U-Net with Cross Attention incorporates these embeddings to ensure that the features of the generated image match the text prompt's content.
+
+*Decoder for Image Generation:* Finally, the decoder will be trained to convert latent vectors back into images, is used to generate synthetic images from the denoised latent vectors.
+
+### Stable Diffusion XL
+
+After the introduction of Stable Diffusion v1 or LDM, some minor changes were introduced, and later, Stable Diffusion XL (SDXL) [Podell '23] was introduced. SDXL has a larger training set and leverages Reinforcement Learning with Humans in the Loop (RLHF), which we will describe in Chapter 13. Besides, it leverages a three times larger U-Net model than LDM, which has 2.6 Billion parameters, and it can produce images at a resolution of 1024 1024 pixels. ×
+
+It includes a second U-Net model known as the *refinement model* to improve the visual fidelity of synthetic data generated by the first U-Net model. It also includes two text encoders (CLIP ViT-L and OpenCLIP ViT-bigG) that enhance the model's ability to interpret and synthesize images from textual prompts accurately. The two text encoders allow the system to capture more nuanced details from the text prompts, presumably enabling better text-to-image translation and higher fidelity in the generated images. Figure 11-44 presents the architecture of SDXL, which seems too abstract, in contrast to their previous architectural drawing, which was unnecessarily complex.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_83_Figure_4.jpeg" alt="Figure" />
+
+Figure 11-44: SDXL architecture (very similar to the same figure that is presented in the paper).
+
+Additionally, SDXL can handle varying image sizes, as the model needs to adapt to different resolutions and aspect ratios to produce coherent and visually acceptable results. To address this, SDXL employs several image size conditioning strategies, which include:
+
+- It allows users to explicitly specify the desired output image size and aspect ratio in the prompt.
+- During training, the model learns to associate specific size embeddings with different image resolutions. At generation time, the appropriate size embedding is selected based on the desired output size, and it is used to condition the image generation process.
+- The model starts by generating a low-resolution image and then iteratively increases the resolution through multiple stages. At each stage, the model takes the previous stage's output as input and generates a higher-resolution version of the image. This progressive refinement allows SDXL to generate high-quality images at larger sizes while maintaining detail.
+
+### Stable Diffusion 3
+
+Stable Diffusion 3 or SD3 [Esser '24] medium size mode has been released open, but not its large version. SD3 introduced two new components in their architecture: (i) re-weighing of the noise in Rectified Flow and (ii) employing the Multi-Modal Diffusion Transformer (MM-DiT), along with some other minor improvements that we will learn while we describe the architecture.
+
+*Re-weighing of the noise in Rectified Flow:* Forward paths from data to noise in the diffusion process can be implemented in different approaches. One common one is known as *Rectified Flow*. Rectified flow optimizes the noise addition in a diffusion model by adjusting the noise to simplify the reverse path. This maintains key structural elements of the original data throughout the process. Rectified flow implements this simplification by taking pairs of data points, one with noise (like a noisy image) and the other with the original clean data. Then, it learns the Ordinary Differential Equation (ODE) [,](#page-84-0) which connects these points through a straight path. This [17](#page-84-0) involves iteratively refining the path to make it straighter.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_84_Figure_2.jpeg" alt="Figure" />
+
+Figure 11-45: SD3 architecture.
+
+The authors introduce *re-weighing of the noise in rectified flow*, which reduces error accumulation during the sampling phase due to increasing the possibility of getting to noise in fewer steps. Sampling in this context refers to generating new data points from the learned model distribution. Besides, the re-weight of the noise improves the fidelity and clarity of the generated images, and ensures that the sampling process is in line with the underlying data distribution.
+
+*Multi-modal Diffusion Transformer (MM-DiT):* Authors employ diffusion transformers in their architecture. Their architecture uses two separate sets of weights, one for text and one for image. This refers to multi-modality in their architecture. This separation of weights for different modalities improves the model's capacity to synthesize images from textual descriptions by enhancing text comprehension and visual representation. These transformer blocks are referred to as MM-DiT blocks, and they are stacked on top of each other in the model architecture, as
+
+An Ordinary Differential Equation (ODE) is a type of mathematical equation that involves derivatives of one or [17](#page-84-1) more functions with respect to a single independent variable. It is called "ordinary" to distinguish it from partial differential equations, which involve partial derivatives with respect to multiple independent variables.
+
+shown in Figure 11-45. Each MM-DiT block includes modulated attention and multi-layer perceptrons (MLPs), which are designed to merge information from text and image effectively.
+
+*SD3 Architecture:* In the architecture, CLIP-G/14 and CLIP-L/14 provide semantic alignment between text and images, while T5 XXL (we will explain T5 in Chapter 12) processes detailed textual input, ensuring the generated images reflect the content described in the text. The authors described the text prompt passes to these listed models, and the output feature map has 4096 channels.
+
+Having 4096 channels implies a very high-dimensional feature space, allowing the model to capture and process a vast amount of information from the data. This rich feature map passes to a linear layer to apply a linear transformation to it. The result is shown as 'c', which is a transformed feature matrix.
+
+Besides, their architecture shows a pooled vector. Pooling refers to an operation that aggregates or summarizes information from a broader set of data into a more compact form. Therefore, this pooled vector includes a rich feature vector of text and images, which is passed to an MLP.
+
+To incorporate the sequential notation into the model, they use *Timestep* combined with *Sinusoidal encoding* (a type of positional encoding that we will describe in Chapter 12), which it helps the model understand the order or sequence of data. This approach introduces a notion of progression or evolution within the model's processing steps, which assists the model in creating temporally coherent outputs. The raw timestep, along with its Sinusoidal encoding, passes to an MLP to transform the raw timestep data (a numerical indicator of the current phase in the generative process) into a more complex, feature-rich representation. The output of this MLP is combined with the output of the MLP of the 'pooled vector' and constructs the 'y' matrix. This matrix is a feature fusion of textual, visual (from one MLP), and sequential (from the other MLP) features altogether.
+
+The diffusion process starts with a 'noise latent'. Noise latent is not pure noise; the authors apply an intermediary step where the latent representation of an image (initially derived from real data) is systematically infused with noise through a controlled process. We have described this earlier as a re-weighing of the noise in rectified flow. Then, they get the noise latent and apply patching. The patching process is spatially restructured by breaking down the noise into smaller segments. Then, it passes to a linear layer, positional encoding is added, and it results in matrix *x*.
+
+*x, y*, and *c* go through *n* number of sequential MM-DiT modules. After these modules, there is a 'Modulation' component. Modulation is a mechanism that adjusts the behavior of the model based on certain inputs (timestep and a class vector). It alters parameters or activations in the network dynamically as it processes through the steps of generating an image, ensuring that the network's outputs are appropriately influenced by the inputs and the stage of the diffusion process. The result is passed to another linear layer, and later, they will be unpatched to build the final synthetic image.
+
+Explaining these models are: Finished, تمام, finalizada, خلاص, 完成的, Fertig, завершены, खत्म
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_86_Picture_0.jpeg" alt="Figure" />
+
+The weights of stable diffusion models are openly accessible, which leads us to dedicate serious time to explaining them here. If you find the architecture of SD3 too complex and it reminds you of StyleGAN3, we do agree with you. It seems that the diffusion model is squeezed, and similar to StyleGAN, which was one of the final GAN models; this might be one of the final models of diffusion. The same group of scientists also implemented knowledge distillation to make the distillation process faster, such as SDXL-Trubo [Sauer '24], which introduces Latent Adversarial Diffusion Distillation (LADD), which is a simple distillation approach. In Chapter 16, we explain what is knowledge distillation.
+
+Later, they released another group of models known as FLUX models(the largest one is not [18](#page-86-0) open-source), and at the time of revising this chapter for the 100th time, no technical details were shared.

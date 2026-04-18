@@ -1,0 +1,16 @@
+---
+chapter: "ch8"
+order: 6
+slug: "deciding-about-model-variables"
+title: "Deciding About Model Variables?"
+wordCount: 363
+---
+The F-test is very useful for multiple linear regression. Assume the model did not pass the F-test and we have several input variables. Probably one or a few of them are responsible for the failure, and other ones are good to be used for building a model for multiple linear regression. Now a question arises: how can we identify which variables perform well in building the model, and which do not perform well?
+
+For example, assume we build a model with three variables  $x_1$ ,  $x_2$ , and  $x_3$  as follows:  $Y = \beta_1 \cdot x_1 + \beta_2 \cdot x_2 + \beta_3 \cdot x_3 + \beta_0$ . If the model fails with  $x_1$ ,  $x_2$ ,  $x_3$  variables, we can remove  $x_1$  and then test another model with  $x_2$ ,  $x_3$ . Or we can remove  $x_2$ ,  $x_3$  and test another model with  $x_1$ , and so forth. In particular, for m numbers of variables we could have  $2^m$  different models.
+
+The best way to deal with model parameters is similar to the SBS and SFS which we have explained in Chapter 6, 'Wrapper Methods' section. Here, instead of features, we have model
+
+variables, and SFS style of parameter selection is called *Forward Stepwise Selection*, and SBS style of parameter selection is called *Backward Stepwise Selection*.
+
+In some cases, two more parameters of a model together have a very strong impact on the output variable. This phenomenon is called *synergy effect* or *interaction effect* [James '13]. For example, a popular celebrity (*x1*) is advertising a product on popular social media (*x2*). In this scenario, the popularity of these two variables boosts product sales, and we can extend our model to emphasize their importance by writing instead of , because we want to emphasize the combination of *x1* and *x2.* Usually, we need to experiment with both models (using interaction effect and not using interaction effect). Then, we can compare the *RSS* or other evaluation metrics of these two models and decide to use which one for the upcoming data (i.e., test dataset). *y* = *β*<sup>0</sup> + *β*1*x*<sup>1</sup> + *β*2*x*<sup>2</sup> + *β*3*x*1*x*<sup>2</sup> + *e y* = *β*<sup>0</sup> + *β*1*x*<sup>1</sup> + *β*2*x*<sup>2</sup> + *e*

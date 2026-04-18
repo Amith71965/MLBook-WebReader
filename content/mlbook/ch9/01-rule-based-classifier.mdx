@@ -1,0 +1,28 @@
+---
+chapter: "ch9"
+order: 1
+slug: "rule-based-classifier"
+title: "Rule-Based Classifier"
+wordCount: 451
+---
+Although it is the oldest classification approach, this classifier does not fit the definition of machine learning algorithms. It does really not involve any machine learning and is very straightforward computer programming. However, since we can often resolve our problem with this simple method, we respect its simplicity and list it as a classification algorithm.
+
+A rule-based classifier is a set of IF-THEN-ELSE instructions available in all programming languages. For example, we can create a binary classification for the reader of this book, either s/ he goes to heaven or hell, based on the following rules.
+
+- IF (*does not recommend this book*) THEN (*will go hell*).
+- IF (*does not pay for this book*) AND (*reads this book*) AND (*does not recommend this book*) THEN (*will go hell*).
+- IF (*read this book*) THEN IF (*recommend this book*) THEN (*will go to heaven*)*.*
+
+The statement after IF is called *rule precondition (antecedent)*, and the statement after THEN is called *rule consequent*. Thus, we can formalize a rule as IF *antecedent* THEN *consequent.* A rule in this context has two attributes: coverage and accuracy. *Coverage* of rule *r* is written as:
+
+$$Coverage(r) = \frac{n_{covered}}{n_{total}}$$
+
+Here, is the number of data points (or records if we assume the data is in tabular format) that are covered by rule *r*, and is all data points in the dataset. Another concept is *Accuracy,* which is the number of correctly covered by the rule divided by , and it is calculated as follows: *ncovered ntotal ncovered*
+
+$$Accuracy(r) = \frac{n_{correct}}{n_{covered}} = \frac{Antecenents \cap Consequnts}{Antecendents}$$
+
+If a data point belongs to more than one class, the algorithm can use mechanisms such as voting or priority ordering (some classes have higher priorities to get a data point than others) to decide about the label of that class. Rules could be predefined by users and not learned from the training set.
+
+One might ask why such a simple classification approach is not widely used and why we said it might not fit into the machine learning context. The motivation of machine learning is to teach an algorithm to learn on its own and decide. Rule-based classification is a sort of micromanaging of the learning process and hard coding of the rules. Therefore, it is not a good choice for a machine-learning approach.
+
+Nevertheless, we often use rule-based classification in software development and enjoy its simplicity. For example, in a Game project, we define rules to construct the game character's mood and body shape based on predefined rules. In particular, if the user is far away from their daily steps, the character gets fat and angry. If the user passes the daily goal, the game character stays fit and happy.

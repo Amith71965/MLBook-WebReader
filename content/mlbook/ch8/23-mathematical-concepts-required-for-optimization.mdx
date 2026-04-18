@@ -1,0 +1,160 @@
+---
+chapter: "ch8"
+order: 23
+slug: "mathematical-concepts-required-for-optimization"
+title: "Mathematical Concepts Required for Optimization"
+wordCount: 2242
+---
+Probably, if you are not a mathematician and reading this book, you have not encountered derivative gradients after primary/high school, and while you were in primary/high school, you might have thought they were completely useless for your life, especially if you do your high school in developing countries which emphasize on theoretical science more than practical ones. We have been in the same boat until now, and we thought the same way. At that time, we didn't know that mathematics would stick to our lives like a parasite and we could never eliminate it. Galileo, who was a decent scientist said that *"the book of nature is written in a mathematical language"*.
+
+In this section, first, we explain these concepts very briefly. If you are familiar with these mathematical concepts feel free to skip this section.
+
+#### Derivative
+
+Lets review that a function is something that gets an input variable x, does something with it, and produces the output, i.e. f(x) or y. Derivative is a variable that measures the sensitivity of changes in the output variable with respect to changes in the input variable. In other words, it specifies how the output will change, based on the given input. If it is not still clear, read the following: the derivative of a function describes how fast the function changes (increases or decreases).
+
+If the function is a single straight line, the derivative is a constant variable. If the function is a horizontal line parallel to x-axis, it means there is no slope, and its derivative is zero. If the function is changing at different paces, such as in Figure 8-19, the derivative is a function itself. The derivative is written as a ratio of output changes over the ratio of input changes:
+
+$$Derivative = \frac{Output\ Changes}{Input\ Changes}$$
+
+The process of finding the derivative is called *differentiation*. A derivative of a function f(x) is written as f'(x), which is the notation introduced by *Lagrange*. A bit sexier version that is widely in use is called *Leibniz* notation, and it is written as follows:
+
+$$f'(x) = \frac{d f(x)}{dx}$$
+
+As you can see from the red lines in Figure 8-18, when the function is not a straight line, the derivative is changing, because, at different points, the function has a different pace of change.
+
+A constant derivative means that the function is growing constantly and a derivative of a straight line is a constant value.
+
+To better understand the concept of derivatives, let's take a look at Figure 8-19. This figure shows a function that can be modulated with polynomial regression. A line that "just touches" the curve at
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_48_Figure_10.jpeg" alt="Figure" />
+
+Figure 8-18: A sample function that is plotted in two dimensional spaces  $({\rm I\!R}^2)$  and five random tangent lines (red lines) has been drawn. You can see that each tangent line touches the curve at one point (red dots).
+
+each arbitrary point is called a 'tangent' line. The particular point that connects the tangent line to the curve is called the point of tangency (red points in Figure 8-18).
+
+The derivative is responsible for specifying the slope for the given tangent line of the function. From Figure 8-18, we can see different tangent lines and their slope changes at each point. More
+
+formally, the derivative of a function at a certain point gives the slope of the tangent line to the function's graph at that point.
+
+However, each tangent line has one point on the function, as shown in Figure 8-18, we need at least two points to be able to draw a line. To calculate the slope, we use the following equation:
+
+$$slope = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}$$
+
+This equation shows to calculate the slope, we should select two points from the curve, and by using them, we can calculate the slope of the line connecting them. Let's say the first data point has coordinates  $(x_0, f(x_0))$ , the second data point is located in h distance to the first data point, thus, it has a coordinate
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_49_Picture_4.jpeg" alt="Figure" />
+
+of  $(x_0 + h, f(x_0 + h))$ . We can rewrite the slope equation as follows:
+
+$$slope = \frac{f(x_0 + h) - f(x_0)}{(x_0 + h) - x_0} = \frac{f(x_0 + h) - f(x_0)}{h}$$
+
+However, the smaller h leads to having a more accurate slope of that particular curve, but why? Let's take a look at Figure 8-19. In Figure 8-19 (a), we can see that the distance of h is the largest, and the line that describes the curve's slope is the least accurate line (in comparison to Figure 8-19 (b) and Figure 8-19 (c)). Then, in Figure 8-19 (b), the points get closer, and thus, the line gets more accurate because the direction is getting more specified. In Figure 8-19 (c), the data points get closer to each other, and the slope line gets more accurate than what we had in Figure 8-19 (b) because, from Figure 8-19 (a) to Figure 8-19 (c), the red line becomes more tangential and does not cross the function line (blue lines).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_49_Figure_8.jpeg" alt="Figure" />
+
+Figure 8-19: Three examples of slope line identification based on distances between two data points, which have *h* distance. These slope lines are called 'secant' lines. The more *h* gets smaller, the *secant* line gets closer to being a tangent line.
+
+From Figure 8-19 we can conclude that, as the h distance gets smaller, the slope line to the tangent line is getting more accurate. Therefore, we can write the derivation function of x as the *limit* as h is approaching zero:
+
+$$f'(x) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h}$$
+
+There are some basic rules for a derivative that we need to know, assuming n is a constant number, including:
+
+$$f(x) = x^n \to f'(x) = n x^{n-1},$$
+
+$$f(x) = n x \to f'(x) = n,$$
+
+$$f(x) = ln(x) \to f'(x) = 1/x,$$
+
+$$f(x) = x \to f'(x) = 1,$$
+
+$$f(x) = n \to f'(x) = 0,$$
+
+In other words, the function  $x^n$  has the slope of  $nx^{n-1}$ , the function nx has the slope of n, etc.
+
+What we have explained is a first-order derivative. It is also possible to make a derivative from a derivative, i.e. *second-order derivative*, and it is written as f''(x), e.g.,
+
+$$f(x) = x^2 \to f'(x) = 2x \to f''(x) = 2$$
+
+The second-order derivative is more stable than the first-order derivative because it captures the rate of change of the first-order derivative. However, due to its high computational cost, it is used rarely. To calculate the derivative, we should use some rules specified for the derivative including the *chain rule*, *quotient rule*, *product rule*, *sum rule* and *difference rule*, which we do not explain in detail here and just write down. If you would like to learn their proof, there are plenty of online resources to help you understand them.
+
+Chain rule (outside-inside rule): [f(g(x))]' = f'(g(x))g'(x) # it most important rule that is used in backpropagation.
+
+Reciprocal rule:  $(\frac{1}{x})' = \frac{-1}{x^2}$  # it is known as a specific case of Quotient rule.
+
+Product rule: (f(x) . g(x))' = f(x) . g(x)' + f(x)' . g(x)
+
+Quotient rule: 
+$$(\frac{f(x)}{g(x)})' = \frac{g(x)f(x)' - g(x)'f(x)}{g^2}$$
+
+Difference rule: (f(x) - g(x))' = f'(x) - g'(x)
+
+Sum rule: 
+$$(f(x) + g(x))' = f'(x) + g'(x)$$
+
+We will learn how Chain rule is used for Backpropagation Chapter 10. For now, keep in mind that the Chain rule is useful for finding a derivative of a function when we have nested functions (a function inside another function), e.g. g(.) is inside f(.). We can say it is a derivative of the outside function while leaving the inside function times the derivative of the inside function, check this equation  $[f(g(x))]' = f'(g(x)) \times g'(x)$  we wrote about chain rule.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_51_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-20: Tangent hyper plane plotted in 3D space.
+
+#### Second-Order Derivative
+
+Making a derivate from a derivative is referred to as second-order derivative. In mathematical terms, if you have a function f(x) its derivative is written as f'(x) or  $\frac{df}{dx}$ . The second-order derivative is the derivative of f'(x) and it is denoted as f''(x) or  $\frac{d^2f}{dx^2}$ .
+
+The second-order derivative is particularly useful in various applications such as physics, engineering, and economics, where it can signify concepts like acceleration (the rate of change of velocity) or concavity/convexity of functions, among others. However, due to its high computational cost we will avoid it or in cases we must implement it, we use a trick to simulate second-order derivative.
+
+#### Partial Derivative
+
+We have discussed the derivative, which is used for functions of one variable. Sometimes, we need to deal with a function with more than one variable, e.g.,  $f(x, y) = x^2 + 4y$ . To differentiate such a function, we use the *partial derivative*. A partial derivative once computes the derivative for x and considers the other variable (y) as constant. Then, it computes the derivative for y and considers the variable x as constant.
+
+Instead of d we used to refer to the derivative, here, we use  $\partial$  sign for partial derivative. To write a partial derivative for variable x and variable y, we write the following:
+
+$$\frac{\partial}{\partial x}[f(x,y)] = 2x + 0$$
+ and  $\frac{\partial}{\partial y}[f'(y)] = 0 + 4$ 
+
+#### Gradient
+
+Now that we understand derivatives, let's discuss them in the context of multivariate functions. Recall that the derivative in univariate functions represents the rate of change with respect to a single variable and is represented in two-dimensional space, often visualized in  $\mathbb{R}^2$ . What happens when we extend this concept to functions of more than one variable, i.e., *multivariate*, which is represented in higher-dimensional spaces such as  $\mathbb{R}^3$ ?
+
+The generalization of derivatives for a multivariate function is referred to as *Gradient*. In simple words, the gradient is used for functions that take more than one input variable (or parameter). It is a *vector of partial derivatives*, and gives the input direction in which the function increases or decreases. In machine learning, we often deal with high-dimensional spaces, and while the derivative conceptually applies to vectors, the gradient extends to higher-dimensional structures like matrices and tensors.
+
+While calculating the gradient, instead of the tangent line, which we had in the derivative, we have a *tangent plane* or *hyperplane* for the gradient. Figure 8-20 visualizes the gradient hyperplane on a function plotted in 3D space. Let's review what we have said: a gradient is a vector of all partial derivatives of the target function.
+
+A Gradient of a function f(X), assuming  $X = \{x_1, x_2, \dots x_n\}$  can be written as follows:
+
+
+$$\nabla f(X) = \left[ \frac{\partial f(X)}{\partial x_1}, \frac{\partial f(X)}{\partial x_2}, \dots, \frac{\partial f(X)}{\partial x_n} \right]^{7}.$$
+
+For example, for  $f(x_1, x_2) = ax_1^2 + bx_2 + c$  function.
+
+The derivative of this function with respect to  $x_1$  is written as:  $\frac{\partial f(x_1, x_2)}{\partial x_1}$ . The gradient of this function is written as follows:
+
+$$\frac{\partial f(x_1, x_2)}{\partial x_1} = 2ax_1 + 0 + 0, \ \frac{\partial f(x_1, x_2)}{\partial x_2} = 0 + b + 0.$$
+
+$$\nabla f(x_1, x_2) = \left[ \frac{\partial f(x_1, x_2)}{\partial x_1}, \frac{\partial f(x_1, x_2)}{\partial x_2} \right] = \left[ 2ax_1, b \right]$$
+
+In machine learning, we calculate gradient for cost functions, and it is used by the most popular optimization methods. Let's see another example, we choose RMSE as a cost function for a linear model, with n data points, we will have the following cost function:
+
+$$J(\beta_0,\beta_1) = \sqrt{\frac{\sum_{i=1}^n (\hat{y}_i - (\beta_1 x_i + \beta_0))}{n}}, \text{ its gradient will be } \nabla J(\beta_0,\beta_1) = \left[\frac{\partial j}{\partial \beta_1},\frac{\partial j}{\partial \beta_0}\right]$$
+
+<sup>7</sup> The  $\nabla$  sign is read as "nabla" and  $\partial$  is a "partial" sign used for specifying a derivative.
+
+#### Jacobian
+
+When we stack the gradient of two functions, each of them is a vector of variables, into a matrix called a Jacobian matrix. For example, assume we have  $\nabla f(x, y)$  and  $\nabla g(x, y)$ . The Jacobian matrix is written as follows:
+
+$$J = \begin{bmatrix} \nabla f(x, y) \\ \nabla g(x, y) \end{bmatrix} = \begin{bmatrix} \frac{\partial f(x, y)}{\partial x} &amp; \frac{\partial f(x, y)}{\partial y} \\ \frac{\partial g(x, y)}{\partial x} &amp; \frac{\partial g(x, y)}{\partial y} \end{bmatrix}$$
+
+For example, if we have  $f(x, y) = 4x^2y$  and  $g(x, y) = 2x + y^3$ , then their Jacobian matrix is written as follows:
+
+$$J = \begin{bmatrix} \nabla f(x, y) \\ \nabla g(x, y) \end{bmatrix} = \begin{bmatrix} 8x &amp; 4x^2 \\ 2 &amp; 3y^2 \end{bmatrix}$$
+
+#### Hessian
+
+The gradient is the first-order derivative of a multivariate function, and it can be written as a vector of variables. The Hessian matrix is a square matrix of second-order (a derivative of derivative) partial derivatives of a function. We have seen previously that the gradient can be written as  $\nabla f(x_1, x_2, \dots x_n)$ . The Hessian, which is the second-order of the gradient, is a symmetric matrix, and it is written as follows:
+
+$$\nabla^{2} f \quad or \quad H(f) = \begin{bmatrix} \frac{\partial^{2} f}{\partial x_{1}^{2}} &amp; \frac{\partial^{2} f}{\partial x_{1} \partial x_{2}} &amp; \cdots &amp; \frac{\partial^{2} f}{\partial x_{1} \partial x_{n}} \\ \frac{\partial^{2} f}{\partial x_{2} \partial x_{1}} &amp; \frac{\partial^{2} f}{\partial x_{2}^{2}} &amp; \cdots &amp; \frac{\partial^{2} f}{\partial x_{2} \partial x_{n}} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ \frac{\partial^{2} f}{\partial x_{n} \partial x_{1}} &amp; \frac{\partial^{2} f}{\partial x_{n} \partial x_{2}} &amp; \cdots &amp; \frac{\partial^{2} f}{\partial x_{n}^{2}} \end{bmatrix}$$
+
+Hessian includes all possible second-order partial derivatives, or we can say it includes every possible pairing of the *n* variables.

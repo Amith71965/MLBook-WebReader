@@ -1,0 +1,45 @@
+---
+chapter: "ch3"
+order: 21
+slug: "mann-whitney-u-test"
+title: "Mann-Whitney-U Test"
+wordCount: 714
+---
+Mann-Whitney (Mann-Whitney-Wilcoxon, MWM-Test. Wilcoxon rank-sum test) is another non-parametric used for hypothesis tests to identify precisely which sample differs from other samples. It tests two related samples or samples from repeated measurements. This test could be used as a substitute for the *Paired (Two-Sample) T-test*, while there is no guarantee about the normal distribution of the data.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_60_Picture_0.jpeg" alt="Figure" />
+
+KW-Test only identifies if they are similar or different, but it can not identify exactly which sample dataset differs from others. Therefore, after the KW-Test rejects the  $H_0$ , we can use Mann-Whitney-U Test (U-Test).
+
+For U-Test we have the following assumptions.
+
+*H*<sub>0</sub>: The distributions of both samples are equal.
+
+ $H_1$ : The distributions of both samples are not equal.
+
+To conduct the comparison, we should run a test on each pair of the samples until we find which one is different from the other ones. This process is called *pairwise comparisons* or *multiple comparisons*. Rejecting H<sub>0</sub> means the two samples we are comparing have a different median. To understand the process of this test, assume that in the previous example (Table 3-8), we would like to answer the following question: Is there a significant difference between bug tastes in Room no. 3 and Room no. 2?
+
+The Mann-Whitney test compares every data point from Room no. 2 to every data point from Room no. 3. The test starts by ordering all numbers from both rooms. By ordering them, we have 20 elements in a set as follows. The number before ":" is just presenting the order, so we have "order: score".
+
+*\{*1:1, 2:1, 3:1, 4:1, 5:1, 6:1, 7:1, 8:1, 9:1, 10:2, 11:2, 12:2, 13:2, 14:3, 15:3, 16:3, 17:3, 18:4, 19:5, 20:6*\}.* 
+
+Now, as the second step, the algorithm ranks the equal ones and assigns them a number. For the equal ones, it calculates the averages of ranks and assigns the new score to them. In our example, for all 1s, we will have:  $\frac{1+2+3+4+5+6+7+8+9}{9} = \frac{45}{9} = 5$ , for all 2s, we will have  $\frac{10+11+12+13}{4} = 11.5$ , and for all 3s, we have  $\frac{14+15+16+17}{4} = 15.5$ . The rank for 4 is 18, for
+
+5 is 19 and for 6 is 20. The algorithm assigns these ranks instead of the original data, and we have Table 3-11 as a result.
+
+| 1            | l <i>E</i> | E | E | E | _ |           |      |      |      |    | Sum   |
+|--------------|------------|---|---|---|---|-----------|------|------|------|----|-------|
+| Room no.2    | 5          | 5 | 5 | 5 | 5 | 11.5      | 11.5 | 15.5 | 15.5 | 19 |       |
+| 1100111110.2 | 1          | 丿 | 1 | ¥ | x | 11.5<br/>2 | 2    | 8    | 8    | 8  | 98    |
+| Deam no 2    | 5          | 5 | 5 | 5 | 5 | 11.5      | 11.5 | 15.5 | 18   | 20 | 101 5 |
+| Room no.3    | 1          | 丿 | 1 | 1 | x | 2         | 2    | 8    | A    | 8  | 101.5 |
+
+Table 3-11: All sample data ordered and ranked and scored based on their rank
+
+Afterward, the test sums all numbers, and this number is called the *Sum of Ranks (SR)*. It uses the following equation to calculate the U score:
+
+$$U = SR - \frac{n(n+1)}{2}.$$
+
+ $U_{Room-no.2} = 43$  and  $U_{Room-no3} = 46.5$ . Then, it looks up in a constant table (which is predefined, and we don't need to learn it) and uses our given  $\alpha$  (let's assume 0.05) and U to calculate the p-value. In this example, p-value = 0.46812, and therefore, it is not &lt; 0.05. It means we can not reject  $H_0$ . The same test could be done between Room no. 1 and Room no. 2, and Room no. 1 and Room no. 3, to identify bugs in which rooms are different from bugs in other rooms.
+
+While describing the KW-test, we find that there are no differences among those rooms, but again, we repeat the experiment with the U-Test. In real-world settings, one test might fail to reject  $H_0$ , and the other one could be able to reject  $H_0$ . Then, we do not know which one to select, and there is no ultimate solution for this phenomenon.

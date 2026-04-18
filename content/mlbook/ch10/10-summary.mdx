@@ -1,0 +1,36 @@
+---
+chapter: "ch10"
+order: 10
+slug: "summary"
+title: "Summary"
+wordCount: 907
+---
+In this chapter, we first describe some history and human efforts to resemble neural networks with computers. An artificial neural network is composed of three layers: input, output, and hidden layers. Each artificial neuron includes weight, bias, and an activation function that calculates its output.
+
+Weights and biases are the foundations of neural networks. The optimizer in the neural network weights tries to find the best combination of weights that results in the lowest loss score. The objective of a cost function in a neural network algorithm is to evaluate the output correctness based on the loss score. If it is not correct, then modify its values by using an optimizer to adjust weights. As we have explained, weights are assigned randomly; they should be adjusted, and this will be done through the backpropagation algorithm, which goes back from the output of the network to the input neurons. Backpropagation splits the error, proportional to the weights back using the chain rule of the differential equation.
+
+Next, we explained the perceptron, its limitations, and how Multi-Layer Perceptron (MLP) resolves its limitations. MLP algorithms are still in use and referred to as traditional ANN. If we increase the hidden layers of MLP algorithms, they are called deep neural networks. All neurons are connected to all neurons in the next layer of MLP. Such a connection is not mandatory in deep learning models, and if neurons of one layer are connected to all neurons of the next layer, they are called the "dense layer" or "fully connected layer".
+
+Afterward, we describe activation functions, which can enable the neural network to construct a non-linear model, followed by the cost functions explaination, which are mostly comparisons between the statistical distribution of predicted data and actual data.
+
+Then, different types of Gradient Descent based optimizers have been explained. At the time of writing this book, the best optimization approach is using Backpropagation, which operates based on chain rule in derivations.
+
+We concluded the general discussion about neural networks by regularization methods, including weight initialization, Gradient Clipping, Batch Normalization, Dropout, and Early Stopping.
+
+CNN models are one of the most popular uses of Deep Learning because of their application in computer vision. To understand CNN models, we explained the concept of convolution and cross-correlation. Then, we described some concepts related to applying a convolution, including padding, stride, window size, etc. After the convolution, a CNN network is usually applying a pooling layer. The pooling layer is used to downsample many convolutions of the input image. The result of the pooling layer is sent into a flattening and then a dense layer for output preparation.
+
+Since convolutions are very popular not just for computer visions but also for other tasks, we listed some of the common convolutional approaches, including 3D, dilated, and transposed convolution.
+
+RNN is another common deep learning architecture used for sequential data modeling, such as time series, natural language processing, etc. The basic models of RNN are pruned to vanishing gradient and exploding gradient problems. LSTM has solved the vanishing gradient issue and implements short-term and long-term memories. Each LSTM cell has four memory components: long-term memory, short-term memory, new long-term memory, and new short-term memory. Despite its usefulness, LSTM is complex and computationally inefficient. GRU, later, is introduced, which is less complex than LSTM. However, it is better to decide on the architecture with experiments and take into account the nature of the dataset that is used for the application.
+
+To review LSTM and GRU operations, the following list of all their equations<sup>18</sup>.
+
+#### LSTM:
+
+$$\begin{split} &amp;i_{t} = \sigma(W_{ii}x_{t} + b_{ii} + W_{hi}h_{t-1} + b_{hi}) \\ &amp;f_{t} = \sigma(W_{if}x_{t} + b_{if} + W_{hf}h_{t-1} + b_{hf}) \\ &amp;g_{t} = tanh(W_{ig}x_{t} + b_{ig} + W_{hg}h_{t-1} + b_{hg}) \\ &amp;o_{t} = \sigma(W_{io}x_{t} + b_{io} + W_{ho}h_{t-1} + b_{ho}) \\ &amp;c_{t} = f_{t} \odot c_{t-1} + i_{t} \odot g_{t} \\ &amp;h_{t} = o_{t} \odot tanh(c_{t}) \\ &amp;GRU: \\ &amp;r_{t} = \sigma(W_{ir}x_{t} + b_{ir} + W_{hr}h_{t-1} + b_{hr}) \\ &amp;z_{t} = \sigma(W_{iz}x_{t} + b_{iz} + W_{hz}h_{t-1} + b_{hz}) \\ &amp;\tilde{h}_{t} = tanh(W_{in}x_{t} + b_{in} + r_{t} \odot (W_{hn}h_{t-1} + b_{hn})) \\ &amp;h_{t} = (1 - z) \times \tilde{h}_{t} + z_{t} \odot h_{t-1} \end{split}$$
+
+In these equations, W refers to weight and b to biases; their index is used to separate them from each other and explain the weight or bias belongs to which stage,  $\odot$  presents a Hadamard product.  $h_t$  is the hidden state at time t,  $c_t$  is the cell state at time t,  $x_t$  is the input at time t. For the LSTM,  $i_t$  is the input,  $f_t$  is the forget gate output,  $g_t$  is the cell gate output and  $o_t$  is the output. For the GRU the  $r_z$  refers to reset gate,  $z_t$  refers to update gate, and  $\tilde{h}_t$  refers to candidate hidden state. To have a better overview of the differences between LSTM and GRU, you can check Figure 10-46 as well.
+
+At the end of this chapter, we described "Bidirectional RNN". Bidirectional RNN has the advantage of learning from both directions of a sequence, but it is slow. Nevertheless, it has useful applications such as speech recognition, part of speech tagging, etc. When we stack more than one layer of RNN cells on top of each other, this is referred to as "Deep RNN". It also has applications in machine translation and speech recognition.
+
+<sup>18</sup> Pytorch tutorial has a good summarization of both and we use them to build this table.

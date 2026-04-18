@@ -1,0 +1,52 @@
+---
+chapter: "ch3"
+order: 23
+slug: "effect-size"
+title: "Effect size"
+wordCount: 637
+---
+If your brain is still alive after reading statistical significance and all the methods we have described, let's repeat our motivation: why do we use the statistical significance test? A statistical significance test gives us a p-value and lets us know if there is a significant difference between the two groups we are comparing. The answer will be yes (p-value &lt;0.05, H0 is rejected) or no (p-value >0.05, H1 is rejected).
+
+However, the significance test does not tell anything about the *magnitude* or *size of the difference.* The effect size tells us about the size of differences between the two groups [Sullivan '12]. Let's go back to the example we have used to describe p-Value. There, we have the following.
+
+H0: "Bugs with leg weight of 0.2 g. DO NOT taste better than other bugs".
+
+H1: "Bugs with leg weight of 0.2 g. DO taste better than other bugs".
+
+Now, assume our significance test returns that there is a significant difference between the two groups, "*bugs with an average weight of 0.2 grams"* versus *"bugs without the average weight of 0.2*".
+
+How much are they tastier? Ten times, a bit more, etc.? To answer this question and quantify the amount of the difference, we use the effect size test.
+
+In this section, we list three approaches for identifying the effect size, including *mean differences*, *categorical differences*, and *correlation-based differences*. For each category, we describe one method.
+
+### Cohen's d Test
+
+Cohen's d Test [Cohen '92] is the most straightforward test used widely for mean differences. It computes  $\theta$  as follows:
+
+$$\theta = \frac{\mu_1 - \mu_2}{\sigma}$$
+
+In this equation,  $\sigma$  is a standard deviation based on both datasets, i.e.  $\sigma = (\sqrt{\sigma_1^2 + \sigma_2^2})/2$ .
+
+The Cohen's d output could be interpreted as large, medium, or small.  $\theta = 0.2$  is considered as a 'small' effect size,  $\theta = 0.5$  a medium effect size, and  $\theta = 0.8$  a large effect size. For instance, we measure the chickens' height, and we notice that the roosters (male chickens) are taller than female chickens. The mean height of male chickens is 0.6m, the mean weight of female chickens is 0.5m, the standard deviation of male chicken height is 0.2m, and for female chickens is 0.3. Therefore, the Cohen's d index will be:
+
+$$\theta = \frac{0.6 + 0.5}{(\sqrt{0.2^2 + 0.3^2})/2} = 6.11$$
+. Since  $\theta = 6.11$  the effect size is large.
+
+Cohen's d test is parametric, and when we deal with non-parametric data, we can use Cliff's d test [Cliff '93].
+
+### **Odds Ratio**
+
+The Odds Ratio (OR) is a measure of categorical differences between two groups of data. It measures the association between two properties and is called a relative measure of effect. Odds-Ratio uses a  $2 \times 2$  contingency table. Assume we conduct an experiment and give a medication to bugs; our medication name is called 'taste booster'. We would like to know if it affects their taste or not. We conducted an A/B testing experiment, and we grouped bugs into two groups; one group received our taste-boosting medication, we call the experiment (or treatment) group, and the other group did not receive our taste-boosting medication (or control group). If we call boosted taste an 'Event' and not boosted taste 'None Event', we can use Table 3-12 to present the contingency table.
+
+|               | Experiment | Control |
+|---------------|------------|---------|
+| Event         | a          | b       |
+| None<br/>Event | С          | d       |
+
+Table 3-12: Contingency table example.
+
+The Odds-Ratio is calculated as follows:
+
+$$OR = (a \times d)/(b \times c)$$
+
+If the , this means there is no effect identified between the two groups. if it means the experiment performs better than the control (positive association), if it means the control performs better than the experiment (negative association). *OR* = 1 *OR* > 1 *OR* &lt; 1

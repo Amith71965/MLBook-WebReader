@@ -1,0 +1,694 @@
+---
+chapter: "ch9"
+order: 5
+slug: "ensemble-learning-methods"
+title: "Ensemble Learning Methods"
+wordCount: 12966
+---
+If you think you have already got rid of the decision trees, please accept our sincere condolence; we still have a long way to go with decision trees. All classification methods we have described until now are useful. However, in a real-world setting, we usually do not use one method, and most of the time (not always), we use ensemble learning or ensemble methods.
+
+*Ensemble learning* refers to using more than one classification algorithm to perform the classification task, i.e., deciding on labels of the test dataset. Classification algorithms that we have explained until now are called weak learners or vanilla learners in the context of ensemble learning models. They are not weak, but combining them builds a stronger classifier, making them more accurate, and this is the objective of ensemble learning.
+
+Some ensemble learning methods resemble human behavior while seeking a consultation. Assume you ask a person's opinion about a product. What that person said is probably correct, but if you ask for the opinion of more people, you get a better understanding of that particular product. Ensemble learners do the same in the context of machine learning, and they lower error rates and reduce the risk of overfitting. However, it is impossible to always use ensemble learning methods due to their resource utilization; they are not good for low-power or devices with limited computational capabilities.
+
+There are three types of ensemble learning: Bagging [Breiman '96], Boosting [Schapire '90], and Stacking [Wolpert '92]. In the following, we describe these ensemble learning methods. Next, we focus on state-of-the-art classifiers that are based on gradient boosting decision trees.
+
+### **Bootstrap Aggregating (Bagging)**
+
+Bootstrap Aggregating (Bagging) methods start by choosing *more than one random subset* from the training set and building a model for each subset (Figure 9-18). As a result, we have a set of models, and in the end, they are combined together. Based on majority voting or averaging the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_41_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-18: A toy example that presents how the bagging algorithm works. In the context of ensemble learning, a single classifier is called a weak learner. Note that all classifiers should be the same algorithm.
+
+candidate labels, which are provided by each classifier, the final label will be assigned. Bagging reduces the variance because of the combination of different models.
+
+Figure 9-18 visualizes how bagging is working. Here, we have a dataset, and as the first step, the algorithm starts with the original dataset and creates multiple subsets through a process known as *bootstrap sampling*. Bootstrap sampling involves repeatedly drawing samples from the original dataset, with each draw returning the data point back to the dataset, allowing it to be selected again. This means that after a data point is selected, it can be chosen again in subsequent samples. As a result of this sampling method, each bootstrap sample is likely to contain duplicates of some data points while missing others. On average, each bootstrap sample will include about 63% of the unique data points from the original dataset. These subsets are referred to as bootstrap samples or *bags of data*.
+
+Then, as we can see in Figure 9-18, each of these subsets will be fed into a classifier. As a result, we will have three models, each from the same classifier algorithm. Afterward, it uses the majority voting or averaging from models to determine the label of new data points or test set data points.
+
+Despite the usefulness of vanilla decision trees, they suffer from high variance. It means that if we separate the training dataset into two parts and train a decision tree for each part, the two parts could have two very different decision trees. This shows the vulnerability of the decision tree to variance. We can use a Bagging method (e.g., Random Forest) to reduce the risk of variance. The result of bagging usually has higher accuracy than each algorithm alone. The input parameters that a bagging algorithm receives include the number of subsets, the number of data points in each subset, and the classification algorithm.
+
+Bagging is a *bootstrapping* method. In the English language, bootstrapping is an expression that metaphorically describes the act of achieving something without external help, often overcoming seemingly impossible odds. In the modern era, it is referred to processes that rely on selfresources and not outside resources. In the context of statistics, bootstrapping is a metric of sampling that uses random sampling with replacement and assigns an accuracy score to sampled data.
+
+### **Boosting**
+
+Boosting is another type of ensemble learning method in which each weak learner (a decision tree) is associated with a weight. To better understand the intuition of weights in boosting, let's talk about the example we described earlier. We explained that to buy a product, we could consult with several other recommenders. In the context of boosting, we assign weight to each recommendation based on the expertise of the recommender. If the recommender is an expert, the weight is high, and the non-expert recommender gets a low weight. These weights affect the average of opinions we get for a product.
+
+Boosting is a sequential process that applies a classification algorithm to the entire train dataset and then makes a model. Next, it collects the errors (mislabeled data points) of the previous model and makes a smaller dataset from errors. Then, it uses the same classification algorithm (similar to Bagging) on the dataset that includes errors and creates another model. This process continues in several iterations until a maximum number of iterations (hyperparameter) is reached. Each Boosting model depends on the previous model. In other words, each new model focuses on the errors of the previous round. The models that perform better will receive higher weights, and the model that performs weaker will receive lower weights.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_42_Figure_4.jpeg" alt="Figure" />
+
+Figure 9-19: A toy example that presents how the boosting algorithm works. Note that the test dataset uses the final model, which is the strongest model.
+
+Figure 9-19 shows the process flow of the Boosting algorithm. The objective is to label the unlabeled data, and in each round, a new dataset is constructed from the model's errors and fed into the next model as an input dataset.
+
+Boosting algorithms usually receive three hyperparameters: (i) the number of decision trees to construct, (ii) the shrinkage parameter (which is a type of regularization and it is used to slow down the learning and thus reduce overfitting), and (iii) the number of splits in each tree. In general, Boosting decreases the bias (bagging decreases the variance). However, it provides better accuracy than bagging, but it also tends to overfit the training data as well. Therefore, hyperparameter tuning is required to avoid overfitting.
+
+### **Stacking**
+
+Unlike Bagging and Boosting, Stacking applies 'different' weak learners in parallel and combines their results (base models) by training a *meta-model*. Meta-model or meta-learner aims to minimize the overall prediction error of weak learners. Previously described ensemble learning methods, i.e., Bagging and Boosting, are homogenous (they use one weak learner), but stacking is heterogeneous (different classification algorithms), and the output of each model will be used to train a meta-model. Usually, meta-model classifiers are simple regression algorithms, such as linear regression for regression tasks or logistic regression for classification tasks. However, we could use other algorithms as well.
+
+The main advantage of stacking is diversity among different models, which allows different patterns to be extracted from the underlying dataset. Both Bagging and Boosting are usually used for decision trees, but stacking uses a variety of weak learners, which makes it powerful to benefit from the diversity of different classifiers.
+
+Figure 9-20 visualizes the process of stacking. Usually, it has two steps. The first step, which we call level 0, involves using a mixture of classifiers. The next step, i.e., level 1, includes constructing a meta-model classifier that can accurately classify the test dataset.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_43_Figure_5.jpeg" alt="Figure" />
+
+Figure 9-20: A toy example that presents how the stacking algorithm works. The first classifiers are called level 0, and the second classifier is called level 1.
+
+#### **Random Forest**
+
+Random forest [Breiman '05] is the most popular Bagging algorithm that uses decision trees. Decision trees are very good because they are explainable, but they suffer from weak accuracy. The random forest algorithm resolves the accuracy problem of decision trees by constructing multiple decision trees during the training phase. Random forests can reduce the variance of decision trees by averaging their predictions from different subsets of the data.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_44_Figure_2.jpeg" alt="Figure" />
+
+Figure 9-21: From the original dataset, a set of bootstrap datasets (subsets) are created. The size of the subsets is similar to the original dataset, but each of them contains about 70% of the original data.
+
+The rest of their data points are duplicates.
+
+To understand the algorithm, we follow our sacred tradition and begin with an example. Assume you finished this book and since a big worry of your life, which is learning artificial intelligence and machine learning concepts, has been resolved. Now, you have started to play some games. A
+
+recommendation algorithm intends to suggest games to play. The history of your game playing is shown as a table on the left side of Figure 9-21. It is a dataset of some games, and you have labeled them as attractive to you or not.
+
+(i) As the first step, the random forest algorithm starts by creating subsets from the original dataset, similar to other Bagging algorithms; each subset includes only 63% of the original dataset samples, as it has been shown in Figure 9-21. These subset datasets are called *Bootstrap datasets*, and the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_45_Picture_2.jpeg" alt="Figure" />
+
+algorithm randomly selects some records from the original dataset to construct them. Since only 63% of the original dataset existed in each bootstrap (subset) dataset, the part of the dataset that does not exist in the bootstrap dataset is called the *Out-Of-Bag (OOB) dataset*, i.e., . 100 − 63 = 37 %
+
+(ii) In the second step, assuming we have a *d* number of features, The random forest selects *k* number of features from each subset, and it uses these features to calculate the split. In traditional decision trees, we use all features , but here, we use only features from possible features. Usually, the random forest uses equation to decide on the *k* value. For example, in Figure 9-22 ('Attractive' column is the label, and we didn't count it as a feature), thus we assume *k* = 2. For each dataset, we select *k* random number of features. Selected features are shown in blue color in Figure 9-22. For example, if , we get the closest fit, which is . In other words, unlike vanilla decision trees, we only use a random number of features (columns) and not all of them. This contrasts with decision trees, where the best feature for splitting is chosen from all available features rather than a subset. Here, however, the split is selected from a smaller set of features, not all of them. (*k* &lt; *d* ) *k* (*d* ) *k d k* = *d d* = 4 *d* = 8 *k* = 3
+
+A question might arise: why did we select *k* features from the *d* number of features? The answer is that if one single feature contributes significantly to a prediction, it will be used in the top split of all decision trees. By changing the split of trees, random forest creates highly uncorrelated trees, thus reducing the overall model variance and preventing overfitting.
+
+(iii) In the third step, the test dataset (or test record) will be fed into all trees, and then its labels will be decided by averaging the labels of the other decision trees. It will lead to having a low variance while getting a high accuracy.
+
+At the end of the training phase, we have a set of uncorrelated decision trees. For the inferences, we easily feed them into the set of decision trees, and each of these trees assigns a label to the new data point. The algorithms perform a majority voting and decide the final label based on votes, as shown in Figure 9-23.
+
+The Random forest has two hyperparameters to configure, *k* and *m* (in addition to the decision tree algorithm that is usually fixed). *k* is the number of features to select for comparison and split
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_46_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-22: *k* number of features from each select is selected (marked in blue dots), and the split for each decision tree is selected based on analyzing these k features, unlike decision trees, which use all features.
+
+selection (k = 2 in our example), and m is the number of subsets created from the original dataset (m = 4 subsets in our example).
+
+We have explained that while creating the Bootstrap dataset, the records or data points that are not included in the subsets are called Out-of-Bag (OOB) samples. For example, if the original dataset is composed of [a, b, c, d] and one of the Bagged datasets is composed of [a, b, d], we can say [c] is an OOB sample. Similar to the Bootstrap samples, each OOB sample set could be passed through its related decision tree algorithm, constructed without looking at OOB samples, and the prediction error of OOB can be calculated. This error is called the *Out-of-Bag error*. This
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_47_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-23: A test data which has only one record is fed into all decision trees. Each of them is assigned a label for the "Attractive" feature and at the end based on majority voting the final label will be assigned.
+
+error could also be used for the validation of the dataset (in addition to the test dataset). It means that we are not only relying on a test dataset for validation, but we can also use OOB datasets as well. As a result, we will have a very good estimate of the Random forest model. This is especially useful if we have a small training dataset.
+
+Assuming m is the tree depth and n is the number of data points, we explained the computational complexity of the tree is  $O(n \times log_2(m))$ . The Random Forest creates m' numbers of decision trees, so the computational complexity of training is  $O(m' \times n \times log_2(m))$  and testing will be  $O(m' \times log_2(m))$ .
+
+### **Adaptive Boosting (AdaBoost)**
+
+AdaBoost [Freund '95] is an ensemble learning algorithm based on Boosting that uses decision trees as its weak learners. To learn AdaBoost, we should first learn some concepts, which we describe below.
+
+- Similar to other boosting algorithms, AdaBoost combines multiple weak learners into a single strong learner. It focuses on errors in each iteration and improves the classification result by assigning higher weights to errors and lower weights to correctly classified data points.
+
+- Similar to Random Forest, it uses a set of decision trees. However, since these trees are very short in depth (usually only one level deep), they are called *stumps*.
+- Each data point (e.g., a record in table format) is associated with weight, and at the beginning, this weight is equal for each data point. The sum of weight at each iteration/level should equal one. Assuming we have *n* number of data points, the first stumps have their weight calculated as follows: . If, in an iteration, the data is classified incorrectly, then its weight increases. Otherwise, its weight decreases (for correctly classified data points) because the sum of weights should be equal to one at each iteration/level. *weigh t* = 1/*n*
+- For each stump after the first level, the *error rate* is calculated as the sum of the weights of the misclassified instances divided by the total sum of weights. For example, if we have 5 data points, each with an initial weight of 1/5, and 3 of them are misclassified, the error rate would be 3/5 , assuming all weights are still equal.
+- The result of an AdaBoost algorithm is a set of classifiers (stumps), each associated with a
+
+| Standing and<br/>Clapping Hand (C1) | Move too many<br/>Body parts (C2) | Keep Smile<br/>(C3) | Good Dance<br/>Performance<br/>(Actual) | Good Dance<br/>Performance<br/>(Predicted) |
+|------------------------------------|----------------------------------|--------------------|---------------------------------------|------------------------------------------|
+| No                                 | No                               | No                 | No                                    | No                                       |
+| No                                 | Yes                              | Yes                | No                                    | No                                       |
+| No                                 | Yes                              | No                 | Yes                                   | Yes                                      |
+| No                                 | No                               | Yes                | Yes                                   | Yes                                      |
+| No                                 | Yes                              | No                 | No                                    | No                                       |
+| Yes                                | Yes                              | Yes                | No                                    | Yes                                      |
+
+Table 9-8: A sample dataset of dancing, the prediction label will be "Good Dancer".
+
+#### weight.
+
+Now that we have learned these preliminary concepts let's use an example to explain this algorithm. Dancing is a part of the culture in many regions, especially in Africa, Asia (East, South, and West), South and Latin America, etc. People gather together in ceremonies and parties and dance together.
+
+Assume that after you finish this book, you are in charge of an AI corporation building dancing robots for parties. Your robots will learn to dance by looking at people dancing at parties. By looking at the people, the robot constructs the dataset presented in Table 9-8 along with our labels (Good Dance Performance). The output or prediction variable we are looking for labels is "Good Dance Performance". For the sake of simplicity, we consider all features binary.
+
+Adaboost algorithm performs the prediction in the following steps:
+
+(i) The algorithm assigns equal weight to each record, which is *1/n* of the total *n* records (See Table of Figure 9-24). Then, it uses each feature alone and creates a decision tree with a depth
+
+| C1  | C2  | C3  | Actual | Predicted | Level 0<br/>Weight |
+|-----|-----|-----|--------|-----------|-------------------|
+| No  | No  | No  | No     | No        | 1/6               |
+| No  | Yes | Yes | No     | No        |                   |
+| No  | Yes | No  | Yes    | Yes       | 1/6               |
+| No  | No  | Yes | Yes    |           |                   |
+| No  | Yes | No  | No     |           |                   |
+| Yes | Yes | Yes | No     | Yes       | 1/6               |
+|     |     |     |        | Yes<br/>No | 1/6<br/>1/6<br/>1/6 |
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_49_Figure_1.jpeg" alt="Figure" />
+
+Figure 9-24: First each record receives an equal weight. For each feature a stump is created, the number of its correct vs incorrect instances is written at the bottom of each stump.
+
+equal to one for each feature. In our example, we have three columns as features, and thus, we have three stumps. Keep in mind that the number of stumps is equal to the number of features. For example, if we have *m* features, AdaBoost will create *m* stumps.
+
+- (ii) Entropy, Gini index, or another tree split method is used for each stump to find the best stump that can split the data. We do not write them for the sake of brevity, but let's say the lowest entropy belongs to C3. Therefore, the AdaBoost algorithm selects the C3 stump.
+- (iii) Now, for the selected stump (C3), the algorithm should calculate the , known as *stump performance score*, *significance,* or *stage value* of the stump by using the following equation. Here, *t* presents the index of the current iteration. *αt*
+
+$$\alpha_t = \frac{1}{2} ln(\frac{1 - \epsilon_t}{\epsilon_t})$$
+
+In this equation is the total error, which is the sum of weights for the misclassified records in the stump by total records in that stump, which is as follows: *ϵt*
+
+$$\epsilon_t = \sum$$
+ (misclassied records in the stump / total records).
+
+Based on Figure 9-24, in stump C3, we have one incorrect record, and thus . Now, we can calculate the for stump C3 as follows: *ϵ<sup>t</sup>* = 2/6 *αt*
+
+$$\alpha_t = \frac{1}{2}ln(\frac{1 - (2/6)}{(2/6)}) = 0.3465$$
+
+(iv) Now that we have of this stump, we can add it to the final model. The final model is calculated as the sum of stump performance times each stump: *α<sup>t</sup> H*(*x*)
+
+$$H(x) = \sum_{t=1}^{T} \alpha_t h_t(x)$$
+
+Therefore, we have as the result of the first level (*Stump (C3)* is a function). *H*(*x*) = 0.3465 (*Stump*(*C*3))
+
+(v) The next level starts by updating weights. The following equation describes how the algorithms calculate the new weights (weight at level *i*).
+
+$$w_i = \begin{cases} w_{i-1} \times e^{-\alpha_t} &amp; \text{for correctly classified record} \\ w_{i-1} \times e^{\alpha_t} &amp; \text{for incorrectly classified record} \end{cases}$$
+
+Based on this equation, we calculate the weights of the second level and add them to the table, as shown in Table 9-10. For example, for the last record, the prediction says 'Yes', but the actual data says 'No'. In this case, assume that two records are incorrectly classified by Stump C3 (the last record), which its new weight will be . Others were correctly classified, and they will be . These numbers help us to identify values for the "Weight Level 2" column. 1/6 × *e*0.3465 = 0.235 1/6 × *e*−0.3465 = 0.117
+
+Nevertheless, the sum of weights should be equal to one, but they are not; therefore, the algorithm normalizes them by summing them all ( ) and dividing each weight by the sum. This helps us to populate the "Level 2 weight (normalized)" column in Table 9-9. 5 × 0.117 + 1 × 0.235 = 0.82
+
+| C1  | C2  | C3  | Actual | Predicted | Level 1<br/>weight | Level 2<br/>weight | Level 2 weight<br/>(normalized) |
+|-----|-----|-----|--------|-----------|-------------------|-------------------|--------------------------------|
+| No  | No  | No  | No     | No        | 1/6               | 0.117             | 0.14                           |
+| No  | Yes | Yes | No     | No        | 1/6               | 0.117             | 0.14                           |
+| No  | Yes | No  | Yes    | Yes       | 1/6               | 0.117             | 0.14                           |
+| No  | No  | Yes | Yes    | Yes       | 1/6               | 0.117             | 0.14                           |
+| No  | Yes | No  | No     | No        | 1/6               | 0.117             | 0.14                           |
+| Yes | Yes | Yes | No     | Yes       | 1/6               | 0.235             | 0.264                          |
+
+Table 9-9: A sample dataset of dancing, with the old and new weights.
+
+(vi) Now, a new dataset with the same size as the original dataset will be created based on the coefficients of the most recent weights (Level 2 weights). In other words, new dataset records have their distribution based on weights. Since we have 0.286 ~ 30%, we can say 30% includes this weight error, and in the new table, there will repeated at 30% of records. Therefore, we will have something like the table in Figure 9-25. The blue records in this table are the ones that are substituted by the record that has a weight of 0.286, and other records (black ones) remain unchanged. Randomly, we selected one record to substitute it, and as a result, the blue colors are 30% of the entire dataset.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_51_Figure_0.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_51_Figure_1.jpeg" alt="Figure" />
+
+Figure 9-25: A new dataset created based on the normalized level 2 weights. Blue ones are because of weight 0.087, and because of that the algorithm creates multiple copies of that record. Then, based on the new dataset, again for each feature one stump will be created.
+
+(vii) Next, the algorithm repeats from step (i) and creates one stump per feature from the Table in Figure 9-25. There will be three stumps, as it is shown in Figure 9-25.
+
+The process from step (ii) will be repeated. Let's say Entropy, Gini index, or another tree split is used and select stump C1. At the end of step (iii), after the stage value ( ) has been identified, the model can be refined. For example, assuming in this iteration, C1 has the lowest entropy (in this example, all have the lowest entropy, but we assume C1 has the lowest one), and we suppose we get its , the final prediction model will be written as follows: *αt α<sup>t</sup>* = 0.622
+
+$$H(x) = 0.804(Stump(C_3)) + 0.622(Stump(C_1))$$
+
+By looking at the result, i,e, , we can summarize that AdaBoost is a combination of several stumps (weak learners), and each stump is AdaBoost adjusts the weights of the training instances based on the errors made by the previous stump. *H*(*x*)
+
+AdaBoost receives several hyperparameters. One hyperparameter is called the "number of iterations", *T*. This iterative process will be repeated *T* times. In other words, the algorithm iterates until the number of iterations is reached. Also, some AdaBoost implementations receive the "number of trees (stumps)" as an input parameter as well. Obviously, the number of trees should be lower than the number of features, and the algorithm selects them randomly. To identify the optimal number of stumps, we need to perform hyperparameter tuning. Some implementations also allow specifying a bit deeper than one-level trees. Therefore, another hyperparameter of AdaBoost could be the "depth of tree". Another parameter is the "learning rate", and it usually has a predefined value (e.g., 0.1). It could be used to shrink the contribution of each weak model in the final model, but it is not required in all implementations.
+
+Assuming *m* is the number of stumps, *n* is the number of data points, and p is the number of features (columns) the computational complexity of AdaBoost is for training and for testing. *O*(*m* × *n* × *p*) *O*(*m* × *p*)
+
+#### NOTES:
+
+- \* Bagging is robust to noise and outliers; boosting can indeed be sensitive to noise and outliers because it tries to correct misclassifications in each round, potentially leading to overfitting on the noise.
+- \* Decision trees are the most common algorithm used in Bagging. Because they have high variance, bagging is helpful in reducing the variance of classification algorithms.
+- \* Since boosting focuses on misclassified data points, the risk of overfitting increases.
+- \* The term Bootstrapping is used in statistics as well. Bootstrapping is a statistical method used to estimate the population's statistical characteristics (e.g., distribution) by sampling a dataset with replacement.
+- \* Random Forest enables us to measure the importance of each feature based on its contribution to tree split (e.g., impurity), which makes it an attractive algorithm to use for feature selection as well. In particular, per feature, we can calculate the impurity of the tree and then rank features based on their impurity to select the best feature that can assist us in the prediction or labeling task.
+- \* While using the Random Forest algorithm, it is possible to make tree creation more random by using a random threshold for splitting trees. As a result, such a set of trees (forest) is called an *extremely randomized forest.*
+- \* While Random Forest is generally robust against overfitting due to its averaging method, AdaBoost can provide high accuracy but might be prone to overfitting if the noise is present.
+
+### **Gradient Boosting Decision Tree**
+
+At the time of writing this chapter, there are online communities, such as Kaggle'[s](#page-52-0) online [7](#page-52-0) machine-learning competitions. Most of the awards go to the participants who use Gradient Boosting Decision Tree (GBDT) algorithms. GBDT algorithms have higher accuracy than traditional classification algorithms and, for tabular data, perform better than Deep learning algorithms (we will explain them in upcoming Chapters 10, 11, and 12). Nevertheless, unlike deep learning algorithms, they do not need a large dataset to operate. Therefore, if the dataset is not large enough and we can experiment with gradient boosting algorithms, it is a wise decision.
+
+We start this section by explaining the basic form of the gradient boosting algorithm [Friedman '01, Mason '99]. Then, we will describe the three state-of-the-art algorithms that leverage the gradient boosting approach.
+
+[<sup>7</sup>](#page-52-1) https://mlcontests.com
+
+GBDT algorithm [Friedman '01, Mason '99] is boosting (ensemble) algorithms that operate by using a gradient cost function. The boosting process of this algorithm is *a numerical optimization problem to optimize*.
+
+A gradient boosting algorithm is composed of these components: (1) a loss function to be optimized, (2) a sequence of decision trees (weak learners) to make predictions, and (3) an additive model that adds decision trees to minimize the loss function. It is called an additive model because one new decision tree will be added to the sequence at each iteration, and existing decision trees remain unchanged (frozen) in the model. This additive model uses a gradient (check Chapter 8) to minimize the loss
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_53_Picture_3.jpeg" alt="Figure" />
+
+score. In Chapter 8, we have explained that gradient descent is used to minimize a set of parameters, but in the context of a gradient boosting algorithm, the gradient is applied to minimize residual errors in decision trees*.*
+
+The gradient boost can be used for both regression and classification. To keep the clarity of the algorithm, we cheat a bit in this chapter, which is about classification, and explain its regression here.
+
+### Regression with GBDT
+
+To implement a regression with a simplified version of the gradient boosting, the algorithm performs the following steps.
+
+- (1) First, it starts with averaging the data we intend to predict. Next, the 'residual' will be calculated by the loss function. A simplified version of residual (pseudo residual) error is computed as . We will also use the simplified pseudo residual in our examples. *actual* − *predicted*
+- (2) Then, a new decision tree (e.g., CART) is constructed based on differences between pseudo residuals and predicted values.
+
+Next, by comparing the initial prediction and pseudo residual, a new prediction is estimated, but the tree is multiplied by a learning rate ( ) to scale its contribution to the final prediction model and reduce the risk of overfitting. *α* = 0.1
+
+(3) Step 1 (without average calculation) and Step 2 will be repeated until adding more new trees does not reduce the pseudo residual values or a specific number of trees reaches.
+
+| Gender | Race  | Salary |
+|--------|-------|--------|
+| Male   | White | \$200k |
+| Female | Asian | \$160k |
+| Female | White | \$170k |
+| Male   | Black | \$150k |
+| Female | Asian | \$150k |
+| Male   | White | \$200k |
+
+Table 9-10: Salary of the SocialLove company based on race and gender for employees with equal qualification.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_54_Picture_0.jpeg" alt="Figure" />
+
+The maximum number of trees will be given as a hyperparameter. Then, the additive model is constructed by summing up all constructed decision trees.
+
+It is better to understand its details with an example. Assume we have access to the historical data of SocialLove, a corporation that is a pioneer in Internet social media. SocialLoveclaims [8](#page-54-0) that they respect diversity and treat all their employees fairly. A friend of ours who is an AI engineer is willing to join SocialLove. We have acquired access to some internal data, and we could use it to predict the salary in that corporation based on their race and gender. Our algorithm uses gender and race from historical data to recommend a salary for a new candidate. The historical data that is used for our prediction is presented in Table 9-10.
+
+In the first step, the algorithm calculates the average of the target feature used for prediction (i.e., average salary) and then calculates the residual error for this feature. The residual (Residual 1) and target prediction (Predicted Salary) are shown in the table on the left side of Figure 9-26. Next, the algorithm creates the first decision tree, *DT1*, based on residuals. *DT1* leaf nodes are residuals, and its decision nodes are input features (Gender and Race).
+
+The input of the decision tree is "Gender" and "Race", and the output is residuals ("Residual 1" in Figure 9-26). Since each leaf node has more than one residual, the algorithm calculates the average of residuals and substitutes it as a leaf node value. Check the bottom table in Figure 9-26 to see the result of the average substitution for *DT1*.
+
+Now, the first decision tree is constructed, and each leaf node (light blue nodes in Figure 9-26) has one value. We observe that some residuals are close to the predicted value. For example, the average of residuals in a leaf node is -10, which is a small difference from the original value. This is a sign of overfitting (we have high variance and low bias) and it should be resolved. To
+
+At the time of writing this section, in 2021, requests for gender and race fairness reached tech companies, and ethics among the [8](#page-54-1) AI community raised many discussions. The data of this example are not real, but this unfortunate phenomenon exists everywhere, and to show our respect for people who struggle against this attitude, we use this example here.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_55_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-26: Flow of the GBDT for regression. The same information from Table 9-12, along with the predicted salary, has been added, and residuals are calculated. Since it is the first round, the predicted salary is just an average of all salaries. After residuals have been calculated, they will be substituted in the table for the next round. In the next round based on residuals, a new decision table is constructed, and then a new table with an updated prediction and residual will be created. This process continues until we reach the maximum number of trees (given as a hyperparameter).
+
+ensure that the overfitting is handled, the algorithm adds a learning rate ( $\alpha=0.1$ ) multiplied by residuals to the predicted value. It uses the following equation:  $\hat{y}_{new}=\hat{y}_{old}+\alpha$ . Residual. Multiplication by a learning rate reduces the contribution of the decision tree in the final model, and thus, more decision trees will improve the accuracy of the final model. This is an important step to reduce the risk of overfitting. In the next iteration (step 3), we use the DT1 and calculate the predicted value as:  $H(salary) = \hat{y} + 0.1(Residual 1)$ .
+
+Now, we can see that residuals have decreased slightly. See the second table in Figure 9-26. Again, the algorithm uses these new residual values (Residual 2) to construct a new decision tree, DT2, similar to what we have explained for DT1. The initial result is shown in the DT2 of Figure 9-26, and the described process repeats continuously, i.e., again, a new residual (Residual 3) is calculated, and the predicted value will be updated.
+
+At the end, the prediction model will be written as follows:
+
+$$H(salary) = \hat{y}_{old} + 0.1(Residual\ 1) + 0.1(Residual\ 2) + \dots$$
+
+Technically, we can formalize the prediction model as follows.
+
+$$H(x) = H_0(x) + \alpha \times (H_1(x)) + \alpha \times (H_2(x)) + \dots = \sum_{i=1}^{n} \alpha \cdot H_i(x)$$
+
+Here,  $H_i(x)$  presents the residual of the model *i*. Each time we add a tree to the model, the residual values will get smaller. This process of tree creation and new residual calculation continues until the maximum number of decision trees is reached or the residual values do not change. Then, H(x) is the final model and used to label new data.
+
+When new test data arrives to estimate its salary, the algorithm finds the residual value of the right branch of decision trees (e.g., if it is male and not white, the algorithms substitute -20 for DT1, -18 for DT2, ...), and substitute them in the H(x) equation to predicts the salary of the new test data.
+
+This example seems too simple; no optimization algorithm has been used, and there is nothing about gradient here. However, this simplified example helps us to understand the intuition behind using GBDT for regression.
+
+#### Classification with GBDT
+
+The gradient boosting algorithm is used for classification as well. It is fairly similar to regression one with some slight modifications, and it operates as follows:
+
+- (1) First, the algorithm starts calculating the average of the target prediction variable and then computing its log(odds) (check Chapter 8 to recall odds). In other words, the log(odds) is the initial prediction value for the classification task of this algorithm. Then, the Sigmoid function for binary class labeling or Softmax function for multi-class labeling is used to transform the log(odds) into a probability value. This probability value will be used to decide about the initial labels. For example, if the probability is higher than 0.5, in a binary classification, then all labels will be positive, otherwise negative.
+- (2) Next, the residual will be calculated by the cost function. A simplified residual (pseudo residual) is
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_56_Figure_11.jpeg" alt="Figure" />
+
+<sup>9</sup> In Chapter 8 we use the same approach for logistic regression and convert log (odds) into probability.
+
+calculated ( ) in terms of probability (a number between 0 and 1). *actual* − *predicted*
+
+(3) Afterward, a weak learner (e.g., ID3, CART, etc.) is used to construct a decision tree and predict residuals. The number of residuals is more than the number of leaves in the tree, and some leaves have more than one residual. A transformation should be implemented to assign
+
+| Length of<br/>Question (LQ) | Speak Loudly<br/>(SL) | Say Something<br/>Negative (SN) | Get Angry<br/>(GA) |
+|----------------------------|----------------------|--------------------------------|-------------------|
+| 8                          | Yes                  | Yes                            | Yes               |
+| 8                          | No                   | No                             | No                |
+| 9                          | Yes                  | No                             | Yes               |
+| 14                         | No                   | Yes                            | Yes               |
+| 17                         | Yes                  | Yes                            | Yes               |
+| 5                          | No                   | No                             | No                |
+
+Table 9-11: Previous reaction of the chatbot to the question we asked it.
+
+| Length of<br/>Question (LQ) | Speak Loudly<br/>(SL) | Say Something<br/>Negative (SN) | Get Angry<br/>(Actual) | Initial<br/>Prediction | Residual       |
+|----------------------------|----------------------|--------------------------------|-----------------------|-----------------------|----------------|
+| 8                          | Yes                  | Yes                            | Yes                   | 0.66                  | 1-0.66 = 0.34  |
+| 8                          | No                   | No                             | No                    | 0.66                  | 0-0.66 = -0.66 |
+| 9                          | Yes                  | No                             | Yes                   | 0.66                  | 1-0.66 = 0.34  |
+| 14                         | No                   | Yes                            | Yes                   | 0.66                  | 1-0.66 = 0.34  |
+| 17                         | Yes                  | Yes                            | Yes                   | 0.66                  | 1-0.66 = 0.34  |
+| 5                          | No                   | No                             | No                    | 0.66                  | 0-0.66 = -0.66 |
+
+Table 9-12: Previous reaction of the chatbot to the question we asked it.
+
+each leaf a residual value. The following equation is the transformation to calculate the leaf value from its residuals.
+
+$$leaf\_value = \frac{\sum_{i} Residual_{i}}{\sum P_{old} \times (1 - P_{old,i})}$$
+
+Here, refers to the previous predicted probability value. In the initialization phase, all predicted probabilities are the same, which we already know is wrong, but it is only the initial prediction. After this transformation, the tree is ready, and each of the tree's leaf nodes includes one value. *Pold*
+
+- (4) The recently constructed tree will be multiplied by the learning rate and added to the additive model, i.e., . This tree will be used to calculate the new predicted probability, i.e., Sigmoid of log(odds). *H*(*x*)
+- (5) The process from steps (1) to (4) will continue until adding more new trees does not reduce the residual values or a specific number of trees reaches. The maximum number of trees will be
+
+given as a hyperparameter. Then, the final model is constructed by summing up all the constructed decision trees.
+
+Table 9-11 presents an example; here, we try to create a chatbot that is getting angry when we are talking about something harmful. We are in love with our chatbot, and we really hesitate to make it angry. Since the mood of the chatbot changes based on the questions, we developed a predictive model to avoid asking the chatbot questions that result in anger.
+
+We would use the GBDT classification model to predict whether the chatbot gets angry or not based on the given question.
+
+(1) The first step, as we have explained before, is to make an initial prediction and then calculate its log(odds). In Table 9-12, column GA, there are four 'yes' and two 'no'. In total, we will have six states. Its log(odds) is calculated as follows:
+
+$$log(\frac{4}{2}) = 0.69$$
+, which we round it to 0.7.
+
+After the log(odds) have been computed, it is converted into probability by using the Sigmoid function as follows:
+
+$$initial\_prediction = \frac{e^{log(odds)}}{1 + e^{log(odds)}} = 0.66$$
+
+The value of the initial\_prediction 0.66 > 0.5, thus, states that all sentences are predicted to make the chatbot angry (we assign 1 to get angry and 0 not to get angry). Clearly, this approach is not correct, but it is the initial prediction, and the algorithm improves its prediction in each iteration.
+
+In this example, we choose to perform binary classification for the sake of simplicity, but though softmax, we can cover more than two labels.
+
+- (2) Now, the probability value of the initial prediction is used to calculate residuals, and the residual is the difference between actual values (1 for yes and 0 for no) and the initial prediction. The result of the residual is presented in Table 9-12.
+- (3) At this stage, residuals are ready, and the algorithm can build its first decision tree. It builds the decision tree to predict residuals using LQ, SL, and SN. Let's assume the algorithm constructs a tree like the one presented on the left side of Figure 9-27.
+
+Since some leaves have more than one residual value, we should use the described equation for leaf values to get only one value for each leaf.
+
+Afterward, we perform the transformation for every leaf (even the one that has only one value) by using the described equations as follows:
+
+$$\frac{-0.66 + 0.34 + -0.66}{(0.66 \times (1 - 0.66)) + (0.66 \times (1 - 0.66)) + (0.66 \times (1 - 0.66))} = \frac{-0.98}{0.67} = -1.46$$
+
+$$\frac{0.34 + 0.34}{(0.66 \times (1 - 0.66)) + 0.66 \times (1 - 0.66)} = \frac{0.68}{0.45} = 1.51$$
+
+$$\frac{0.34}{0.66 \times (1 - 0.66)} = \frac{0.34}{0.22} = 1.54$$
+
+By substituting these values, the first weak learner table will look like the right side of Figure 9-27.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_59_Figure_2.jpeg" alt="Figure" />
+
+Figure 9-27: A sample decision tree is constructed (by hand to simplifying its readability) from the data in Table 9-14. Leaf nodes assigned residuals as value, but then the described equation of step (2) is used to substitute leaf nodes with more than one variable with new variable.
+
+(4) Now that the first decision tree is ready, let's call it DT1, and it is added to the additive model. In particular, the result mode (additive model) will summate the initial prediction and learning rate (e.g., 0.1) times the decision tree.
+
+$$model = 0.66 + 0.1 \times DT1$$
+
+(5) Based on the additive model, the algorithm calculates the log(odds) of each record and substitutes it as the prediction column.
+
+For example, for the first record in Table 9-12, we have LQ &lt; 9 and SN = No. By substituting them in the model, we have  $model = 0.66 + 0.1 \times 0 = 0.66$ . For the fourth record, we have LQ > = 9 and SL = No, and thus  $model = 0.66 + 0.1 \times 1.54 = 0.814$ . These log(odds) values will be used by the Sigmoid function to calculate the new prediction value and construct a table similar to Table 9-12. The initial prediction value will be substituted by the results Sigmoid of log (odds). Then, from step (2), the process iteratively continues until a threshold for a maximum number of trees is reached or the loss score does not improve. The final model will be something like the following:  $model = 0.66 + 0.1 \times DT1 + 0.1 \times DT2 + 0.1 \times DT3 + \dots$ 
+
+When a new record is added to the table, the algorithm identifies its label (either get angry or not get angry) by substituting its values in the model. Now that we understand a simplified version of the algorithm, we can write it pseudo-code, which could help us understand the algorithm in more technical detail. In the examples described, both regression and classification, we try not to describe its math. Nevertheless, while formalizing GBDT, we describe its math.
+
+The algorithm gets the input dataset, i.e.,  $\{(x_i, y_i)\}_{i=1}^n$ , and a differentiable loss function, i.e.,  $L(y_i, \gamma)$ , as an input. The loss function should be differentiable because it uses the chain rule of derivatives (check Chapter 8 to recall these mathematical terms).  $x_i$  presents the features for the given input value (one row of data without the prediction column),  $y_i$  presents the output, and n is the number of data points in the training set. The loss function L evaluates how well we can predict  $y_i$ , and it is computed as follows (for a regression problem):
+
+
+$$L = 1/2(predicted - actual)^2$$
+.
+
+The gradient boosting algorithm can be written as follows. While reading the pseudocode, please read the blue text as comments on top of each command.
+
+# The input data is the training dataset  $(\{(x_i, y_i)\}_{i=1}^n)$ , x is the input variable, and our objective is to predict y, given the differentiable loss function. $L(y_i, F(x))$  Is a differentiable loss function, and F(x) is the prediction function
+
+*Input data:*  $\{(x_i, y_i)\}_{i=1}^n$ ,  $L(y_i, F(x))$ 
+
+# At the beginning, the algorithm initializes the model  $(H_0(x))$  with a constant value.  $L(y_i,\gamma)$  is the cost function that should be minimized. y is the prediction variable and  $\gamma$  is the log(odds) value. In this context,  $arg\ min$  means we must find the log(odds) that minimizes the sum. This minimization can be implemented with the Newton method or gradient descent.
+
+$$H_0(x) = arg \min \sum_{i=1}^n L(y_i, \gamma)$$
+
+For m=1 to M # M is the number of trees to be constructed, usually set to 100. # The following line computes residual for 'n' training set. i in  $r_{i,m}$  stays for the sample number, and m for the number of trees. The residual  $(r_{i,m})$  is the derivative of the loss function with respect to the predicted value.
+
+derivative of the loss function with respect to the 
+$$r_{i,m} = -\left[\frac{\partial L(y_i, H(x_i))}{\partial H(x_i)}\right]_{H(x) = H_{m-1}(x)} \quad for \quad i = 1,...,n$$
+
+# it uses the 'train' dataset to construct a weak learner  $(H_m(x))$ .  $H_m(x)$  fits the predicted value to the residual value. Meaning, it builds a tree to predict pseudo-residuals  $(\{(x_i,r_{i,m})\}_{i=1}^n)$  instead of prediction value  $(\{(x_i,y_i)\}_{i=1}^n)$ . Therefore,  $Fit(H_m(x),r_{i,m})$  trains the mth weak learner to predict these residuals (the errors made by the previous predictions).
+
+$$H_m(x) \leftarrow Fit(H_m(x), r_{i,m})$$
+
+# Each leaf from the constructed tree  $H_m(x)$  has k number of residuals to determine the output values for each leaf. The output (predicted) value is a  $\gamma$  (gamma), a.k.a. "multiplier" (or log(odds) in classification case).  $\gamma$  is the minimum of the cost function. It resolves an optimization problem with a derivative of the cost function and chain rule. In other words, this equation minimizes the optimization function.
+
+# In the case of classification case, instead of i=1 in the summation, we will have  $x_i \in R_{ij}$ , which  $R_{ij}$  refers to all residual values in that leaf.
+
+$$\gamma_m = \arg\min_{\gamma} \sum_{i=1}^k L(y_i, H_{m-1}(x_i) + \gamma)$$
+
+[the algorithm continues on the next page]
+
+<sup>10</sup> A function that its derivative existed at each point is referred to as a differentiable function.
+
+```
+# At the end, the model will be updated and making a new prediction for each 
+      sample by adding it to the previous prediction. is the learning rate.
+return
+                                                        α
+      Hm(x) = Hm−1(x) + α × γm
+     Hm(x)
+```
+
+For some mysterious reason, we did not find much discussion about the computational complexity of the GBDT algorithm. A paper by Si et al. [Si '17] reports that considering *N* is the number of data points and *L* is the number of labels (size of output space). At least time and memory are required to build GBDT trees. The residual density grows after each iteration, and will become a matrix of size . *O*(*NL*) *N* × *L*
+
+Finally, we are done with the gradient boosting algorithm and other algorithms. Take out your brain from the fryer and put it in an ice bucket because the remainder of this chapter will explain some state-of-the-art classification algorithms.
+
+#### NOTES:
+
+- \* In the described examples, we have explained that no loss function has been used, and we calculate a pseudo-residual, not a real residual, which is calculated by the loss function.
+- \* In the described examples, we have simplified the weak learner (tree) construction and do not use any of the standard tree construction algorithms for the sake of simplicity.
+- \* Usually, a gradient boost used for classification uses trees with 8 to 32 leaves.
+- \* The pseudo-code for the algorithm for both regression and classification is the same, except for a few differences while calculating . *γm*
+- \* In the classification case, to calculate instead of derivate, the algorithm can take a secondorder Taylor polynomial and approximate the minimum value. *γm*
+
+### eXtreme Gradient Boosting (XGBoost)
+
+As we have explained previously, at the time of writing this book, XGBoost [Chen '15] is among the best algorithms in terms of their accuracy, especially when deep learning algorithms do not meet the demands of the users. XGBoost is a derivation of a GBDT algorithm, which has employed lots of optimization techniques, and its cost function has a regularization (check Chapter 8 to recall regularization) along with the cost function as well.
+
+XGBoost optimization methods include using an approximate greedy algorithm, parallel learning, and a weighted quantile approach to identify the threshold value of split faster. In addition, the algorithm handles the sparsity of data efficiently, using caching (bringing data to CPU cache memory instead of the hard disk) and sharding (a method to facilitate disk access), which results in a better execution time by dealing with missing values. We do not explain the details of optimization methods to preserve your brain cells to understand the core of this very accurate but heavy algorithm.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_62_Figure_0.jpeg" alt="Figure" />
+
+Vanilla Decision Tree
+
+Gradient Boosting Decision Trees
+
+Unlike the GBDT method, XGBoost uses a specific type of decision tree, i.e., XGBoost tree. XGBoost has many hyperparameters, and we describe the important ones here, i.e.  $\eta$ ,  $\gamma$ , "minimum child weight", "maximum depth", "subsample",  $\lambda$  and  $\alpha$ . The hyperparameter  $\eta$  (default = 0.3) is a learning rate and shrinks the model weight at each iteration to make it robust against overfitting. A node in XGBoost split if the split leads to a reduction in a loss function.  $\gamma$  (default = 0) is a threshold to specify the minimum loss reduction that is required to perform the split. "Minimum child weight" specifies the minimum sum of weights of samples required to be in each child node. "maximum depth" (default = 6) specifies the maximum depth of a tree (deep trees are prone to overfitting). "subsample" parameter specifies the ratio of sampling for the training dataset. For example, subsample = 0.5 means at every iteration, the algorithm randomly samples 50% of training data before growing a tree.  $\lambda$  is a  $L_2$  regularization parameter and  $\alpha$  is a  $L_1$  regularizer on weights (leaf values). There are several other hyperparameters, we do not explain them, but you can check them from XGBoost documentation.
+
+XGBoost can be used for both classification and regression. The loss function for classification and regression differs, but both cases use second-order Taylor approximation (Check Chapter 8 for Taylor series). XGBoost cost function is a gradient loss function plus a regularization, which is very similar to ridge regression (Check Chapter 8).
+
+Assuming  $x_i$  is the input and,  $\hat{y}_i$  is the output,  $\hat{y}_i = \sum_{k=1}^K f_k(x_i)$ , which is a combination of K number of decision trees. The objective function of the GBDT algorithm can be formalized as  $L(y_i, \hat{y}_i)$ . Additionally, GBDT can have a regularizer  $\Omega$  to reduce the risk of overfitting. The following equation presents the objective function of a GBDT algorithm with a regularizer:
+
+$$\sum_{i=1}^{n} L(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)$$
+
+In this equation,  $L(y_i, \hat{y}_i)$  is the gradient cost function,  $f_k$  presents the kth decision tree, and  $\sum_{k=1}^{K} \Omega(f_k)$  is the regularizer.
+
+XGBoost is a type of GBDT with a specific regularizer, and the regularizer in XGBoost for the *k*th tree is calculated as follows:
+
+$$\Omega(f_k) = \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_j^2$$
+
+T is the number of leaves (terminal nodes),  $\gamma$  is a user-defined penalty, and the rest is the  $L_2$  norm or Ridge penalty (check Chapter 8 regularization section), which encourages tree leaves to have smaller weights.
+
+XGBoost algorithm operates as follows:
+
+- (1) First, similar to the GBDT, the algorithm calculates all initial residuals. It starts with a base prediction (like the average of the target values for regression), represented by a single node or leaf. Then, each successive tree in the iteration process aims to correct the residuals left by the previous trees.
+- (2) The algorithm tries different splits on residuals for each feature. Then, for each candidate tree, based on the split in residuals and previous prediction value, it calculates a *similarity* weight. For classification, it uses the square summation of all residuals divided by the summation of previous probabilities  $(P_{old-i})$ :
+
+$$Similarity \ Weight = \frac{\sum Residuals^2}{\sum_i [P_{old-i} \times (1-P_{old-i})] + \lambda}$$
+
+For regression, it uses the following equation:
+
+Sees the following equation:
+$$Similarity Weight = \frac{\sum Residuals^2}{Number \ of \ Residuals + \lambda}$$
+For each nearly constructed trace is calculated to determine to
+
+(3) Next, the *Gain* for each newly constructed tree is calculated to determine the best split of data for each feature (each column except the prediction column).
+
+Gain = Left tree (similarity weight) + Right (similarity weight) - Root (similarity weight)
+The tree with the best Gain will remain, and other trees will be removed.
+
+- (4) If the difference between Gain and  $\gamma$  (Gain  $\gamma$ ) is positive, nothing changes; if it is negative, then the algorithm prunes the tree, removes that branch, and again subtracts  $\gamma$  from the next Gain value way up to the tree.
+- (5) The algorithm calculates the "output value" for the leaves as follows:
+
+ $Output \ value = Sum \ of \ residuals \ / \ Number \ of \ residuals \ + \ \lambda$ 
+
+(6) As the first decision tree is created, the algorithm calculates the log(odds) of the initial prediction value and the output value of the related branch in the decision tree to make a new prediction. The result is a new predicted probability, and this value will be used (instead of the initial predicted probability) to adjust residuals and continue from Step 2 until the maximum number of trees is reached or residual values do not improve.
+
+After the model is ready to perform prediction, it acts similarly to the gradient boosting algorithm. In particular, for new test data, the algorithm calculates the log(odds) of the previous
+
+prediction value plus learning rate ( ) times the log(odds) of output for each XGBoost decision tree. Let's be honest together: how can we expect you to memorize the above explanation without an example? To understand this complex algorithm, we follow the holly traditions and learn it with an example. We have the data of a few readers who have read this chapter and experimented with the described algorithms by writing some codes from scratch. We would like to predict whether a new reader who read this chapter a couple of times, with some implementations of these algorithms, has already learned the described algorithms or not. Table 9-13 shows the dataset we have for training. For testing, we give a new record with specified RC and EC, and the algorithm predicts the LA. *η*
+
+| Number of<br/>time this<br/>chapter is read (RC) | Experiment by Coding<br/>(EC) | Learn the Algorithm<br/>(LA) |
+|------------------------------------------------|------------------------------|-----------------------------|
+| 2                                              | Yes                          | Yes                         |
+| 1                                              | No                           | No                          |
+| 2                                              | Yes                          | No                          |
+| 2                                              | No                           | No                          |
+| 2                                              | Yes                          | Yes                         |
+| 1                                              | No                           | No                          |
+
+Table 9-13: Sample dataset used by XGBoost.
+
+In this example, for ease of understanding in describing the algorithm and calculating its math, we do not calculate , and we also assume , "minimum child weight", and other hyperparameters are all set to zero. *α λ*, *γ*
+
+(1) To implement Step 1 of the XGBoost algorithm, for 'yes' in LA, we assign '1', and for 'no', we assign '0' (for simplicity, we use binary classification). Similar to the GBDT, the initial prediction could be the average of their possible values, and it is , or something similar. During iterations in all GBDT algorithms, the initial values will be changed, and it is unimportant how we initialize it. Initial pseudo-residuals are calculated as the differences between observed and predicted values. The predicted value is equal to the initial prediction, in the beginning, which is also called *the base model,* because it participates in constructing the final model. By substituting initial residuals in Table 9-13, we get the table presented on the left side of Figure 9-28. At this moment, look at the table there and not the tree on the right side. (0 + 1)/2 = 0.5
+
+After the residuals have been calculated, the XGBoost algorithm fits a series of binary decision trees to predict the residuals of the target variable. However, it has not yet been decided which column should be used for the split and the algorithm experiment for all columns. A binary table for RC is shown in Figure 9-28. As described, these types of trees will be created for all other columns (features) as well. Besides, we could make a more complex tree and make more
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_65_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-28: Table 9-15 is used to calculate the residuals, we intend to do a classification and since it is binary we substitute yes and no with 1 and 0 in LA column. On the right side a binary tree is constructed and we assume the RC>1 as a split.
+
+branches, but for the sake of simplicity, we keep it very small. Why did we select RC > 1 as the main branch? Because we simply average RC values, and it is 1.5, and rounded to 1.
+
+(2) In the second step, "similarity weight" for each leave node is calculated. For the sake of simplicity, we assume  $\lambda=0$ . Then,  $P_{old-i}=0.5$  because it was our initial prediction probability. Therefore, the similarity weight for the leaf of the tree in Figure 9-28 is calculated as follows:
+
+$$\frac{(-0.5 + -0.5)^2}{0.5(1 - 0.5) + 0.5(1 - 0.5) + 0} = \frac{1}{0.5} = 2$$
+
+Respectively, the similarity weight for the leaf on the right side is calculated as follows:
+
+$$\frac{(0.5 + -0.5 + 0.5 - 0.5)^2}{0.5(1 - 0.5) + 0.5(1 - 0.5) + 0.5(1 - 0.5) + 0.5(1 - 0.5) + 0} = \frac{0}{1} = 0$$
+
+We also compute the similarity weight for the root node (which is a node that includes all residuals) as follows:
+
+$$\frac{(-0.5 + -0.5 + 0.5 + 0.5 + 0.5 - 0.5)^2}{0.5(1 - 0.5) + 0.5(1 - 0.5) + 0.5(1 - 0.5) + 0.5(1 - 0.5) + 0.5(1 - 0.5) + 0.5(1 - 0.5) + 0} = \frac{1}{1.5} = 0.66$$
+
+Now, similarity weights for all tree nodes get calculated. Also, the algorithm calculates the "gain" for this feature (RC). Therefore, we will have: 2 + 0 - 0.66 = 1.34. Figure 9-29 writes similarity weights on top of each node on a tree.
+
+(3) The algorithm performs the same process and calculates the gain for other features (columns), which are used to predict the LA (the target data). The only remaining feature is EC. Its tree, similarity score, and gain score are presented in Figure 9-30.
+
+EC gain is 2.67, and it is higher than RC gain, which is 1.34. Therefore, the algorithm chooses EC to perform the split on the root node.
+
+Note, if there are three different labels for one feature (our example has two labels only, and we don't have this situation), the algorithm experiments with different possible combinations for binary tree construction (XGBoost split trees are always binary trees), and at it selects the tree
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_66_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-29: Similarity score of each node will be used to calculate the Gain score for RC.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_66_Figure_2.jpeg" alt="Figure" />
+
+Figure 9-30: Similarity score of each node will be used to calculate the Gain score for EC.
+
+that has the highest gain score. For example, if we have Red (R), Green (G), and Blue (B), once it makes a binary tree on one branch R and two other branches G and B, and next it calculates their gain. Then, another tree is constructed that has G as one branch; the other branch includes R and B, and it calculates their gain. Afterward, it chooses the best tree with the highest gain. However, experimenting with too many trees is infeasible and uses approximation, which we do not explain in more detail.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_66_Figure_5.jpeg" alt="Figure" />
+
+Figure 9-31: A split, and gain scores have been calculated for other branches.
+
+(4) We have explained that we set it to zero, and thus, in this example, we skip pruning the tree; if we incorporate it removes the branches, which subtracts their gain from and results in a negative number. *γ γ γ*
+
+To see the example of how the gain of a branch is computed, check the example presented in Figure 9-31. Both Gains are zero, and thus, one of the trees is randomly selected. At this stage, we can say that one decision tree is ready. Let's call it *DT1* (Figure 9-31).
+
+(5) Now, the output value for each leaf should be calculated by the equation we have described (*Output value = Sum of residuals / Number of residuals +* ). Recall that we set to zero. *λ λ*
+
+The followings show the calculation of the output for each branch :
+
+$$EC = n, RC = n$$
+:  
+ $output : \frac{-0.5 + -0.5}{2} + 0 = -0.5$ 
+
+$$EC = n, RC = y :$$
+
+$$output : \frac{-0.5}{1} = -0.5$$
+
+$$EC = y, RC = n$$
+: output: 0
+
+$$EC = y, RC = n$$
+:  
+output:  $\frac{0.5 + -0.5 + 0.5}{3} + 0 = 0.16$ 
+
+Figure 9-32 is Figure 9-31, but it presents the output result for each branch.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_67_Figure_9.jpeg" alt="Figure" />
+
+Figure 9-32: Output for each leaf has been calculated and added to the bottom of leaves.
+
+(6) Now, the algorithm iterates from step 1 to construct the new prediction probabilities and substitute the initial one. The log(odds) of initial probability, which is equal to 0.5, will be 0 we do not write them in Table 9-14. The new log(odds) of predicted probability will be  $0 + 0.3 \times log(odds)$  of  $DT1_{output}$  (0.3 is the recommended learning rate  $\eta$ ). For each record, we can substitute the values into the  $0 + 0.3 \times log(odds)$  of  $DT1_{output}$  equation and give us the result. To calculate the predicted probability from log(odds), a Sigmoid function is used as follows:
+
+Predicted Probability = 
+$$\frac{e^{\log(odds) \text{ of } p}}{1 + e^{\log(odds) \text{ of } p}}$$
+
+Then, the result will be a new predicted probability, and its differences with LA will be used to construct new residuals (see Table 9-14). The new residuals are usually smaller than the residuals in the previous rounds.
+
+To decide on the LA label of the new record, the new record data will be substituted in the model (i.e., *initial prediction* + DT1 + DT2 + ...), and its LA label will be based on the result of the model.
+
+|    | 1   |    |                  | New<br/>Log(Odds) of                                        | 1                                     | ı                |
+|----|-----|----|------------------|------------------------------------------------------------|---------------------------------------|------------------|
+| RC | EC  | LA | Old<br/>Residuals | predicted probabilities                                    | New<br/>Probabilities                  | New<br/>Residuals |
+| 2  | Yes | 1  | 0.5              | 0.3 x 0.16                                                 | 0.045                                 | 0.96             |
+| 1  | No  | 0  | -0.5             | 0.3 x                                                      | - <mark>0</mark> .17                  | 0.17             |
+| 2  | Yes | 0  | -0.5             | 0.3 x 0.16                                                 | 0.045                                 | -0.96            |
+| 2  | No  | 0  | -0.5             | 0                                                          | 0.5                                   | -0.5             |
+| 2  | Yes | 1  | 0.5              | 0.3 x 0.1 <mark>6</mark>                                   | 0.045                                 | 0.96             |
+| 1  | No  | 0  | -0.5             | 0                                                          | 0.5                                   | -0.5             |
+|    |     | '  |                  | lo≈(0.2×0.16)                                              | \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |                  |
+|    |     |    | _                | $\frac{e^{\log(0.3\times0.16)}}{+e^{\log(0.3\times0.16)}}$ | $\frac{1}{10} = 0.045$                |                  |
+|    |     |    | 1                | $+e^{log(0.3\times0.)}$                                    | 16)                                   |                  |
+
+Table 9-14: New prediction probabilities and their residuals, in each iteration residuals will get smaller. which are constructed based on old residuals. For sake of simplicity we use absolute value and neglect negative residuals.
+
+The XGBoost for regression operates very similar to classification, except for its similarity weight calculation, which we have explained before. Therefore, we skip its explanation with a detailed example. Before finalizing this section, remember that the only difference between classification and regression of XGBoost is their loss function.
+
+Assuming K is the total number of trees, d is the maximum depth of trees and  $||x_0||$  is the total number of training data points with non-missing data, and n is the total number of data points, the computational complexity of XGBoost for training is  $O(Kd||x_0|| + ||x_0|| \log n)$ . The  $||x_0|| \log n$  part belongs to the preprocessing phase.
+
+In October 2023, XGBoost 2.0 was released. It has some improvements in its implementation, including native support for GPU, improved memory management, and probably the most important one is multi-target trees. The multi-target trees allow XGBoost to build one tree for all targets (instead of many trees). This helps make smaller models and prevents overfitting.
+
+#### LightGBM
+
+Later, after XGBoost and its tremendous success in Kaggle competitions, back in 2017, another interesting algorithm was released by Ke et al. [Ke '17]. One of the problems in XGBoost was the need to scan many possible combinations to decide on the best split. LightGBM, another GBDT type, tries to mitigate this by using Gradient-Based-One-Side Sampling (GOSS) and reducing the number of features by Exclusive Feature Bundling (EFB).
+
+GOSS operates based on the fact that different gradients of training data points have a different impact on the information gain (the result of the algorithm). In particular, data points with larger gradients that are under-trained data points contribute more to the result of prediction (i.e., information gain). Respectively, data points with small gradients are not important for the algorithm, and GOSS randomly samples a subset of data points with small gradients. This process decreases the role of gradient in learning. On the other hand, data points that have a large gradient are important for the learning phase of the algorithm, and they will be kept, e.g., top 30% of gradients.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_69_Picture_4.jpeg" alt="Figure" />
+
+Usually, real-world datasets include lots of zeros; even one-hot encoding makes sparse features because
+
+there are too many zeros added to the feature list. The EFB uses the sparsity that exists in most real-world datasets. Features that never take non-zero values together are referred to as *Exclusive features*. EFB merges exclusive features into a single feature (similar to the feature reduction techniques we have described back in Chapter 6). In other words, EFB reduces the problem of feature reduction to a graph coloring problem and uses a greedy algorith[m](#page-69-0) to remove features. [11](#page-69-0) In particular, all features will be a vertex in the graph, and if they are not mutually exclusive , [12](#page-69-1) the algorithm adds one edge between them. The weight of edges corresponds to conflicts between features.
+
+Greedy algorithms refer to heuristic algorithms (check Chapter 6) in which each step chooses a local optimum. In [11](#page-69-2) the end, it might not end up being the best optimum solution, but each step alone chooses the best optimum that is available for the algorithm.
+
+[<sup>12</sup>](#page-69-3) Mutual exclusion means that two processes can not exist in the same state. Remember that, assume a rest-room which usually two people can not enter one rest-room.
+
+To understand the characteristics of EFB, take a look at Table 9-15. There we have 'Feature 1', 'Feature 2', and 'Feature 3'. LightGBM can not merge 'Feature 1' and 'Feature 2' together because in the third row, 'Feature 1'=3 and 'Feature 2'=2. To make a bundle, at least one of them should be zero. However, it can merge 'Feature 2' and 'Feature 3' together because, in each record, at least one of them is zero. There is a parameter that can tolerate small conflicts (e.g., a few records have non-zero values, but both features are still merged) in each bundle, but we did not use it in our example. *γ*
+
+While constructing bundles, one problem is that the bundled feature should not be in the same range as the original feature. To solve this issue, the algorithm adds a constant value to bring them to a different range. For example, here, we add 10 to each non-zero value of the bundling feature.
+
+| Feature<br/>Feature<br/>2<br/>1                             | Feature<br/>3               | Feature<br/>1               | Feature<br/>New                         | Feature<br/>1               | Feature<br/>New                                                        |
+|----------------------------------------------------------|----------------------------|----------------------------|----------------------------------------|----------------------------|-----------------------------------------------------------------------|
+| 2<br/>0<br/>0<br/>1<br/>2<br/>3<br/>0<br/>0<br/>0<br/>4<br/>2<br/>0 | 0<br/>1<br/>0<br/>3<br/>0<br/>0 | 0<br/>1<br/>3<br/>0<br/>4<br/>0 | 2+0<br/>0+1<br/>2+0<br/>0+3<br/>0+0<br/>2+0 | 0<br/>1<br/>3<br/>0<br/>4<br/>0 | 2+0+10=12<br/>0+1+10=11<br/>2+0+10 =12<br/>0+3+10=13<br/>0+0<br/>2+0+10=12 |
+
+Table 9-15: (left) original table of data, which has three features, (center) feature 2 and feature 3 could be merged together, because at least one of them is zero, (right) to avoid having the number of bundled feature in the same range as original data, a constant value will be added to non-zero columns.
+
+Assuming *n* is the total number of data points, *k* is the number of features, and *m* is the number of bundles, the EFB algorithm of lightGBM reduces the complexity . Nevertheless, the computational complexity of GOSS (linear as well) and GBT will be added to this value. *O*(*nk*) *O*(*mn*)
+
+#### CatBoost
+
+CatBoost [Prokhorenkova '18] is a third popular GBDT-based algorithm introduced after LightGBM in 2018. CatBoost described that previous GBDT works suffer from the *prediction shift* problem, and it can mitigate this problem.
+
+The prediction shift problem occurs when the model is trained on a dataset whose distribution has shifted or is different from the distribution of the actual data on which predictions are to be made. This discrepancy can lead to inaccuracies because the model is learning from a dataset that does not represent the true underlying distribution of the target population.
+
+CatBoost introduces two improvements to the GBDT algorithm: (i) a specific method to encode categorical features, i.e., "Ordered Target Statistic" (Ordered-TS), and (ii) "Order Boosting", which is a permutation-driven alternative to the classical boosting algorithm.
+
+To implement the ordered target statistic, the CatBoost uses target encoding (check Chapter 6). However, we have explained in Chapter 6 that target encoding is prone to data leakage. CatBoost resolves this issue by first applying a permutation (rearranging the order of data) on data, which relies on a specific ordering principle. After ordering the data, the target value of every feature is calculated from the rows before (previous observations or historical observations). It uses the following equation (a simplified version of the original version in the paper) to apply target encoding while resolving the data leakage problem.
+
+$$Ordered - TS = \frac{current - count + (\alpha \times p)}{total - feature - count + \alpha}$$
+
+In this equation, *current-count* specifies the sum of values for the feature we are applying target encoding, but not all values; it applies the sum until the current data point. p stays for the prior, it is a constant value, and it is used to smooth the result of target encoding. A common value for p is the average of the target value in the dataset, e.g., 0.5.  $\alpha$  (which sets larger than zero) is a weight parameter used to ensure not dividing by zero and specify the weight on prior. *total-feature-count* specifies the total number of the current feature values, excluding the current row.
+
+To understand how Ordered-TS works, take a look at Table 9-16. Here, we assume p as a constant and equal to 0.5 and  $\alpha$  is 1. Table 9-16 (a) presents features and their values. It is a result of binary classification, and thus, each row has a value of either 0 or 1. In Table 9-16 (b), the average of each feature is calculated, and in Table 9-16 (c), these features have been substituted on the original table. Table 9-16 (c) presents the target encoding, prone to data leakage.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_71_Figure_4.jpeg" alt="Figure" />
+
+Table 9-16: An example how CatBoost calculate the Ordered Target Encoding.
+
+The authors proposed using the described equation and resolving the data leakage by ordering. Take a look at Table 9-16 (d), which is the ordered target encoding value. Note that *current\_count* and *total\_feaute\_count* are both calculated by looking only at previous records, not the current one and overall table. In Table 9-16 (d), we describe the justification of the sixth row. As another example, let's take a look at the value of the third row, where Apple=1, in Table 9-16 (c). Table 9-16 (d) shows the *current\_count* of this row is equal to 1, because there is one row before this row, i.e., the first row that has Apple=1, and the *total\_feature\_count* of the Apple feature is also 1, because there is only one row that includes Apple before this row, i.e., the first row.
+
+The second novelty of CatBoost is its Order Boosting. Order Boosting does not use the whole dataset to calculate the residuals at every iteration of GBDT. In classical GBDT, multiple trees are constructed to fit the entire dataset. Using the entire dataset might lead to overfitting, which CatBoost referred to it as a "prediction shift". CatBoost tries to resolve this issue using a tree that is constructed using a subset of the dataset, and it calculates the residuals using the data points that it did not see before (from another subset of the dataset). To understand this feature, let's say we have a 1D dataset of 10 data points, i.e.  $\{x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_{10}\}$ . The CatBoost applies a random permutation on these data, and after applying the permutation, the data points are ordered as follows:  $\{x_4, x_6, x_3, x_1, x_8, x_2, x_7, x_9, x_5, x_{10}\}$ . A model that is trained on  $\{x_4\}$  will be used to determine the label for  $x_6$ , and its residual error will be calculated (actual label - predicted label). Respectively, a model that is trained on  $\{x_4, x_6\}$  will be used to determine the label for  $\{x_3\}$ , and its residual error will be calculated. It means the model which is trained on  $\{x_4, x_6, x_3, x_1, x_8\}$  has never been seen  $x_2$  before, but it uses  $x_2$  to determine its residual.
+
+This approach resolves the prediction shift, but by using this approach for every single data point, one decision tree needs to be constructed, which leads to quadratic time and memory use, and thus, it is computationally very expensive. To resolve this issue, the authors proposed the following solution: assuming we have n data points, the authors proposed constructing decision trees for data points that are located at  $2^j$ , where  $j = 1,2,4,8,...log_2(n)$ . This means the first model is trained on the first data point. The second model is trained on the first and second data points. Respectively, the third model is trained on the first four data points, the fourth model is trained on the first eight data points, etc. In the end, instead of having n trees, we have  $log_2(n)$  trees.
+
+Assuming s is the number of permutations and n is the number of data points.  $N_{TS,t}$  is the number of TS to be calculated at iteration t, and C is the set of candidate splits to be considered at the given iteration  $b_j^t$  is the ith leaf value at iteration t. Authors claimed the computational complexity of calculating the gradient is O(sn), building the tree T is  $O(|C| \cdot n)$ , calculating all  $b_j^t$  is O(n), updating a model is O(sn), and calculating the Ordered-TS is  $O(N_{TS,t} \cdot n)$ .
+
+It seems all linear, but, summing them together makes CatBoost a very computationally expensive algorithm. In an experiment, Keshavarz et al. [Keshavarz '20] compared the
+
+computational complexity of these GBDT algorithms, and CatBoost is the most resourceintensive one.
+
+If you are still alive after learning these three hard-core GBDT models, let's do a brief review of what we have explained. XGBoost implements several optimizations, but its salient difference is
+
+the use of regularization and XGBoost tree instead of weak learners on top of the GBDT. LightGBM is a GBDT that provides two additional features, GOSS and EFB. Catboost is a GBDT used for categorical data, and it provides two additional features, i.e., Ordered Target Statistics and Ordered Boosting.
+
+#### NOTES:
+
+\* Except for LightGBM, other GBDT methods grow trees by increasing their depth (leve-wise tree growth). It means they identify the best node to split, and from that node, the tree will split down to branches. However, LightGBM grows trees by increasing the leaves in the related node (leaf-wise growth) to reduce the loss score and keep the other leaves in the tree intact.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_73_Picture_5.jpeg" alt="Figure" />
+
+- \* If there is no GPU available and you are using a local machine for training, usually LightGBM consumes less amount of resources than XGBoost and CatBoost, which operate well with GPU.
+- \* These three boosting algorithms are state-of-the-art algorithms that can work accurately on tabular data and when we have small data.
+- \* Despite all GBDT algorithms being good at operating with a small number of data points and tabular data, their resource utilization is very high. This makes them infeasible to be used on battery-powered small devices such as smartwatches.

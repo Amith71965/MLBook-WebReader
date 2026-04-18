@@ -1,0 +1,54 @@
+---
+chapter: "ch8"
+order: 3
+slug: "univariate-linear-regression"
+title: "Univariate Linear Regression"
+wordCount: 849
+---
+Linear regression is the simplest linear model used for prediction. It predicts the *quantitative* variable *y* based on the single predictor variable *x* (or more than one single predictor variable). *Y*
+
+is also called a *response*, *dependent*, or *output* variable. *X* is called *predicator*, *input*, *explanatory* or *independent*  variable. It is written and calculated with the following equation: , which we read as *regression y to x* or *y on x*. In the context of machine learning when we predict a variable we use a greek sign, called circumflex on top of that variable, e.g., means a "predicted value of *y*". *y*̂= *β*<sup>0</sup> + *xβ*<sup>1</sup> *y*̂
+
+what we want to model predictor variable slope intercept
+
+Here, we have two model parameters that a simple linear regression model should identify their best optimal values,
+
+i.e., (intercept) and (slope). Note that they are not hyperparametersbecause the model will [1](#page-2-0) use a cost function to identify them and are not configured by users of the algorithm. These types of parameters are called *model parameters* or called *model weights*. *β*<sup>0</sup> *β*<sup>1</sup>
+
+Model parameters are parameters whose optimal value will be identified by the algorithm, via the cost function, and we should not give them to the algorithm (unlike hyperparameters, which the user sets). The optimization algorithm (by using cost function) tunes model parameters. Later in this chapter, we describe the optimization algorithm. It is also common to use , which is a vector that presents all model parameters. *θ*
+
+We can use linear regression or other linear models to perform prediction, describe a phenomenon, or even measure the effect size (see Chapter 3 to recall the effect size).
+
+Input parameters of an algorithm that need to be given by the user to the algorithm are called hyperparameters. [1](#page-2-1)
+
+Let's look at an example scenario with linear regression. Recently, Mr. Nerd began to suffer from work stress. To solve his stress, he decided to make some changes in his life, and he started to read books before sleep. Previously, he has wasted his time on social media and fighting the holy war of useless discussions with trolls.
+
+He speculates that reading the book could positively change his mood (the hypothesis). To experiment with this hypothesis, he has started to journal the number of books he read within his daily mood score. The result looks like the table on the right side of Figure 8-1. By plotting them he gets the plot on the left side of Figure 8-1.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_3_Picture_2.jpeg" alt="Figure" />
+
+It is clear that his mood is improving. Recently, he has finished the 9th book, he becomes curious to predict what his mood will be after the 20th book. He can use linear regression to answer his question, The question will be as follows: "what will be the mood score after reading 20 books?" A linear regression to predict his mood based on the number of read books can be written as follows: *mood* − *score* ≈ #*book s* × *β* <sup>1</sup> + *β*<sup>0</sup>
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_3_Figure_4.jpeg" alt="Figure" />
+
+Figure 8-1: Mr. Nerd's mood score based on the number of books he read.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_4_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-2: Figure 8-1 with regression line and its parameters.
+
+The goal of linear regression is to find the optimal values for  $\beta_0$  and  $\beta_1$ . In this example, the best value that a cost function of linear regression found is  $\beta_0$  (intercept) = 7.369 and  $\beta_1$ (slope) = 5.58. Later in this section, we will describe how the cost function identifies these parameters. Figure 8-2 shows what we have in Figure 8-1 with a linear regression line and two optimal values for  $\beta_0$  (intercept) and  $\beta_1$ (slope) parameters.
+
+Therefore, assuming that there is no error, the algorithm can easily predict the mood score achieved by reading specific number books, via replacing these parameters in the linear equation. For example, it can calculate the mood score after reading 20 books, by follows:
+
+$$mood - score_{(20th-book)} \approx 20 \times 7.369 + 5.58 = 152.96$$
+
+Another application of regressions is to identify or describe a phenomenon in the dataset. Therefore, we can use regression to quantify the relation between input (predictor) and output variables. This will be reported as a hypothesis test and its *p*-values. Check Chapter 3 if you can't recall the use of *p*-value and hypothesis test. The hypothesis is written as follows:
+
+ $H_0$  = There is no relation between input and output variables ( $\beta_1 = 0$ ).
+
+ $H_1$  = There is a relation between input and output variables ( $\beta_1 \neq 0$ ).
+
+For example in the book reading example, if the p-value &lt; 0.05, we can infer there is a relation between the number of books he read and Mr. Nerd's mood score.
+
+Assuming X (input dataset) is a  $n \times m$  matrix. Linear regression will be presented as  $n \times m$  matrix multiplication. The computational complexity of linear regression is close to  $O(m^2 \cdot n + m^3)$ , which is calculated based on matrix decomposition and inversion. We don't go into the detail, just remember that a linear regression has *quadratic* complexity.

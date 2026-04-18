@@ -1,0 +1,65 @@
+---
+chapter: "ch3"
+order: 25
+slug: "entropy-information-gain"
+title: "Entropy & Information Gain"
+wordCount: 886
+---
+If you have started to read this chapter from the beginning, which we highly suggest, we know you are too tired. However, the good news is that most of what you need for applied statistics has been covered. The bad news is that two extremely important topics about machine learning remain to be learned. Brace yourself; another brain-eating concept is about to come.
+
+### **Entropy**
+
+Entropy is a measurement of disorder or measurement of impurity<sup>14</sup>. In simple words, entropy is measuring the *uncertainty* of a variable [Shanon '49]. Bishop [Bishop '06] defines entropy as "the average amount of information needed to specify the state of a random variable".
+
+The higher the entropy, the more information we need to be able to make a valid justification. Higher entropy is statistically always more likely to occur. We can refer to entropy as a number, which explains how unpredictable our probability distribution is. The entropy of random variable X (e.g. flipping a coin), with n number of outcomes, can be defined as follows<sup>15</sup>.
+
+
+$$H(X) = -\sum_{i=1}^{n} p(x_i) log_2 P(x_i)$$
+
+Here, H(X) represents the entropy of variable X, n represents the number of outcomes or events, and  $p(x_i)$  represents the probability of the variable having the value of  $x_i$ .
+
+To better understand the concept of entropy, consider the following example. Assume some yellow chickens from our aviculture sneak their way into our bug cultivation facility and enjoy our tasty bugs. Each bug room might include some chickens. Now, the bug rooms are mixed with chickens, and the farm owner is angry. The owner asked us to provide him with an estimate from
+
+<sup>14</sup> Erwin Schrödinger, an Austrian physicist, who is one of the founders of quantum mechanics, states that a hallmark of a living creature is to reduce its entropy by increasing entropy around itself. In other words, it says the total entropy should increase, but it allows it to decrease in some places as long as it is increasing elsewhere. Such a weird phenomenon, isn't it? Some make war in a distant place to keep their economy balanced (our disorder decreases) and profit from the other nations' disorder.
+
+<sup>15</sup> If you are not familiar with the concept of the logarithm; if we have  $log_x a = y$ , it means  $x^y = a$ . Also, remember  $log_{10}P(x_i) = logP(x_i)$ .
+
+each room, including the "impurity" of each room is (100% bugs in the room mean a very pure room, and chickens inside bug rooms are impurity).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_68_Picture_1.jpeg" alt="Figure" />
+
+We sample some data from each room, and we have the following probabilities:
+
+*Room 1: P(bug)=0.5, p(chicken)=0.5 —> Entropy = - [0.5 log2(0.5) + 0.5 log2(0.5)] = 1* 
+
+*Room 2: P(bug)=0.65, p(chicken)=0.35 —> Entropy = - [0.65 log2(0.65) + 0.35 log2(0.35)] = 0.93*
+
+*Room 3: P(bug)=0.75, p(chicken)=0.25 —> Entropy = - [0.75 log2(0.75) + 0.25 log2(0.25)] = 0.81*
+
+*Room 4: P(bug)=0.95, p(chicken)=0.05 —> Entropy = - [0.95 log2(0.95) + 0.05 log2(0.05)] = 0.29*
+
+It means Room 1 is the most impure because entropy is at its highest level. Room 4 has the purest boxes because its entropy is 0.29 and the lowest. The value of entropy is not necessarily between 0 and 1, it could get larger than 1 as well, especially when we have more than one variable to analyze in the dataset, and the value of entropy gets larger than one.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_69_Figure_1.jpeg" alt="Figure" />
+
+Figure 3-31: Relation between entropy and bug probability. The highest entropy =1 means the number of bugs and chicken are equal. In the lowest entropy we either have no bug at all, P(bug)=0, or all of them are bugs, i.e. P(bug)=1.
+
+Figure 3-31 presents the relation between entropy and the probability of having bugs. Based on this Figure, we can see that high entropy means low certainty and low entropy means high certainty.
+
+Entropy is used to compute *Information Gain (IG)*, which *measures changes in entropy* based on the amount of new information that is added to the dataset.
+
+Usually, while dealing with real-world datasets, we need to apply a pipeline of machine learning algorithms on the dataset to filter the data for the next level, and in the next level, we gain better predictive results. This means that the amount of information we gain from the data increases.
+
+For instance, Figure 3-32 presents the entropy of a dataset including chicken and bugs in two different stages. At first, we had high entropy because the mixture of chicken and bugs was equal. Then, we apply some algorithm (Magic), which acts like a filtering mechanism, and this algorithm divides the dataset into two datasets, each having lower entropy than the original one. We can say the magic algorithm increases the information gained by dividing our dataset into two sub-datasets with more relevant data. Later, we will learn about algorithms that reduce entropy, such as Clustering algorithms.
+
+In Chapter 9, we will learn more details about the information gain. For now, just understanding its application is enough.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_70_Figure_0.jpeg" alt="Figure" />
+
+Figure 3-32: High entropy dataset fed into the Magic algorithm and the Magic outputs two datasets with lower entropy.
+
+
+### Measuring Distances Between Distributions
+
+
+There are methods to measure the differences between data distributions based on Entropy, including *Cross-entropy*, *Kullback-Leibler Divergence* (*KL-Divergence*) [Kullback '51], a.k.a. *relative cross-entropy,* and *Jensen Shanon Divergence (JS-Divergence)*.

@@ -1,0 +1,42 @@
+---
+chapter: "ch3"
+order: 1
+slug: "variable-and-value"
+title: "Variable and Value"
+wordCount: 627
+---
+A *variable* is a mathematical object unit that can have multiple *values*. In other words, value(s) is fixed and assigned to a variable, which can vary. A widely
+
+used notion to present a variable is to use the *x* character. For instance, means that is variable and 3 is the value. means that is a variable with two values, 1 and 2. *x* = 3 *x y* = \{1,2\} *y*
+
+The statistical analysis focuses either on a single variable (univariate) or a combination of more than one variable (multivariate). This means that while working with statistics, our focus is usually on a variable or set of variables and not the entire dataset. Therefore, in this section, we are talking mostly about variables and not datasets.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_1_Figure_6.jpeg" alt="Figure" />
+
+Table 3-1: Three variables (x,y,z), and each has three values.
+
+A variable in the dataset refers to one column of data; the variable name is the column name, and its values are column content.
+
+In summary, the column's name identifies the variable, and its value(s) are represented in the column content. When talking about more than one variable, we are usually referring to multiple columns of a dataset. Table 3-1 presents three variables: and *z.* Each of them has three different values. It means, we match column name to variable and column data to values. *x*, *y*,
+
+### Random or Stochastic Variable
+
+In statistics, we will encounter the term random variable a lot. A *random variable* or *stochastic variable* is a variable whose possible values are numerical outcomes of a random phenomenon. These values are not fixed but are determined by the outcomes of the random process.
+
+### Continuous and Discrete Variable
+
+We call a variable a *continuous variable* if, between two continuous variables*,* there are an infinite number of other values, such as the numbers between 3.1 and 3.3. There will be infinite numbers between these two numbers, e.g., 3.297824, 3.1435345834, and so forth.
+
+In contrast, a *discrete variable* can have countable and finite values only, such as days of a week that are only seven possible choices, Monday, Tuesday, etc.
+
+### **Different Data Types**
+
+In the previous chapter, we explained that a data object or an event will be repeated in a dataset, which is the nature of any scientific phenomenon. If a value of a data object is not a number but is derived from a set of known objects, these values are called *categorical (nominal) data*. If a value is a number, we call it *numerical data*.
+
+Ordinal data are categorical data that are ordered based on a condition(s), such as "Monday, Tuesday, .., Sunday" or "high, medium, low".
+
+*Interval data* is another type of variable with a meaningful order, and the intervals between values are equal, but there is no true zero point. A classic example of interval data is temperature (in Celsius or Fahrenheit). The difference between 10°C and 20°C is the same as between 20°C and 30°C, but 0°C does not mean the absence of temperature. Another example is calendar dates.
+
+*Ratio data* is a specific type of variable and has all the properties of interval data but with an important addition: a true zero point. This zero point indicates the absence of the quantity being measured. Common examples of ratio data include weight, height, age, and income.
+
+To summarize these three data types, Ordinal data is categorical data with an order. Interval data is numerical data with equal intervals between values but no true zero point. Ratio data is numerical data with equal intervals and a zero value. Ordinal, interval, and ratio data are not very common in a machine learning context, but we should remember this definition, and when we encounter it in a text, do not freak out.

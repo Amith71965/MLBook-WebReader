@@ -1,0 +1,36 @@
+---
+chapter: "ch3"
+order: 24
+slug: "correlation-coefficients"
+title: "Correlation Coefficients"
+wordCount: 523
+---
+A correlation coefficient is a score between -1 and +1, presented as *r*. This score indicates the linear relations between two variables. There are three well-known correlation coefficients in use: *Pearson*, *Spearman*, and *Kendall*. Unlike previous methods, which are used once and done, correlation coefficients are usually used in the software development process. It means we might need to create a software application that frequently computes correlation coefficients. Therefore, we also need to be careful about their computational complexity.
+
+Why did we explain something about software here? To brag about the author's software development skills.
+
+The most popular correlation coefficient is the *Pearson coefficient* [Stigler '92]. The outputs of the Pearson coefficient are two objects, [13](#page-65-0) for a population and the letter for the result. They are very easy to calculate and skip describing them here in detail. *ρ r*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_65_Picture_7.jpeg" alt="Figure" />
+
+Read it as "rho", which is a Greek letter. [13](#page-65-1)
+
+If the value is positive, two variables have a positive correlation. A positive correlation means increasing one variable results in increasing the other variable. If the value is negative, they have a negative correlation, i.e., decreasing one variable results in increasing another variable and vice versa. If , they don't have any correlation. Pearson's computational complexity is *. r r r* = 0 *O*(*n*)
+
+Pearson is limited to measuring the *linear relationship* between two variables, and it does not support correlation when there is a *monotonic* or *non-monotonic* relation (consistently increasing or decreasing, but not necessarily at a constant rate) existing in the shape of correlation. Figure 3-29 illustrates a simple comparison between linear, monotonic, and non-monotonic relationships. For example, if we have 1 unit of sugar, we will get 2 negative points in our diet; if we have 2 units of sugar, we get 4 negative points in our diet. Such a relationship can be supported perfectly by Pearson.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_66_Figure_2.jpeg" alt="Figure" />
+
+Figure 3-29: Monotonic vs None-Monotonic relationship between X and Y.
+
+To mitigate this issue in cases where there might be a non-constant slope in linear correlation, we can use *Spearman Rank* correlation [Spearman '04], shown with . Spearman correlation is very similar to Pearson, but it is able to measure the correlation between two variables, and it is nonparametric (distribution-free). Figure 3-30, which compares scores for Pearson and Spearman correlations. Spearman Rank's computational complexity is *. ρ O*(*n logn*)
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_66_Figure_5.jpeg" alt="Figure" />
+
+Figure 3-30: Spearman vs Pearson coefficient score for linear (left) and monotonic (right) between X and Y axis.
+
+Another method is called *Kendall's Tau* correlation [Kendall '38], which is similar to Spearman correlation non-parametric, but usually, it returns smaller values than Spearman.
+
+Kendall's Tau, comparing all possible pairs of observations. While it typically produces smaller values than Spearman, it has certain statistical advantages, particularly for smaller sample sizes However, its computational complexity is  $O(n^2)$ . We can also use covariance to measure whether two variables and their values are correlated together.
+
+When implementing these methods in software, computational complexity becomes important: Pearson has O(n), Spearman has  $O(n \log n)$  due to ranking, and Kendall's Tau has  $O(n^2)$  complexity, due to pairwise comparisons.

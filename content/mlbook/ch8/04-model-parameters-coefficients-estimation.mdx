@@ -1,0 +1,31 @@
+---
+chapter: "ch8"
+order: 4
+slug: "model-parameters-coefficients-estimation"
+title: "Model Parameters (Coefficients) Estimation"
+wordCount: 518
+---
+Now that we have answered his question about book reading's impact on mood score, we should also learn how the cost function identifies  $\beta_1$  (slope) and  $\beta_0$  (intercept) parameters. In other
+
+words, we use the cost function to fit a model to a training set. Different cost functions could be used to identify the best values for these two parameters (best coefficients to fit the model), but a basic and common one is *Residual Sum of Squares (RSS)* function. As we progress through this chapter, we explain more cost functions.
+
+Figure 8-2 presents the described linear regression with its parameters highlighted. Check the red lines connecting each data point to the regression line in Figure 8-2, those e are called *errors* or residuals. RSS for n data points will be written as the sum of squared errors:  $RSS = e_1^2 + e_2^2 + \ldots + e_n^2$  or  $RSS = (y_1 - \hat{\beta}_0 - \hat{\beta}_1 x_1)^2 + (y_2 - \hat{\beta}_0 - \hat{\beta}_1 x_2)^2 + \ldots = \sum_{i=1}^n (y_i - \hat{y}_i)^2$ , we could summarized it as follows:
+
+$$RSS = \sum_{i=1}^{n} (y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i))^2$$
+
+The mean of x is presented as  $\bar{x}$ , and mean of y is presented as  $\bar{y}$ , the predicted values are presented with a hat sign "^", e.g., the predicted value of y is presented as  $\hat{y}$ . To calculate the  $\hat{\beta}_0$  and  $\hat{\beta}_1$  which minimize RSS, we can use the following equation.
+
+$$\hat{\beta}_{1} = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x})(y_{i} - \bar{y})}{\sum_{i=1}^{n} (x_{i} - \bar{x})^{2}}$$
+
+$$\hat{\beta}_{0} = \bar{y} - \hat{\beta}_{1}\bar{x}$$
+
+Remember that our goal is to minimize change parameters to minimize the cost function, and the cost function here is RSS. The regression library wraps all details in a simple function call, but the mathematical notion of linear regression is fairly easy to learn, and it is worth understanding the rationale behind linear regression.
+
+It is also worth mentioning, to write it accurately, we can write the linear regression equation as follows:  $y = \beta_1 x + \beta_0 + e$ , assuming that e is the mean of error values. Also, some use approximation sign ( $\approx$ ) instead of the equal sign, because there is no guarantee that the created regression line is the perfect line, thus if you like to avoid generalization even in your mathematical writings and show off you are knowledge, write the linear regression as follows.
+
+$$y \approx \beta_1 x + \beta_0 + e$$
+.
+
+We can also write a linear model as a transpose of matrix x (it is a vector) times the vector of coefficients  $(\hat{\beta})$ , as follows:  $y = x^T \hat{\beta}$  or  $y = x^T \hat{\theta}$ . In the near future (Chapter 10) we will write  $\beta_0$  as b and other intercepts  $(\beta s)$  are vectors of weights w, i.e., y = wx + b. Most of the time, we do not write e in the equation.
+
+Now that we understand how we have estimated model parameters ( $\beta_0$  and  $\beta_1$ ), let us repeat that model parameter estimation will be done through a cost function and not by the user of the algorithm.

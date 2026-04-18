@@ -2,6 +2,59 @@
   "number": 9,
   "title": "Classification Algorithms",
   "sections": [
-    "00-introduction"
+    {
+      "order": 0,
+      "slug": "intro",
+      "title": "Introduction",
+      "wordCount": 514
+    },
+    {
+      "order": 1,
+      "slug": "rule-based-classifier",
+      "title": "Rule-Based Classifier",
+      "wordCount": 451
+    },
+    {
+      "order": 2,
+      "slug": "naive-bayes",
+      "title": "Naive Bayes",
+      "wordCount": 5723
+    },
+    {
+      "order": 3,
+      "slug": "support-vector-machine-svm",
+      "title": "Support Vector Machine (SVM)",
+      "wordCount": 4120
+    },
+    {
+      "order": 4,
+      "slug": "decision-trees",
+      "title": "Decision Trees",
+      "wordCount": 6113
+    },
+    {
+      "order": 5,
+      "slug": "ensemble-learning-methods",
+      "title": "Ensemble Learning Methods",
+      "wordCount": 12966
+    },
+    {
+      "order": 6,
+      "slug": "how-to-select-the-best-classification-model",
+      "title": "How to Select the Best Classification Model?",
+      "wordCount": 271
+    },
+    {
+      "order": 7,
+      "slug": "summary",
+      "title": "Summary",
+      "wordCount": 604
+    },
+    {
+      "order": 8,
+      "slug": "further-reading-or-watching",
+      "title": "Further Reading or Watching",
+      "wordCount": 358
+    }
   ]
 }

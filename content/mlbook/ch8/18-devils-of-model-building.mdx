@@ -1,0 +1,10 @@
+---
+chapter: "ch8"
+order: 18
+slug: "devils-of-model-building"
+title: "Devils of Model Building"
+wordCount: 157
+---
+Why do we use all these regression algorithms for prediction? Because by observing the past behavior (observed or training data), we would like to predict the future (unobserved or test data). The ability to match future data with observed data is called *generalization*. Therefore, an umbrella term that is used for regression algorithms is called *Generalized Linear Models (GLM)*. Note that GLM models do not necessarily assume a linear relationship between input and output variables. Instead, they posit a linear relationship between the expected value of the output variables, as transformed by a link function (e.g., Logit for logistic regression), and the input (explanatory) variables. This encompasses logistic and softmax regressions, among others. In simple terms, GLMs include a transformation of the output through the link function, rather than just modeling a linear relationship between inputs and outputs.
+
+There are two important challenges associated with all GLM methods and also other supervised learning algorithms, underfitting and overfitting.

@@ -1,0 +1,65 @@
+---
+chapter: "ch11"
+order: 2
+slug: "self-organizing-maps-som"
+title: "Self Organizing Maps (SOM)"
+wordCount: 1431
+---
+One of the oldest practical artificial neural networks is Self Organizing Maps (SOM), which were invented back in 1982, by Teuvo Kohonen [Kohonen '82] in Finland. Finland is a small country in northern Europe where the Linux operating system and Nokia (the indestructible smartphones of early 2000) came from.
+
+SOM changes the representation of the data, it can reduce the dimensionality of data, and its results can be used for clustering, classification, visualization, etc. We feed a multi-dimensional dataset into a SOM, it outputs a grid representation of the input dataset. Similar to other dimensionality reduction methods that we have described in Chapter 6, the SOM algorithm projects data into a different dimensional space while maintaining the topological properties of the data. Topological properties ensure that the relative relationships and neighborhood structures in the data are preserved during the projection of data into different dimensions.
+
+SOM is a very special type of ANN. It does not have an activation function and hidden layers. From the input layer, it gets directly to the output layer. Besides, its weight assignment process is not based on backpropagation; it uses a different approach to adjusting weights.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_4_Figure_4.jpeg" alt="Figure" />
+
+Figure 11-3: A sample SOM, whose red neurons are the input and blue ones are the output. Until now, we show neural networks like the left side, but SOM is usually shown as the right side of this figure, which is a rotated version of the left side (matrix of neurons).
+
+The input layer of SOM is a vector equal to the number of features. For example, if we have a five-dimensional dataset, e.g., a table with five columns, the input vector includes five neurons. Assuming the dataset has *n* number of data points, it is recommended to have neurons in the output [Tian '14]. For example, if our dataset includes 164 records, it is recommended to have output neurons. Take a look at Figure 11-3; there, we have a dataset with 5 × *n* 5 × 164 ≈ 64
+
+three features (three input neurons), it includes 164 records, and the number of output neurons is . 5 × 164 ≈ 64
+
+The output layer of SOM can also be visualized as a *topographical map*, which presents the data in a lower dimension. Usually, the output of SOM is presented on a colored network of circles or hexagons in two dimensions. Colors present labels of the data or group of data, and each hexagon or circle presents one output neuron (see Figure 11-4). The patterns of color correspond to the distribution of data. Usually, by looking at the topographical map, we could identify clusters of data, or compare two or more topographical maps to identify some correlations. For example, Figure 11-4 shows that by collecting many parents' advice, we realize that there is a correlation between life satisfaction and education.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_5_Figure_2.jpeg" alt="Figure" />
+
+Figure 11-4: Two hexagonal topographical maps, which is the outputs of the SOM algorithm on a multi-feature dataset.
+
+The result is shown in two hexagonal topological maps. By looking at these two images, we might see that higher education correlates with life satisfaction. Higher education is usually correlated with life satisfaction, but as presented from these two maps, it is not necessarily always true. We can see at the bottom of the Life Satisfaction map that there are a few points with low education but high life satisfaction.
+
+Higher dimensional SOM is also possible, but it is not common. The blue layers in Figure 11-3 are the lower dimensional representation of the input dataset. The output layer of the SOM is called a *lattice*, a specific mathematical structure. In simple words, the lattice is a collection of data points that are arranged in a regular pattern, kind of like a grid, and have a special relationship to each other that helps us understand their properties. For example, a 2D grid lattice can be seen as a graph where each node has edges connecting it to its immediate neighbors (up, down, left, right). Therefore, while not every graph is a lattice, every lattice can be represented as a graph.
+
+The SOM algorithm is implemented in four steps (initialization, competition, cooperation, and adaption).
+
+- (i) *Initialization:* All weights of the neural network are initialized with a small random number.
+- (ii) *Competition:* For every single input tuple (e.g., one record of a table), SOM computes a distance between the given input vector and weights of each node by using the following Euclidean distance, called the discriminant function.
+
+$$distance(O_j) = \sqrt{\sum_{i=1}^{D} (x_i - w_{j,i})^2}$$
+
+Here, is the input neuron in high dimensional space, *i* is the index of input neuron, *D* is the dimensions of the input dataset or number of features, *j* is the index of output neuron, and is the weight between output neuron *j* and input neuron *i*. The node that has the smallest value is called the winner ( in Figure 11-5) neuron. The final *w* is the presentation of data points in the projected dataset. *xi wj*,*<sup>i</sup> o*2
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_6_Figure_4.jpeg" alt="Figure" />
+
+Figure 11-5: For each output node in the SOM, a distance between the given input vector and the weights of each node is calculated. Then, the node with the shortest distance is selected as the winner, i.e., here it is, and we mark it around with red.
+
+To better understand this process, let's take a look at Figure 11-5. There, we fed one record from a table with three columns (for every column, assume one input neuron) into the network. Then, for every single output node, the distance between this node and the input record is calculated. is the winner node, which has the smallest value (the most similar one because its distance is the shortest one). The winning node is also called the *Best Matching Unit (BMU)*. *o*2
+
+Because of this step in some literature, SOM is called competitive learning. In summary, at every round (i.e., a new row of data is processed), there is competition among neurons, and only one neuron gets activated. This neuron is referred to as "the winner takes all" neuron.
+
+(iii) *Cooperation*: Now, a circle with radius is drawn around the BMU, and all nodes that fit inside this radius are assumed to be the neighbors of the BMU. The radius size around the BMU *σ*
+
+starts large, potentially covering the entire output layer's lattice, and decreases exponentially with each iteration, helping to fine-tune the learning process as the algorithm progresses, as shown in Figure 11-6. Each time a new record is fed into a network, the radius size will be changed (reduced) by the exponential rate.
+
+(iv) *Adaptation*: After the BMU is specified, each node (output neuron) inside the radius adjusts its weights to be similar to the BMU. The neighbor nodes, which are closer to BMU, get higher
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_7_Figure_2.jpeg" alt="Figure" />
+
+Figure 11-6: Output layer of SOM. From left to right, the first input record is processed, a BMU is identified with dark red, and with a large radius, neighbor nodes get its colors. Then, for the second input record, the green dot is identified. The red circle gets smaller (with an exponential decay rate), and this process continues for other records.
+
+weight updates, and neighbor nodes apart from the BMU get lower weight updates. This process is visualized in Figure 11-6 by using the different intensities of the same color. When a new record is processed, the BMU changes (from the red dot to the green dot in Figure 11-6), and again, the weights of the new BMU neighbors will be updated to be similar to the BMU.
+
+Steps (ii) to (iv) will be repeated iteratively until all input records are processed.
+
+One common approach to present SOM output is using hexagonal topological maps (Hex map), as shown in Figure 11-4. Hex map tries to keep similar objects close to each other and dissimilar objects distant from each other. By looking at Hex maps, we can identify correlations between features of the dataset and use the map to identify clusters of data. Nevertheless, SOM is not a clustering algorithm or classification algorithm itself. Instead, it changes the representation of the data, and this result can be considered clustering. In particular, each input data point is assigned to the cluster represented by the winning neuron in the SOM.
+
+Usually, after transferring the data into the lower dimension, it is easier to perform clustering, classification, etc. It is better to experiment with different representations, such as SOM and others that we will explain later, e.g., RBM, Autoencoder, then decide.

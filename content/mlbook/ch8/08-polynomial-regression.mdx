@@ -1,0 +1,51 @@
+---
+chapter: "ch8"
+order: 8
+slug: "polynomial-regression"
+title: "Polynomial Regression"
+wordCount: 1241
+---
+Sometimes, the relationship between the predictor and response variable is not linear. Assume Mr. Nerd enjoys reading books, but if he reads too few books or too many books in a time period, such as a month, his stress level increases. He likes to keep a balance on his book-reading behavior. Again, he logs the number of books he reads per month, and he plots them as shown in Figure 8-4 (a).
+
+It is clear that we can not draw a straight line and model Mr. Nerd's stress level in this scenario. Even if we draw as we did in Figure 8-4 (b), this line is not descriptive enough, and it is too far from data points. We need a line that can model his stress level more accurately, like Figure 8-4 (c) to (e). For these scenarios a straight line (linear regression) is not enough, and instead, we can use polynomial regression.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_9_Figure_3.jpeg" alt="Figure" />
+
+Figure 8-4: (a) plot of stress level and number of read books in a month, (b) Linear regression on the data, which is not properly representative of the data (underfitting). (c) Polynomial regression line with the degree of four, (d) Polynomial regression line with the degree of six, and (e) Polynomial regression line with the degree of six, which could cause overfitting. The equation of each plot is written at the bottom of each diagram in grey color.
+
+A polynomial is a mathematical expression that consists of terms, where each term is formed by multiplying a coefficient (e.g., ) with a variable *x* raised to a non-negative integer power. These terms are then combined through addition or subtraction. Please keep this in your lovely brain: polynomial equation can produce a non-linear curve, and a polynomial regression can be formalized as follows: *β*
+
+$$y = \beta_0 + x\beta_1 + x^2\beta_2 + x^3\beta_3 + \dots + \beta_d x^d + e$$
+
+Note that here, we have only one *x* (input variable), but it has different powers. Having different powers means a curved line function, that can fit into the non-straight linear data points. In the above equation, *d* is called the degree of the polynomial, and *the larger the polynomial degree gets, the curve is getting more flexible*. In other words, *x* to a power larger than one gives us parabolic shapes (a sexy name for a curved or bell-shaped line), and thus, it can fit into the data with different shapes. is called quadratic, cubic, and quartic. *x*<sup>2</sup> *x*<sup>3</sup> *x*<sup>4</sup>
+
+To better understand this phenomenon, consider Figure 8-4, which presents a regression model creation with different degrees. As we can see from this figure, the more we increase the degree of polynomial, the more flexibility we have in the model to fit the sample data points (from Figure 8-4 (c) to Figure 8-4 (e)). Nevertheless, increasing it too much causes an unforgivable sin, i.e., overfitting, which we will explain later in this chapter.
+
+Besides, note that increasing the degrees is associated with an increase in complexity. Assuming we have n data points and d degree, polynomial regression builds  $((n+d)!)/(n! \times d!)$  features [Géron '17]. Therefore, if computational complexity is important, we should be careful and not increase the degree of polynomial regression too generously. For a polynomial of degree d and n data points, the time complexity of polynomial regression is  $O(nd^2 + d^3)$ .
+
+### Model Parameters (Degrees and Coefficients) Estimation
+
+There are two types of parameters required to be identified in polynomial regression. The first is the regression "coefficients"  $(\beta_0, \beta_1, \beta_2, \dots, \beta_m)$  and the second one is to identify the minimum number of "degrees" for the model  $(x, x^2, x^3, \dots, x^n)$ . The regression line should be the best representative of the observation (our data points) and this will be achieved through the optimal configuration of those two types of parameters. In the following, we describe each in more detail.
+
+#### Coefficients
+
+To get a good estimate for polynomial coefficients, we can use a cost function similar to the linear regression. A well-known cost function to estimate polynomial coefficients is the least square cost function or least square fitting. A polynomial regression can be written as a multiplication of matrices, and solving the equation can provide the values for  $\beta s$ .
+
+For example, let's say we have a polynomial regression with degree m. y is the dependent variable and the  $\beta$ s are the coefficient for different nth powers of the independent variable x. By substituting the values for x and y (from our real dataset) and by solving the following m equations we can identify  $\beta_0, \beta_1 \ldots \beta_m$  (we have learned in school matrix multiplication and how to resolve equations that have m unknown variables):
+
+$$\begin{bmatrix} 1 &amp; x_1 &amp; x_1^2 &amp; \dots &amp; x_1^m \\ 1 &amp; x_2 &amp; x_2^2 &amp; \dots &amp; x_2^m \\ \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\ 1 &amp; x_n &amp; x_n^2 &amp; \dots &amp; x_n^m \end{bmatrix} \cdot \begin{bmatrix} \beta_0 \\ \beta_1 \\ \vdots \\ \beta_m \end{bmatrix} = \begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix}$$
+
+Note that we have the values of x and y available from our observed dataset, thus, we can substitute them, then perform matrix multiplication and end up having three equations with m unknown variables, i.e.,  $\beta_0, \beta_1, \ldots, \beta_m$ . By solving this equation, we get the values for coefficients. For example, let's assume that we end up with the following variables for m=3.  $\beta_0=0.1$ ,  $\beta_1=0.3$ ,  $\beta_2=0.12$ .
+
+We intend to predict: what will be the mood of Mr. Nerd after reading his 20th book in a month? By using two degrees of polynomial regression we will have the following:
+
+ $y = \beta_0 + \beta_1 x + \beta_2 x^2$  and by substituting  $\beta$  variables we will have 54.1 as his mood score:  $y = 0.1 + 0.3 \times 20 + 0.12 \times 20^2 = 54.1$ 
+
+#### **Degrees**
+
+A polynomial regression with n-l degree is able to model n data points, but this is typically not desirable in practice. As we have explained before, increasing the number of degrees is associated with a huge computational cost. Therefore, we should try to find the least number of degrees. One way to identify a reasonable degree is to perform the following two steps:
+
+- (1) Leave out some data points from the dataset and then calculate some polynomial regressions with different degrees, e.g., with  $x^2$ ,  $x^3$ ,  $x^4$  and  $x^5$ . There is a method called 'leave-one-out' and one-by-one data points will be removed. However, this method is very resource-intensive, and it is recommended that it not be used.
+- (2) Add back those removed data points and check how much an error value (e.g. RSS) changes. For example, assume by using  $x^2$ , the error is 0.28, by using  $x^3$ , the error is 0.23, by using  $x^4$ , the error is 0.21 and by using  $x^5$  the error is 0.46. We can conclude  $x^4$  is the best choice, because it has the least amount of error while encountering new data.
+
+This approach is very similar to the test and train that is being used in all supervised machine learning, but it is not exactly the same. In this case, we play with the training dataset and not the test dataset. Usually, the software that implements the polynomial regression library provides us with a parameter search function to automatize this process.

@@ -1,0 +1,18 @@
+---
+chapter: "ch8"
+order: 1
+slug: "objective-cost-and-loss"
+title: "Objective, Cost, and Loss"
+wordCount: 464
+---
+Everything we do in life is associated with a cost. For instance, you decide to learn data science and begin by reading this book. This decision comes with the cost of spending your precious time and expending energy from your brain cells. In other words, you invest time (a cost) to learn machine learning (a gain). You might have decided, or may decide, to get married; this decision costs you your free time, which will be dedicated to another person. Moreover, for a marriage to be successful, you or anyone else must make some changes to your behaviors. It's impossible to maintain the same behavior after marriage as when you were single.
+
+Something similar exists in algorithms as well. A mathematical function that *tries to maximize or minimize a variable* (e.g., accuracy of an algorithm, energy use of an algorithm, etc.) is called an *objective function*. In the context of machine learning, we can call any function an objective function, if a model is trying to optimize this function. If the objective function seeks to minimize the cost of a variable (where the higher its value, the more its cost). We may refer to this objective function as the *cost function***.**
+
+A *Loss score* is a score that defines the cost associated with a single prediction error and measure the cost of that single data point. In layman's terms, we can say loss functions measures how many mistakes we make. On the other hand, the cost function aggregates the losses over all data points, summing up the individual mistakes to measure the overall performance of the model.
+
+Assuming an output of a model is presented with *y*, the differences between actual output values ( ) and predicted output values ( ), specify the cost or loss. One single difference is the loss, and all loss values are constructing the cost. *yactual ypredicted*
+
+In summary, while a loss function quantifies the error of a single prediction, a cost function encompasses the total error of the model across all data points. Although 'loss,' 'cost,' and 'objective' functions can sometimes be used interchangeably in the literature, a cost function includes the sum of loss scores across predictions, and both serve as types of objective functions that a model aims to minimize.
+
+*Epoch:* A complete pass through the entire training set to calculate the cost function during the training phase is called an *epoch*. When calculating the cost function, each epoch involves using the data in the training set to compute the cost and use that cost to update the model's parameters. If a text mentions that a model was trained for 100 epochs, it means that the algorithm has completed 100 iterations over the training set, updating the model after each pass to reduce the cost function.

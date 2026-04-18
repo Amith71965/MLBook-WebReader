@@ -1,0 +1,31 @@
+---
+chapter: "ch8"
+order: 17
+slug: "likelihood-ratio-test"
+title: "Likelihood Ratio Test"
+wordCount: 604
+---
+The Likelihood Ratio Test (LRT) or Likelihood Ratio Chi-square test is useful to choose the best model from two nested models. Nested models are models in which all parameters of one model exist in the other model as well. For example, we would like to model the applicants' acceptance rate in an elite university, where getting admission there is very competitive. One model has two parameters: the entrance exam score (e.g., SAT in the U.S.) and high school performance (GPA in the U.S.). The other model has five parameters: exam score, high school performance, race of the candidate, nationality of the candidate, and whether their parents are rich. The first model is nested within the second model because the second model has all the parameters of the first model and three more parameters (race, nationality, and parent-richness).
+
+The Likelihood Ratio Test assumes that the best model is the one that maximizes the likelihood function. It uses a log-likelihood to compare two models together and identifies the one with a higher maximum likelihood function. It is written as a ratio between the model with a lower number of parameters to the model with a higher number of parameters, , with the following equation: *L*(*θ*1) *L*(*θ*2)
+
+Likelihood Ratio Test = 
+$$-2log_e(\frac{L(\theta_1)}{L(\theta_2)})$$
+
+Once again, for the hundred thousand times, we should repeat that your software package includes these tests and you don't need to implement them on your own. Unless you would like to implement specific customization on the existing method, or you are a student and your instructor asks you implement these algorithms on your own.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_36_Picture_1.jpeg" alt="Figure" />
+
+#### NOTES:
+
+- \* When we encounter, it is similar to , which is read as "*e* to the *x*" or "*e* to the power of *x*", and similar to , is a constant This is called Euler constant number. *exp*(*x*) *e<sup>x</sup> π e e* = 2.7182...
+- \* While working with logistic regression, there could be a predictor variable that shows a negative coefficient (negative value for ). This means that there is a negative relation between that particular predictor (*X*) and output (*Y*). *β*
+- \* One known issue in logistic regression is the coefficient impact on two or more different input variables on each other. For example, if we increase , then *Y* will be increased regardless of the value of . To mitigate this issue and increase the interaction effect, we can define a third coefficient ( ), which is called *interaction terms* between two other input variables. *x*1 *x*2 *β*3
+
+$$Y \approx \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
+
+\* Similar to linear regression, Logistic regression is a form of the generalized linear model. Generalized models are models which use a "link function" to link a nonlinear model to a linear model. Here, the link function is the log odds.
+
+- \* A result obtained by one predictor (input variable) might be different from the result obtained by multiple predictors (input variables). This is caused by the correlation among predictors, which is called the *confounding effect*.
+- \* We have referred to some weird terms that are -∞ and +∞. They are used in logistic and softmax regression. Nevertheless, since smoothing the data is a very common problem in machine learning, sometimes large data will be converted to +∞, which is called an *overflow* problem, and small data will be converted to zero which causes an *underflow* problem, e.g. diving by a zero will be -∞.
+- \* We should not perform extrapolation beyond our observed data points, especially while using polynomial regression, which uses curved lines.

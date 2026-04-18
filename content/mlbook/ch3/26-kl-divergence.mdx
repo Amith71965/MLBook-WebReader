@@ -1,0 +1,32 @@
+---
+chapter: "ch3"
+order: 26
+slug: "kl-divergence"
+title: "KL-Divergence"
+wordCount: 420
+---
+KL-Divergence is used to compare two distributions or measure the similarities between two distributions*.* For example, compare the result of predicted distribution constructed by approximation method to actual distribution. We will encounter KL-Divergence a lot in this book, especially when dealing with generative models and neural networks.
+
+For example, assume we are using algorithm and algorithm to predict the bugs eaten by chickens in room #4. Assuming the actual probability of bugs in room #4 is . We can compare the results of and , and the results show that the algorithm performs better because 0.18 is closer to 0.29. *A B p* = 0.29 *DKL*(*p*||*A*) = 0.18 *DKL*(*p*||*B*) = 0.65 *A*
+
+KL-Divergence is the difference between the cross-entropy of two distributions, i.e., , and one of their entropy, i.e., . Soon, we will explain the cross-entropy. The KL-Divergence between two discrete distributions *p* and *q* is written as and computed as follows: *H*(*p*, *q*) *H*(*p*) *DKL*(*p*||*q*)
+
+$$D_{KL}(p | | q) = H(p, q) - H(p) = \sum_{i} p_{i} \log(\frac{p_{i}}{q_{i}})$$
+
+If we need to deal with continuous distributions, their KL-Divergence is computed as follows:
+
+$$D_{KL}(p \mid \mid q) = \int_{i} p_{i} \log(\frac{p_{i}}{q_{i}})$$
+
+Therefore, if p = q, then  $D_{KL}(p | | q) = 0$ . The result of a KL-Divergence will be a number between 0 and  $\infty$ , when two distributions have no overlap, their KL-Divergence will be  $\infty$  (see Figure 3-33).
+
+Keep in mind that  $D_{KL}(p || q) \neq D_{KL}(q || p)$ . As soon as somebody asks you something that includes a comparison between two distributions, you should interrupt him or her and throw your knowledge on the table by saying: "I recommend using KL-Divergence". KL-Divergence is often used in information theory, topic modeling, feature selection, and comparing the output of generative models.
+
+### Cross-entropy
+
+Cross entropy measures the difference between two probability distributions over the same set of events. Given two probability distributions, p and q, over a set of I events, the cross-entropy between them is defined as H(p,q) and computed as follows:
+
+$$H(p,q) = -\sum_{i \in I} p_i \log_2(q_i)$$
+
+The cross-entropy can be computed as the sum of the KL-Divergence and the entropy of the first distribution:  $H(p,q) = D_{KL}(p | | q) + Entropy(p)$ . Unlike KL-Divergence, cross-entropy is symmetric, and thus, we have H(p,q) = H(q,p).
+
+Cross-entropy is used as a cost function in classification tasks in neural networks by measuring the differences between predicted and actual distributions. We will use it later in Chapter 10 and other chapters discussing Neural Networks.

@@ -1,0 +1,56 @@
+---
+chapter: "ch3"
+order: 22
+slug: "significance-test-error-correction"
+title: "Significance Test Error Correction"
+wordCount: 830
+---
+One of the challenges we face when using multiple significance tests for a single dataset is rejecting null hypotheses by mistake. This phenomenon is known as Type I error. It means that when we conduct multiple hypothesis tests, the risk of increasing false positive rates increases (check Chapter 1 to recall false positives). Some tests, such as Bonferroni correction [Bonferroni '36] or Tukey correction [Tukey '49], can be used to reduce the likelihood of Type I error by adjusting the *p*-value.
+
+#### Bonferroni Correction
+
+Bonferroni correction adjusts the p-value by dividing the original  $\alpha$  value by the number of analyses on the dependent variable when two or more statistical significance tests are applied to the same dataset. To calculate Bonferroni correction, we should create a new  $\alpha$ , let's call it  $\alpha'$ , which is used instead of the original  $\alpha$ . It is calculated easily by the following equation
+
+$$\alpha' = \frac{\alpha}{number \ of \ comparisons}$$
+, the sign in the denominator is called a combination.
+
+For example, if we choose  $\alpha=0.05$  (which is very common to 95% confidence), and we have four comparisons, then we have  $\alpha'=\frac{0.05}{4}=0.0125$ . Therefore, instead of having a p-value &lt; 0.05 to reject the null hypothesis, we should have p-value &lt; 0.0125 to reject the null hypothesis.
+
+We should be aware that Bonferroni correction increases the chance of Type II error. Type II error occurs when we do not reject the null hypothesis, but we must reject it. Besides, Bonferroni is not good for more than a couple of comparisons. If we have more than five comparisons, it reduces the new p-value, which makes it harder to reject the null hypothesis. Therefore, another method, such as Tukey, will be used.
+
+### **Tukey Correction**
+
+Tukey correction, a.k.a, Tukey method or Tukey's Honestly Significant Difference (HSD) test, is used in conjunction with ANOVA, and its purpose is to determine which mean amongst a set of means differs significantly from other means.
+
+It is used after ANOVA has rejected the null hypothesis. Then, a Tuckey correction can be used to make pairwise comparisons between all possible pairs of means divided by standard error to identify exactly where the differences lie.
+
+Its null and alternative hypotheses between the two means are as follows:
+
+ $H_0$ :  $\mu_i = \mu_i$ 
+
+ $H_1$ :  $\mu_i \neq \mu_i$ 
+
+First, for each pair of mean, it computes the q value by using the following equation:
+
+$$q_{i,j} = \frac{(\mu_i - \mu_j)}{\sqrt{MSE/n}}$$
+
+Here, *MSE* refers to the mean square error read from ANOVA table results (we didn't explain its details), *n* is the size of the sample dataset for each group.
+
+Next, it determines the critical value for q ( $q_{crit}$ ) based on the total number of comparisons, confidence level, and degrees of freedom. This value is read from a statistical table specifically designed for the Studentized range distribution.
+
+Afterwards, it computes the HSD score as follows:
+
+$$HSD = q \times \sqrt{\frac{MSE}{n}}$$
+
+We can reject  $H_0$  reject if  $|\mu_i - \mu_j| > HSD$ . Tukey's HSD test has assumptions, which make its applicability limited. One of these assumptions is that the variability (spread) of the data should be roughly the same across all the groups being compared. This is called the homogeneity of variances. Another assumption is that any errors or differences within each group should follow a normal distribution.
+
+NOTES:
+
+- \* If there is no relation between those two variables, they are independent variables, and if there is a relationship, they are dependent variables.
+- \* Rejecting the H0 in a Chi-square means that the two target variables have a relation, but we can not identify their type of relationship with the Chi-square test.
+- \* The Goodness-of-Fit test compares the differences between the frequencies we "observe" (model) and frequencies we "expect".
+- \* Sometimes, there is a normal distribution among the dataset we have, and thus, we must use parametric tests. The test result might lead to a wrong conclusion. Therefore, if we are not sure about the distribution we could also perform a non-parametric test on the sample data as well.
+- \* Parametric significance tests usually rely on the mean, but non-parametric significance tests usually rely on the median.
+- \* While dealing with non-parametric tests, we always first need to identify if there is a difference between samples, using tests such as KW-Test or Chi-Square), then we can use another test, such as MWM-Test, to identify exactly which one of these samples is different from others.
+- \* When we are conducting many analyses on a dependent variable, by chance, we might make a Type I error (H0 is true, but we reject H0, which is a false positive). To reduce the likelihood of making Type I errors, we can use Bonferroni Correction [Dunn '61].
+- \* Significant tests will be implemented on more than one group of data, and based on the comparison between those groups we can conclude if our groups are significantly different or not.

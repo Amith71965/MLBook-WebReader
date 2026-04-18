@@ -2,6 +2,197 @@
   "number": 8,
   "title": "Regressions",
   "sections": [
-    "00-introduction"
+    {
+      "order": 0,
+      "slug": "intro",
+      "title": "Introduction",
+      "wordCount": 284
+    },
+    {
+      "order": 1,
+      "slug": "objective-cost-and-loss",
+      "title": "Objective, Cost, and Loss",
+      "wordCount": 464
+    },
+    {
+      "order": 2,
+      "slug": "linear-regressions",
+      "title": "Linear Regressions",
+      "wordCount": 171
+    },
+    {
+      "order": 3,
+      "slug": "univariate-linear-regression",
+      "title": "Univariate Linear Regression",
+      "wordCount": 849
+    },
+    {
+      "order": 4,
+      "slug": "model-parameters-coefficients-estimation",
+      "title": "Model Parameters (Coefficients) Estimation",
+      "wordCount": 518
+    },
+    {
+      "order": 5,
+      "slug": "multiple-linear-regression",
+      "title": "Multiple Linear Regression",
+      "wordCount": 1008
+    },
+    {
+      "order": 6,
+      "slug": "deciding-about-model-variables",
+      "title": "Deciding About Model Variables?",
+      "wordCount": 363
+    },
+    {
+      "order": 7,
+      "slug": "linear-regression-challenges-and-resolutions",
+      "title": "Linear Regression Challenges and Resolutions",
+      "wordCount": 353
+    },
+    {
+      "order": 8,
+      "slug": "polynomial-regression",
+      "title": "Polynomial Regression",
+      "wordCount": 1241
+    },
+    {
+      "order": 9,
+      "slug": "piecewise-segmented-or-non-additive-regression",
+      "title": "Piecewise, Segmented, or Non-Additive Regression",
+      "wordCount": 873
+    },
+    {
+      "order": 10,
+      "slug": "evaluating-the-fitness-of-training-sets-in-linear-models",
+      "title": "Evaluating the fitness of training sets in linear models.",
+      "wordCount": 1552
+    },
+    {
+      "order": 11,
+      "slug": "extrapolation-and-interpolation",
+      "title": "Extrapolation and Interpolation",
+      "wordCount": 2074
+    },
+    {
+      "order": 12,
+      "slug": "logistic-regression-classifier",
+      "title": "Logistic Regression (Classifier)",
+      "wordCount": 2324
+    },
+    {
+      "order": 13,
+      "slug": "softmax-regression-classifier",
+      "title": "Softmax Regression (Classifier)",
+      "wordCount": 1536
+    },
+    {
+      "order": 14,
+      "slug": "evaluating-regression-models-fitness",
+      "title": "Evaluating Regression Models Fitness",
+      "wordCount": 449
+    },
+    {
+      "order": 15,
+      "slug": "learning-curve",
+      "title": "Learning Curve",
+      "wordCount": 968
+    },
+    {
+      "order": 16,
+      "slug": "information-criterion",
+      "title": "Information Criterion",
+      "wordCount": 429
+    },
+    {
+      "order": 17,
+      "slug": "likelihood-ratio-test",
+      "title": "Likelihood Ratio Test",
+      "wordCount": 604
+    },
+    {
+      "order": 18,
+      "slug": "devils-of-model-building",
+      "title": "Devils of Model Building",
+      "wordCount": 157
+    },
+    {
+      "order": 19,
+      "slug": "overfitting-and-underfitting",
+      "title": "Overfitting and Underfitting",
+      "wordCount": 348
+    },
+    {
+      "order": 20,
+      "slug": "bias-variance-tradeoff",
+      "title": "Bias-Variance Tradeoff",
+      "wordCount": 976
+    },
+    {
+      "order": 21,
+      "slug": "regularization",
+      "title": "Regularization",
+      "wordCount": 2500
+    },
+    {
+      "order": 22,
+      "slug": "optimization-algorithms",
+      "title": "Optimization Algorithms",
+      "wordCount": 228
+    },
+    {
+      "order": 23,
+      "slug": "mathematical-concepts-required-for-optimization",
+      "title": "Mathematical Concepts Required for Optimization",
+      "wordCount": 2242
+    },
+    {
+      "order": 24,
+      "slug": "integral",
+      "title": "Integral",
+      "wordCount": 748
+    },
+    {
+      "order": 25,
+      "slug": "what-is-optimization-in-machine-learning",
+      "title": "What is Optimization in Machine Learning?",
+      "wordCount": 861
+    },
+    {
+      "order": 26,
+      "slug": "gradient-descent",
+      "title": "Gradient Descent",
+      "wordCount": 1195
+    },
+    {
+      "order": 27,
+      "slug": "types-of-gradient-descent",
+      "title": "Types of Gradient Descent",
+      "wordCount": 1131
+    },
+    {
+      "order": 28,
+      "slug": "newton-method",
+      "title": "Newton Method",
+      "wordCount": 754
+    },
+    {
+      "order": 29,
+      "slug": "early-stopping",
+      "title": "Early Stopping",
+      "wordCount": 531
+    },
+    {
+      "order": 30,
+      "slug": "summary",
+      "title": "Summary",
+      "wordCount": 745
+    },
+    {
+      "order": 31,
+      "slug": "further-readings-and-watching",
+      "title": "Further Readings and Watching",
+      "wordCount": 343
+    }
   ]
 }

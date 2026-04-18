@@ -1,0 +1,170 @@
+---
+chapter: "ch3"
+order: 20
+slug: "chi-square-test"
+title: "Chi-Square Test"
+wordCount: 2197
+---
+Chi-Square ( ) is one of the common non-parametric tests; it is used for two different purposes: (i) testing th*e independence of two categorical variables* or (ii) testing the *goodness-of-fit*. In simpler terms, by the test of independence, we mean this test is used to examine whether two categorical variables are independent. By goodness-of-fit, we mean testing if two distributions fit each other, for example, to see if a dataset has a normal distribution, and we use goodness-of-fit to compare a theoretical normal distribution with our dataset. *χ* 2
+
+### **Test of independence**
+
+A usual practice in data analysis is checking if there is a relationship between two variables. Remember, each variable can have different values; thus, we are comparing two sets of their values together. If both variables are numerical, we use correlation to analyze their relation, which will be explained later in this chapter. If both variables are categorical*,* we use a *Chi-*
+
+*Square* test ( -test) to determine whether there is a relationship between those two variables. *χ* 2
+
+This test operates based on a contingency table. *Contingency*, *Crosstab,* or *R C table* (read as R by C table, R stayed for row and C for column) is a table that presents the frequency of different variables in a dataset and their relations together. For instance, look at Table 3-7, which presents the relationship between bug tastes and the leg weights of 161 bugs. We would like to use this table to see whether there is any relationship between bugs' leg weight and taste. ×
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_54_Picture_4.jpeg" alt="Figure" />
+
+Let's review our hypothesis:
+
+*H0: Bugs with leg weight of not 0.2 gr. (heavier or lighter than 0.2 gr.) taste better. H1: Bugs with leg weight of 0.2 gr. tastes better than other bugs.* 
+
+The chi-square test calculates the p-value based on the differences between *observed* and *expected values* from the contingency table. Assuming *E* presents the expected value, it is easy to calculate the expected value as follows:
+
+$$E = \frac{total\ row \times total\ column}{sample\ size}.$$
+
+To calculate the expected values for the observed values presented in the contingency table, we multiply the row total by the column total and divide by the grand total. Table 3-7 presents observed values, and Table 3-8 computes the expected values of Table 3-7.
+
+After we have calculated the expected values, we can use the following equation to calculate the chi-square score ( ): *χ* 2
+
+$$\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$$
+
+In this equation, *Oij* is the observed value on row *i* and column *j*. Respectively, *Eij* is the expected value on row *i* and column *j*. In our example, this number will be:
+
+$$(47 - 29.9)^2/29.9 + (14 - 25.6)^2/26.6 + \dots$$
+
+|        |       |      | Taste    |             |       |
+|--------|-------|------|----------|-------------|-------|
+|        |       | Good | Too Oily | Too Crunchy | Total |
+| Weight | =0.2  | 47   | 14       | 22          | 83    |
+| Leg    | >0.2  | 8    | 34       | 12          | 54    |
+|        | &lt;0.2  | 3    | 1        | 20          | 24    |
+|        | Total | 58   | 49       | 52          | 161   |
+
+Table 3-7: A contingency table that reports bug leg weight and taste. This is the observed dataset.
+
+|        |       |                          | Taste                    |                           |       |
+|--------|-------|--------------------------|--------------------------|---------------------------|-------|
+|        |       | Good                     | Too Oily                 | Too Crunchy               | Total |
+| Weight | =0.2  | (83x58)/161<br/>=<br/>29.9 | (83x49)/161<br/>=<br/>25.6 | (83x52)/161<br/>=<br/>26.8  | 83    |
+| Leg    | >0.2  | (54x58)/161<br/>=<br/>19.4 | (54x49)/161<br/>=<br/>16.4 | (54x52)/161<br/>=<br/>17.44 | 54    |
+|        | &lt;0.2  | (24x58)/161<br/>=<br/>8.6  | (24x49)/161<br/>=<br/>7.3  | (24x52)/161<br/>=<br/>7.7   | 24    |
+|        | Total | 58                       | 49                       | 52                        | 161   |
+
+Table 3-8: Expected values contingency table calculated from observed values from Table 3-6.
+
+Also, the degree of freedom should be calculated as well, i.e. , in our example, the degree of freedom will be because we have three columns and three rows. The software package will use the chi-square table , contingency table, degree of freedom, and a [12](#page-55-0) given (significance level, which is the threshold for deciding whether to reject or fail to reject the null hypothesis) to perform a chi-square test and provide us with a *p-*value. (*R* − 1) × (*C* − 1) (3 − 1)(3 − 1) = 4 *α*
+
+Although we don't need to learn these steps, it is important to know the contingency table. It is used in many data analyses, e.g., Odds-Ratio calculation, which we will explain later.
+
+To summarize, to use the chi-square test for the relationship between two categorical variables, we should give the contingency table and significance level as inputs. The software package will do the rest, and based on the output p-value, we can see whether the two categorical variables are independent or not.
+
+We do not explain these tables in this book, but just keep in mind they are tables with constant information. [12](#page-55-1)
+
+### **Goodness-of-Fit**
+
+The second use of the chi-square test is the Goodness-of-Fit test. Goodness-of-Fit is used to check how well a *sample (observed)* dataset fits an *expected (hypothesized) distribution*. In particular, this test evaluates whether the observed dataset fits the expected (or predicted) dataset. It could also be used to see if a dataset fits a particular distribution, e.g., normal distribution, or not.
+
+Usually, by looking at the distribution of data, we are able to make some predictions about the data. Nevertheless, in real-world settings, there is no guarantee that what we observe is similar to what we expect, and thus, we use the chi-square test (Goodness-of-Fit test).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_56_Picture_3.jpeg" alt="Figure" />
+
+We explained how an expected variable is calculated in each cell of the R C table. The Goodness-of-Fit is calculated by the following equation, which is a very similar equation of Chisquare to check the relationship between two categorical variables: ×
+
+Goodness – of – Fit: 
+$$\chi^2 = \sum_{i=1}^n \frac{(O_i - E_i)^2}{E_i}$$
+
+Similar to the previous equation, *O* presents the *observed value* in each data point, and *E* presents the *expected value* for that particular data point.
+
+The Goodness-of-fit test has the following hypothesis:
+
+*H0: The sampled (observed) dataset is not significantly different from the expected dataset.* 
+
+*H1: The sampled (observed) dataset significantly differs from the expected dataset.* 
+
+If the result of the Goodness-of-Fit test is small, we can reject the alternate hypothesis. Otherwise, the observation does not fit the expectation, and we reject the null hypothesis. Similar to the test of independence, the output of the Goodness-of-fit will present a justification in the pvalue based on the given . The p-value indicates the probability of observing a Chi-square statistic as extreme as, or more extreme than, the one calculated from our dataset under the assumption that the null hypothesis is true. If the p-value is less than the significance level, we reject the null hypothesis. *α*
+
+### Kolmogorov-Smirnov
+
+Kolmogorov-Smirnov test (KS-test) is another non-parametric test. Remembering the name of this test for non-Russian speakers is not easy, but try to memorize it and pronounce the names correctly. It is very helpful to show off your statistical knowledge in any meeting, even at parties.
+
+We did it many times, and we were successful in entertaining others on how knowledgeable we are.
+
+The KS-Test requires fewer technical assumptions compared to the t-test and ANOVA. It doesn't make any assumption about the distribution of two different samples, and this makes it a very popular significant test.
+
+KS-Test measures the differences between the Cumulative Distribution Function (CDF) of two datasets, as shown in Figure 3-27. In particular, it reports the maximum differences between the two CDFs. We hope you remember what CDF is; otherwise, please check the earlier sections of this chapter.
+
+Following are the null and alternate hypotheses for the test:
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_57_Figure_6.jpeg" alt="Figure" />
+
+Figure 3-27: KS-Test based on comparison of the distance between CDFs of two samples.
+
+*H0: the two datasets being compared are drawn from the same continuous distribution.* 
+
+*H1: the two datasets being compared are not drawn from the same continuous distribution.* 
+
+The KS-Test can also be used for Goodness-of-fit.
+
+### Kruskal-Wallis Test
+
+Kruskal-Wallis Test (KW-Test) is a non-parametric test analogous to one-way ANOVA, and it is used to compare more than one sample.
+
+As the first step, it combines data from all samples and then ranks them in ascending order (from smallest to largest). Then, it searches for patterns of how these rankings are distributed among our samples. If two samples have an equal mix of ranks, they are assumed to be similar. Otherwise, if two samples do not have similar ranks, they are assumed to accept the null hypothesis. In particular, it compares medians of more than two samples and reports if they are equal (H0) or are not equal (H1), similar to ANOVA.
+
+To conduct this test, the following conditions must be met: all samples should follow the same distribution, their variance should be the same, and they should be independent samples.
+
+|           | Taste (1 is worst, 10 is best) |   |   |   |   |   |   |   |   |   |
+|-----------|--------------------------------|---|---|---|---|---|---|---|---|---|
+| Room no.1 | 1                              | 2 | 2 | 1 | 1 | 3 | 3 | 2 | 3 | 2 |
+| Room no.2 | 1                              | 3 | 2 | 1 | 5 | 1 | 1 | 2 | 3 | 1 |
+| Room no.3 | 3                              | 1 | 2 | 4 | 2 | 1 | 1 | 3 | 1 | 6 |
+
+Table 3-9: Bug tastes score for each room.
+
+Let's go back to our attractive example, the insect farm. The insect farm has three bug rooms, and bugs in each room receive a unique diet, and thus, they have different taste.
+
+Since each room is treated with a unique diet, the farmer would like to know which diet makes the tastiest bugs. The first question is to check, whether there is any difference among different diets. Unfortunately, again, you should go for sampling and choose to select 10 random bugs from each room. Then, you eat them and rank their taste from 1 to 10. 1 is the worst taste, and 10 is the best taste. You have already eaten all 30 bugs (again, we are very sorry for you) and use Table 3-9 to report their taste.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_58_Figure_4.jpeg" alt="Figure" />
+
+Figure 3-28: Boxplot of sample data to check if they are from a similar distribution or not.
+
+To plot the distribution, we use a box plot. The box plot shown in Figure 3-28 illustrates that all three samples of Table 3-9 follow a similar distribution. We use a box plot, because in a nonparametric significance test, we deal with the median rather than the mean. Now, we can order and rank all data, as shown in Table 3-10. Consider that we have 12 times rank 1, we should sum them all and assign them a unique rank, i.e.:
+
+$$\frac{1+2+3+4+5+6+7+9+10+11+12+13}{13} = 6.4$$
+
+Therefore, the rank assigned to all 1 will be 7. Respectively we have 8 times 2, and following the same path for 2s, will lead to the following.
+
+$$\frac{14+15+16+17+18+19+20+21}{8} = 17.5$$
+
+and for 7 times 3, we have:
+
+$$\frac{22 + 23 + 24 + 25 + 26 + 27 + 28}{7} = 25$$
+
+4, 5, and 6 will be 29, 30, and 31.
+
+| Room no.1 | 6.4        | 6.4      | 6.4      | 17.5       | 17.5     | 17.5     | 17.5 | 25           | 25           | 25           |
+|-----------|------------|----------|----------|------------|----------|----------|------|--------------|--------------|--------------|
+|           | <b>1</b>   | 1        | <b>1</b> | 2          | 2        | <i>2</i> | 2    | <b>&amp;</b> | <b>&amp;</b> | <b>&amp;</b> |
+| Room no.2 |            |          |          |            |          |          |      |              |              |              |
+| Room no.3 | 6.4        | 6.4      | 6.4      | 6.4        | 6.4      | 17.5     | 17.5 | 25           | 29           | 31           |
+|           | <b>1</b> ⁄ | <b>1</b> | <b>J</b> | <b>J</b> ⁄ | <b>1</b> | 2        | 2    | <b>&amp;</b> | <b>A</b>     | &amp;            |
+
+Table 3-10: All sample data ordered and ranked.
+
+After all, ranks have been assigned, the test calculates the "Kruskal-Wallis test statistic", *T*, using the sum of the ranks for each room, i.e., Room no.1=16.5, Room no.2=14.8 and
+
+Room no.3= 15.3, by using the following equation:
+
+$$\frac{12}{n(n+1)} \sum_{i=1}^{g} \frac{T_i^2}{n_i} - 3(n+1)$$
+
+In this equation, *n* is equal to all sample data, 30.
+
+After the Kruskal-Wallis test statistic is calculated, the next step is to compare this test statistic with a chi-square distribution to determine the p-value. The degrees of freedom for this comparison are equal to the number of groups minus one, i.e., k-1.
+
+The resulting p-value is 0.9094. Therefore, the null hypothesis is not rejected (because p-value > 0.05), and you can report to the farmer that a different diet does not impact his bug taste. Even if the result of this test was p-value &lt; 0.05, it still does not give any more detail about the differences; it just rejects the null hypothesis.
+
+Of course, you can eat more bugs to make a larger dataset and repeat this experiment. We sincerely feel sorry for you getting trapped in this project. Hopefully, the next project will be in a chocolate factory.

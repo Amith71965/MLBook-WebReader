@@ -1,0 +1,42 @@
+---
+chapter: "ch11"
+order: 0
+slug: "intro"
+title: "Introduction"
+wordCount: 770
+---
+In the previous chapter, we have described CNN and RNN as two popular neural networks. These neural network architectures fall into the category of supervised learning. It means we train a model and use the trained model on the test dataset. Then, the accuracy of the result will be evaluated, and the optimizer will try to improve weights in the next epoch.
+
+This chapter focuses on *self-supervised neural networks*, a type of unsupervised neural network often associated with *generative models*. Most supervised models we have learned are doing either classification or regression, but self-supervised algorithms *reconstruct* the given input data. Previous neural network models we have explained get the input data, process them, and provide output. They include train (fit) and then test (predict). From now on, the neural networks we explain will perform the prediction on the same data, similar to the unsupervised learning algorithms we learned in Chapter 4 and Chapter 5, and the dataset is not split into train and test sets. These algorithms learn the latent representation of the input data. Latent representation has characteristics of the original data, while some of its noise might be removed.
+
+Recent advances in AI, including applications such as colorizing black-and-white photos, restoring old photographs, converting photos into videos, and generating images from text
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_0_Picture_4.jpeg" alt="Figure" />
+
+Figure 11-1: An example of a black-and-white picture that is colorized by a generative neural network.
+
+descriptions, leverage these algorithms. For instance, in Figure 11-1, we demonstrate an old photo to a neural network that uses a generative model, and it colorizes the old photo. Figure 11-2 showcases a text-to-image generation model, DALL-E v2 [Ramesh '22], which, as of 2023, can create detailed images based on text descriptions provided in captions. These examples highlight the capabilities of current models and contrast them with earlier, less sophisticated versions. At the time of reading this chapter, you might have wondered how the high quality of the text-2-image models or other models improved during the time and how dull are the versions you see in this chapter.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_1_Picture_1.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_1_Picture_2.jpeg" alt="Figure" />
+
+Figure 11-2: Text-to-image construction example. (right) DALL-E v2, text prompt: "A happy potato on the beach is drinking Pinacolada". (left) Stable Diffusion XL, text prompt: "A frog is talking behind the microphone for a crowd".
+
+We start this chapter by describing Self Organizing Maps (SOM) or Kohonen Maps, an old neural network whose main objective is to change the representation of the input data. It can be used for different tasks, including dimensionality reduction while maintaining the characteristics of the original dataset, classification, clustering, and even solving traveling salesman problems . [1](#page-1-0) Next, we describe the Restricted Boltzmann Machine (RBM) and its varieties as initial models of both RBM and SOM are fairly old, but algorithms are not like technologies that get outdated; they are science, and we should learn them as much as we can. Software developers learn technologies, and they need to filter what technology to learn and what to filter. However, learning the algorithm is a different policy, and we strongly recommend learning as many algorithms and models as you can.
+
+Afterward, we describe Autoencoders (AE) and then Generative Adversarial Networks (GAN), which are generative models and very popular until the introduction of diffusion models. Next, we explain Contrastive Learning methods, followed by a discussion on text-to-image models and
+
+Traveling Salesman Problem (TSP) is a known problem in computer science that tries to answer the following [1](#page-1-1) question: Given the list of cities and distances between each city, what is the shortest path that the salesman can visit each city once and return to the origin city?
+
+their concepts and algorithms, such as diffusion models, zero-shot learning, CLIP, VQGAN, etc.
+
+These models lead a new direction known as generative AI, e.g., generating text, illustrations, music, and videos. You might think that at the end of this chapter, you are done with deep learning. To be sure you do not feel too happy by reading this chapter, there is another fat chapter about state-of-the-art architectures and models for neural networks. Nevertheless, by finishing this chapter and learning all its algorithms, you will be another person. Do not take
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_2_Picture_2.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_2_Picture_3.jpeg" alt="Figure" />
+
+probabilities. You are ready to learn new topics. If you skipped those chapters, we strongly recommend reading Chapter 3, Chapter 8, and Chapter 10 before starting to read this chapter. Otherwise, you will have trouble understanding this chapter.
+
+Before we start our explanations, we should be familiar with a few basic terms, which we have tried not to explain in earlier chapters.

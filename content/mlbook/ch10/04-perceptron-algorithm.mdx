@@ -1,0 +1,77 @@
+---
+chapter: "ch10"
+order: 4
+slug: "perceptron-algorithm"
+title: "Perceptron Algorithm"
+wordCount: 1666
+---
+Perceptron [Rosenblatt '58] is one of the simplest and easiest neural network algorithms, which performs a binary classification. It receives a vector of input values and calculates a linear combination of input variables' values. If the results are greater than a threshold, the output will be equal to , otherwise, the output will be equal to . Assuming our input tensor has a *d* number of features ( ), the following equations formalize the binary classification of the perceptron algorithm. 1 −1 *x*1, *x*2, . . . *xd*
+
+$$\hat{\mathbf{y}} = a(\sum_{i=1}^{d} x_i w_i + b)$$
+
+Why do we use weight (w) for each feature? Because weights determine the contribution of each input feature to the output  $(\hat{y})$ . In other words, they specify the importance of the neuron. However, if a particular x value is zero in some instances, the weight impact will be zero as well. To handle this problem, a bias  $b_i$  will be added to the input as well. Bias can be interpreted as offset, which assists the  $x_i w_i$  reaches a specific threshold, and it has an impact on the output variable.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_9_Figure_1.jpeg" alt="Figure" />
+
+Figure 10-8: A single perceptron that receives a *d* dimensional input data. *b* presents the bias which is added to the result of summation. The first square is summing all weights and inputs together. The second square presents the activation function.
+
+Figure 10-8 shows the simplest form of the perceptron.  $\Sigma$  is presenting a summation of input variables along with their weights and biases, i.e.,  $\sum_{i=1}^{d} x_i w_i + b$ . The other rectangular box, with a shape similar to S, presents the activation function, i.e.,  $a(\sum_{i=1}^{d} x_i w_i + b)$ .
+
+Now, we have realized that the content of the equation in a(.) function is just a simple linear regression, but perceptron is not only a linear regression; we need to have a constraint for the output to be able to classify each output value and assign a label to it. For example, all outputs should be either 0 or 1. This is the job of the activation function a(.). We can conclude that the activation function is used to set constraints on the output values of neurons. If we use the Sigmoid function (check Chapter 8 to recall the Sigmoid), the activation function is a logistic regression, and a single perceptron is just a logistic regression.
+
+Single perceptron is not very useful, and we use Multilayer perceptron, which we will explain later. Perceptron (similar to logistic regression algorithms) operates based on the assumption that there exists a hyperplane, which separates two sides of the dataset. It starts with random weights that are close to zero. Then, it classifies the dataset. Next, it goes back and checks the data points that have been misclassified by analyzing the cost of the predicted value  $(\hat{y})$ , which is acquired by comparing it to the actual value (y). The cost function of Perceptron is very simple, and it simply uses the step function (we will explain it later). It means it uses a rule-based update: if the output is correct, weights remain the same; if not, weights are adjusted. Then, the neural network changes the weight of misclassified data points to reduce the cost score, and again performs the
+
+classification, then checks the new result. This process continues until it reaches a specific number of iterations, or weights cannot be further changed.
+
+In general, the process of going back to the network and changing the value of weights to improve the accuracy of output is called *backpropagation* or *(Back-Prop)*, which will be explained later in detail. However, Perceptron is much simpler and doesn't use backpropagation.
+
+### **Multilayer Perceptron**
+
+A Multi-Layer Perceptron (MLP) is an artificial neural network, consisting of fully connected neurons with a nonlinear activation function, organized in at least three layers, notable for being able to distinguish data that is not linearly separable.
+
+Before we explain Multilayer Perceptron, we should review binary logic, which we learned back in high school. Table 10-1 presets possible values of two binary variables A and B, which can get binary values (0 or 1) and the result of applying a logical operation on these two variables. To recall them from school time, OR is a logical operation that outputs true or 1 when at least one of the input values is true or 1, while AND is a logical operation that outputs true or 1 only when both input values are true or 1. XOR (exclusive OR) is a logical operation that outputs true or 1 only when the two input values are different.
+
+| A | B | Not A | Not B | A AND B | A NAND B | A OR B | A XOR B |  |
+|---|---|-------|-------|---------|----------|--------|---------|--|
+| 0 | 0 | 1     | 1     | 0       | 1        | 0      | 0       |  |
+| 0 | 1 | 1     | 0     | 0       | 1        | 1      | 1       |  |
+| 1 | 0 | 0     | 1     | 0       | 1        | 1      | 1       |  |
+| 1 | 1 | 0     | 0     | 1       | 0        | 1      | 0       |  |
+
+Table 10-1: Some basic binary logic operation between two variables.
+
+Logical reasoning plays an important role in electrical engineering, computer science, and circuit design, but for our needs, it is enough to know these operators.
+
+We have explained that a single layer perceptron is good for classifying linearly separable datasets. In the context of the logical operator, the perceptron algorithm can be used to represent boolean AND, OR, and NAND functions. However, a single layer perceptron cannot represent the XO[R](#page-10-0) boolean operator. In other words, it is impossible to use it for a non-linearly separable [4](#page-10-0) dataset [Minsky '69] with a single perceptron.
+
+It is possible to model XOR with multiple perceptrons (a network of perceptrons). To understand this problem, let's use some visualizations with sample data points. Figure 10-9 present four data
+
+XOR means that both operands should be different, i.e. true and false. For example, (P XOR ~P) = true [4](#page-10-1)
+
+points for the A and B variables described in Table 10-1. At the bottom of each plot, there is the perception that can model the distinction between the blue and red areas of its plot on top.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_11_Figure_1.jpeg" alt="Figure" />
+
+Figure 10-9: (Top) Four dots represents different status of A and B. AND and OR could be separated with linear hyperplane but XOR is not separable with a liner hyperplane. In the right diagram, we need some non-linear function to separate the blue area from the rest. (Bottom) Both AND and OR can be implemented as a perception with the step function.
+
+All these perceptrons use a *step function* as their activation function. As we have explained, a single perceptron can linearly classify the data point. In the context of logical operators, AND, OR are linearly separable. Nevertheless, the XOR operator cannot be implemented with a single perceptron, and we can see that the XOR area is not linearly separable, unlike AND or OR, which can be separated with a single line. Linear separation can be implemented with a single perceptron and threshold activation function, as shown for AND and OR. XOR cannot work with one layer and requires at least two connected layers of perceptrons. It means the output of one layer will be fed as the input of another layer. This neural network has more than one perceptron and it is called a 'Multilayer Perceptron (MLP)'. An MLP can handle non-linear separable data as well.
+
+In other words, MLP, which is also called a *feed-forward neural network*, is a solution to separate non-linearly separable datasets, such as the situation we have observed for XOR. As we have explained, layers between the input layer and output layers are called hidden layers, and deep learning algorithms have lots of hidden layers. Therefore, it is not wrong to say that the MLP algorithm is the mother of the deep learning algorithm.
+
+The more layers we add, the more complexity we can handle by the algorithm. It doesn't mean that too many layers are always good. Too many hidden layers impose a huge cost on resources and could cause overfitting, which we will discuss it later.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_12_Picture_0.jpeg" alt="Figure" />
+
+To be sure you leave this section with a Ph.D degree in MLP, take a look at Figure 10-10 (a) as another example. Here, we have blue and red dots in two-dimensional space, and we would like to classify them. By using a single perceptron, we have a step function, and it can fit these data points, as shown in Figure 10-10 (b). The result can classify blue dots as 1 and red dots 0, but two red dots are misclassified. By using two step functions, which are possible through MLP, all data points can be classified correctly. We can see the result in Figure 10-10 (c) that blue dots are one, and red dots are 0.
+
+Every layer in the MLP architecture, except the output layer, is fully connected to the next layer. This is known as the *fully connected layer*. This means that every neuron is connected to all other neurons in the next layer, as shown in Figure 10-11. Also, keep in mind that every layer, except
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_12_Figure_3.jpeg" alt="Figure" />
+
+Figure 10-10: (a) original dataset (b) Using one single perceptron with a threshold activation function we can classify most data points correctly. However, two red dots are misclassified. (c) By using MLP with threshold activation function, all data points were classified correctly.
+
+the output layer, includes biases as well. Figure 10-11 presents how we write weights. We write them on the top of each w its layer number, and at the bottom of it, its index.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_13_Picture_1.jpeg" alt="Figure" />
+
+Figure 10-11: Sample MLP network, which all neurons are fully connected to all other neurons in the next layer.

@@ -1,0 +1,88 @@
+---
+chapter: "ch11"
+order: 6
+slug: "contrastive-representation-learning"
+title: "Contrastive Representation Learning"
+wordCount: 1907
+---
+There are different methods for preparing an object for comparison. Non-deep learning approaches use a similarity measurement (Chapter 4) to compare two digital objects. These approaches are used in the traditional image-matching, audio search, etc, but they are not flexible. For example, the face of a person who rotates his head in two different images is identified as two different images. Older approaches convert data into a lower dimension, such as applying PCA (Chapter 7) and then comparing them, and even after conversion, those methods are still inflexible.
+
+Feature engineering in the context of deep learning is effectively managed through a process known as representation learning. This process involves mapping raw input data to a more useful representation or feature space through multiple layers of non-linear transformations. These transformations help convert the input data into a form where its features are more useful for machine learning algorithms, particularly for tasks referred to as *downstream tasks*. This automated feature discovery and transformation are key aspects of how deep learning models learn from data [Bengio '13]*.* A good representation of the data entails important features of the original data. For example, the word embedding methods described in Chapter 6, are
+
+representation learning methods because they convert text data into vectors while maintaining the semantics of the text.
+
+*Contrastive Learning*, a form of self-supervised learning also referred to as Contrastive Self-supervised Learning, involves using representation learning techniques to distinguish between similar and dissimilar data points. This approach, known as *Contrastive Representation Learning (CLR*), focuses on learning by comparison. CLR algorithms are particularly effective in learning robust features by contrasting pairs or sets of similar and dissimilar data, which enhances the model's ability to generalize from unlabelled data [Le-Khac '20].
+
+From a technical perspective, the objective of CLR is to build an embedding space (e.g., in a lowerdimensional space) where similar data points stay close together and dissimilar data points stay far away from each other.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_61_Picture_4.jpeg" alt="Figure" />
+
+For example, we show an image of one rabbit to the model, and then we ask the model to search a database of other animals and find other rabbits. The algorithm should recognize the correct object (image of rabbits) and contrast that object to other objects (images of other animals) in the dataset.
+
+A question might arise: what is the difference between contrastive learning and other supervised learning? While supervised learning typically processes individual data points or batches, assigning or predicting labels based on provided examples, Contrastive Learning differs by focusing on learning from the relationships between data points. Specifically, CLR algorithms enhance their learning by comparing and contrasting similar and dissimilar data points to construct robust representations. These representations do not directly classify objects into categories but rather enable the model to distinguish between similarities and differences effectively.
+
+In the following, we describe one type of neural network in this category, i.e., Siamese Neural Network, and leave the rest, such as SimCLR models [Chen '20 A, Chen '20 B] and MoCo models [He '20, Chen '20 C] to you to read them.
+
+### **Contrastive Learning Loss Functions**
+
+Before we describe the Siamese Network, we need to be familiar with two popular loss functions, i.e., contrastive loss and triplet loss.
+
+#### **Contrastive Loss**
+
+We measure the contrastive loss [Chopra '05] between two objects  $X_1$  and  $X_2$  that each object describes a data point in embedding space, e.g., a vector. The generalized contrastive loss (L) between these two data objects is written as follows:
+
+$$L(W, (Y, X_1, X_2)^i) = (1 - Y)\frac{1}{2}(E_w)^2 + Y\frac{1}{2}\{max(0, m - E_w)\}^2$$
+
+In this equation, i specifies the index of the current data point. Y = 1 if two data points  $X_1$  and  $X_2$  are dissimilar, Y = 0 if they are similar. m stayed for the margin of distance, it is a hyperparameter, and it defines the threshold (lower band) distance between data points of different classes.  $E_W$  is the distance value (e.g., euclidean) between data points of two groups and assuming that the  $G_W$  is a mapping function  $E_W$  between  $X_1$  and  $X_2$  is computed as follows:
+
+$$E_W(X_1, X_2) = ||G_W(X_1) - G_W(X_2)||_2$$
+
+We can see that the right part of the equation penalizes the model for dissimilar data points having a distance  $E_w &lt; m$  (close to each other). It also penalizes similar data objects for being far from each other (stay outside m margin of distance). If  $E_w \ge m$ , then  $m - E_w$  will be negative, and because of the max, the right part of the loss function will be zero.
+
+Contrastive loss is usually used when we do not have enough amount of labels, which is common because acquiring labels for raw data is expensive.
+
+#### **Triplet Loss**
+
+The *triplet loss function* was proposed for the first time in the FaceNet [Schroff '15] model, which is a successful face recognition algorithm that can recognize the same person in different poses and different camera angles.
+
+This loss function compares the baseline or anchor sample x, against the positive sample  $x^+$  and a negative sample  $x^-$ . In this context, the positive sample means x and  $x^+$  belongs to the same class (they have the same label), and the negative sample means  $x^-$ , and x belongs to different classes (their labels are different). The objective of this loss function is to encourage the network to minimize the distance between x and  $x^+$ , and, at the same time, maximize the distance between x and  $x^-$ . Triplet loss is formulated as follows:
+
+$$L(x, x^+, x^-) = max(0, E(f(x) - f(x^+)) - E(f(x), f(x^-)) + \epsilon)$$
+
+In this equation, f(.) is the embedding function that transforms the data into a different representation.  $\epsilon$  is the margin between positive and negative data. This margin distance ensures that a distance exists between negative pairs and positive pairs. E(.) presents the Euclidean distance (or  $L_2$  norm), but other distance functions could be used as well. There are some uses  $||...||_2$  to present this  $L_2$  norm, but to reduce your risk of getting a mathematical panic attack chance, we used E(.). Anyway, you might find it more readable as follows;
+
+$$L(x, x^+, x^-) = max(0, ||f(x) - f(x^+)||_2 - ||f(x) - f(x^-)||_2 + \epsilon)$$
+
+Triplet loss is useful when it is important to set the negative sample properly, e.g., face recognition among many existing faces.
+
+### **Siamese Network**
+
+The class of neural networks that they learn to *differentiate between two inputs* are called Siamese networks . Unlike other neural networks, they do not train to classify the data. Instead, [13](#page-63-0) they learn to measure the similarity between two inputs. Why not use traditional similarity measurements we have learned in this book, like correlation coefficient analysis (Chapter 3), or similarity metrics we have learned in Chapter 4? The answer is that described similarity metrics can not compare complex data structures together. For example, a traditional facial recognition approach can compare images from the same camera location toward the face (e.g., front view). It can not recognize the same person when her face image is taken from a different angle (e.g., side view). These limitations led to the introduction of neural networks used specifically for comparison.
+
+A Siamese neural network (twin neural network) is composed of two or more identical neural networks. Here, identical means the same number of layers, same neurons, same parameters, and even the same weights. After training, they can be used to recognize whether or not two input data are similar. The objective of the Siamese neural network is to have high similarity scores for similar inputs (e.g., images of the same person, signatures of the same person, the same food) and low similarity scores for different inputs.
+
+A Siamese neural network commonly employs a convolutional neural network (CNN) architecture within each of its branches. This setup typically includes several convolutional layers followed by a few fully connected layers. Unlike traditional classification networks, Siamese networks do not use a softmax layer at the output because the primary task is not to classify inputs into categories but to assess their similarity. The output from each network branch, often called the encoding of the input data, represents a feature-rich representation used to measure similarity between pairs of inputs.
+
+### Training Siamese Network
+
+First, the network should be fed with positive (1) and negative (0) pairs. For example, we fed the following dataset into a network: \{(cat\_img\_1, cat\_img\_2, 1), (cat\_img\_3, cat\_img\_2, 1), (cat\_img\_1, dog\_img\_2, 0), (cat\_img\_2, squirrel\_img\_2, 0), …\}.
+
+Figure 11-35 presents the architecture of training the Siamese network, assuming we have an input set of pairs with labels and we fed each pair into one network. For example, we feed to one network and to the other network. The result of each network will be a feature vector, let's say f( ) and f( ). After obtaining the difference or distance between feature vectors, this value is often processed through one or more fully connected (FC) layers. The result of an FC layer(s) is given to a Sigmoid to transform the output into a probability and thus identify if and are similar or not (a threshold of 0.5 is used to make a binary decision). *x*1 *x*2 *x*<sup>1</sup> *x*<sup>2</sup> *x*<sup>1</sup> *x*<sup>2</sup>
+
+Siamese twin is an extremely rare medical phenomenon in which two babies (twins) are conjoined and must be [13](#page-63-1) separated by surgery.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_64_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-35: Training phase for Siamese network, in this example we show only one positive pair of examples, which is a chicken. In practice, the network will be trained for many positive and negative pairs.
+
+Now, the output of a Sigmoid function will be compared with the original label (similar:1, dissimilar:0), and the Cost function (Triplet loss, Contrastive loss, or Cross entropy) will be used to measure the loss score. Then, the optimizer (e.g. SGD) back-propagates the loss score to change model weights and biases on the FC layer(s) and both twin networks toward reducing the loss score.
+
+This process will be done for all pairs of images, both positive and negative ones. The resulting model will be saved for the inference phase.
+
+### Data Preparation for Training
+
+To prepare data for training a contrastive model, we start by selecting a random input to serve as the anchor sample. We then choose additional samples that share the same label with the anchor to create positive pairs and samples with different labels to form negative pairs. This process ensures that there are corresponding positive and negative samples for every anchor. During the training process, every image in the dataset should have the chance to be used as an anchor, ensuring that the model learns from a diverse and representative set of comparisons. This selection process is typically repeated across training epochs to gurantee robust learning.
+
+### Testing Siamese Network
+
+The test set will benefit from the model constructed in the training stage. For example, assume we trained the model on human faces, and as an input of the model, we give a pair of face images to the model. Our goal is to find out if they are the same person or if they are different persons. These two images are passed to the network (the same network that is used for training), and the model provides us with a similarity score. If the similarity score is close to zero, it means they are not presenting the same person, but if the similarity score is high (i.e., close to one).

@@ -1,0 +1,67 @@
+---
+chapter: "ch3"
+order: 15
+slug: "hypothesis-and-significance-tests"
+title: "Hypothesis and Significance Tests"
+wordCount: 1286
+---
+Previously, we described using a confidence interval and margin of error to understand whether we have collected enough samples. Assume you analyzed the data statistically and made some novel discoveries. For instance, after several years of hard work, your company discovers that *'all cucumbers are green'*, '*corporations do not give a damn about the earth and pollution. Instead, they asked you to eat bugs.*', '*Mass media are promoting hate among different nations, religions, and races.*' etc.
+
+Now, you need to show that these findings are generalizable and that your experiment results are not biased or discovered by accident (random). These findings are called *hypotheses*, and to demonstrate the generalizability of a finding, we use *significance tests*, which we will explain in detail with an example.
+
+We start with our previous example. The insect farmer is happy about your previous work, and now he has asked you to help him identify which type of bugs are tastier and worth further breeding. To answer him, you start eating some sample bugs and write down the taste and weight of the bug legs (we are really sorry for your job now). Then, you find that bugs with a better taste have an average leg weight of about 0.2 grams. The rest of the bugs taste either too greasy (fat bugs) or too crunchy (thin bugs).
+
+We make a hypothesis as follows: "*The tastiest bugs have a leg weight of 0.2 grams"*. How can we claim this finding is true?
+
+Statistical significance tests are used to check the correctness of our claim (hypothesis). For instance, *"if you accuse some of our media corporations of promoting hate among different nations and religions",* you should use statistical significance to prove it. If you find that bugs with 0.2 grams of leg weight are the tastiest bugs, you should use a statistical significance test to prove it.
+
+To conduct a significance test, we deal with two hypotheses: the *null hypothesis*, i.e., H0, and the *alternate hypothesis*, i.e., H1 or HA. H0 states that our finding, which is driven by analyzing the data (or hypothesis we make about the sample), is NOT true. H1 states what we think should be correct about the data, but H0 says our hypothesis is wrong (H1 is the hypothesis that says H0 is false). Instead of proving H1 in a statistical significance test, we should reject H0. In other words, to claim H1 is true, we must reject H0.
+
+In the bug example, we can say H0 = *"bugs with an average weight of 0.2 g. leg DO NOT taste better than other bugs"*, H1 = *"bugs with average leg weight of 0.2 g. DO taste better than other bugs"*. So we have:
+
+```
+H0: μ 0.2 gram
+H1: μ = 0.2 gram
+     ≠
+```
+
+As we described, we should conduct a significance test that rejects H0, and then we can say our lovely H1 is correct. If H0 is correct, we should use a larger sample size or change our hypothesis, or if we are a politician, just change the problem and put it under the rug.
+
+How can we test H0 and determine whether to accept or reject it?
+
+The result of the significance test is presented as a *p-value* (probability value). In technical terms, the p-value is the probability that H0 is correct, and in turn, there is no conclusion to be inferred from the data. In our example, if the p-value is large enough, it means there is no relationship between the leg's average weight of 0.2 grams and the tastiness of bugs. P-value will be a variable between 0 and 1, determining whether we can reject H0.
+
+If the p-value is less than a value called *significance level (α),* then we can reject the H0, and therefore our claim (H1) is correct.
+
+```
+Therefore, we should remember: 
+p-value &lt; α → reject H0 (Good) 
+p-value ≥ α → reject H1 (Bad)
+```
+
+Let's define the statistical significance test in another way. Put this definition under your pillow to read it every night before sleep:
+
+*The purpose of the significance test is to identify whether the differences between the two groups of data we are comparing are by chance or if there is a significant difference.*
+
+Usually, the convention is to set . An alpha level of 0.05 means that there exists a 5% risk of concluding that there is an effect (or a difference) when there is none (the grey area in Figure 3-26). Therefore, we can say that H1 is true, and the data is covered by H1. Based on Figure 3-25 and Figure 3-26, H1 is the white area inside the curve, and H0 is the sides in grey color. Therefore, if the p-value is less than or equal to 0.05, it falls into the grey area; H1 is acceptable, and we can reject H0. *α* = 0.05 1 − 0.05
+
+Note that the probability of H0 is either smaller, more significant, or not equal to the α value. In our example, we say that μ 0.2 is H0 (legs with 0.2 grams are not the tastiest). ≠
+
+The critical values are used to distinguish the white area in Figure 3-26. They will be calculated based on the given α, and the statistical software you use will do it for you. This means that the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_45_Figure_0.jpeg" alt="Figure" />
+
+Figure 3-26: Normalized sample data where  $\alpha = 0.05$  for our bug leg example. The *p-value* on the left and right sides (inside the two grey regions) together occupies 0.05 of the distribution
+
+software will calculate the position of the critical value on the X-axis. We should distribute the %5 on the left and right sides of the X-axis. Therefore, on each side, we have %2.5.
+
+Keep in mind that the sum of both grey sides of the distribution in Figure 3-26 should be smaller than the significance level, and the p-value should fall into the grey area to accept  $H_1$ . Otherwise, if the p-value is inside the white area, we should accept  $H_0$ .
+
+After experimenting and selecting our hypothesis, there are four steps we should perform to test our hypothesis. These steps are listed as follows:
+
+- (1) Choose the significance level  $\alpha$ . For example, the farmer chooses 0.05, the most common significance level choice.  $\alpha$  sometimes is called type I error rate, and we will explain more about it shortly.
+- (2) Collect sample data. This means you will collect bugs, measure their average leg weight, eat them, and write down the taste of each bug. We are sorry for you; life is hard, and we all suffer.
+- (3) Calculate the test statistics p-value<sup>7</sup> using a significance test (we will explain Significance tests later). A test statistic is a standardized value calculated from sample data for the hypothesis test. The test statistics measure the degree of agreement between sample data and H<sub>0</sub>. We will briefly describe the use of different test statistics later. In short, we calculate a value, i.e., test statistics, to measure whether we can reject the H<sub>0</sub> and thus accept our lovely H<sub>1</sub>
+- (4) The result of a test statistic is the p-value. Now, we can compare the obtained p-value with  $\alpha$  (significance level), e.g., 0.05. If the p-value is smaller than  $\alpha$ , p-value &lt;0.05, then we can happily reject the  $H_0$ . This means our  $H_1$  is valid, and the tastiest bugs are bugs with an average leg weight of 0.2 g. If the p-value is equal to or larger than  $\alpha$ , then the  $H_0$  is true, and thus, our  $H_1$  is not acceptable.
+
+<sup>7</sup> The term "statistic" in "test statistic", refers to a quantity derived from sample dataset.

@@ -1,0 +1,213 @@
+---
+chapter: "ch11"
+order: 3
+slug: "boltzmann-machines"
+title: "Boltzmann Machines"
+wordCount: 3804
+---
+In the neural networks we've studied previously, data flows in a specific direction, starting from the input layer and ending at the output layer. However, the Boltzmann Machine operates differently—it is directionless. This means that a neuron can function as an input at one moment and as an output at another, with no clear distinction between input and output layers. Each neuron can both send and receive signals to and from any other neuron in the network. Unlike previous networks, the Boltzmann Machine lacks a defined output layer, and all neurons, including those typically considered inputs, are interconnected.
+
+Boltzmann machines, similar to SOM, have two types of layers. A Boltzmann machine includes a visible (observed) layer, and unlike SOM, it has a
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_8_Figure_3.jpeg" alt="Figure" />
+
+Figure 11-7: a Boltzmann machine, hidden nodes are presented in blue and visible nodes (input neurons) in red color.
+
+*hidden layer(s)*. The visible neurons are the information that we can measure, and the hidden layer neurons are information that we can not measure. Figure 11-7 presents a simple Boltzmann Machine.
+
+The most prominent difference between Boltzmann Machine and other neural networks is that in addition to the input value that we give to the algorithm, the algorithm itself generates inputs for its next iterations as well. It might sound odd, but the output of one epoch will be considered as the input of the next epoch. In other words, we can say neurons are typically considered units that update their states based on the states of other units they are connected to. The concept of distinct input and output does not apply as it would in feedforward networks. A unique characteristic of Boltzmann Machines is their generative nature, where the network's state is updated stochastically based on a probabilistic model, thereby generating new sample data from the learned distribution.
+
+The idea of the Boltzmann machine came from physics and the Boltzmann distribution (check Chapter 3). Boltzmann machines are Energy-Based Models (EBM). EBMs are popular when we need to build generative models with high-dimensional datasets that have sophisticated distribution. The ultimate goal of the Boltzmann machines is to iterate the network until it finds the thermal equilibrium (a characteristic of Boltzmann distribution).
+
+We need to remember that while working with EBMs, we use the energy function instead of the cost function. The purpose of the energy function is to determine how likely each possible arrangement of the inputs is. In other words, the Energy function assigns energy (scalar value) to each possible configuration of the inputs. The result is a probability distribution over the inputs. The probability of a particular configuration is computed using the energy function and the Boltzmann distribution. When a system is in thermal equilibrium, its energy is usually minimized, and the energy function reaches its lowest value. Thermal equilibrium is about achieving a distribution where transitions between states are stable (i.e., the rate of entering any given state equals the rate of leaving it).
+
+An energy function models the system, but a cost/objective/loss function is something we give to the algorithm as input to calculate the differences between the predicted value to the correct output. LeCun et al. [LeCun '06] stated that "*A loss score is minimized at the training (learning) phase, and energy is minimized at the testing (prediction) phase".* 
+
+### **Restricted Boltzmann Machine (RBM)**
+
+Restricted Boltzmann Machine (RBM) is an undirected neural network with two layers [Ackley '85], similar to other Boltzmann machines, a visible layer and a hidden layer. It is one of the early versions of self-supervised learning used for dimensionality reduction and feature learning.
+
+Boltzmann machine neurons are all connected to each other, but RBM has no connection between the neurons of the same layers (no connection between visible neurons and no connection between hidden neurons), but there are connections from each visible neuron to all hidden neurons, and vice versa. Because of these limitations, the word restricted is used to reflect these characteristics in RBM. Compare Figure 11-7, which is a Boltzmann machine to Figure 11-8, which is an RBM. These small differences between RBM and the Boltzmann machine make the energy function of the RBM much simpler than the Boltzmann machine's energy function.
+
+RBM has different use cases; it could be used for dimensionality reduction, classification, regressions, topic modeling, image denoising, etc. However, it has recently been substituted by more recent architecture, which we will explain later. Nevertheless, to learn them, we should be familiar with RBM.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_9_Picture_6.jpeg" alt="Figure" />
+
+Usually, we use a Binary RBM (Bernoulli RBM), its input in the visible layer is a binary vector, and its hidden layer is also a binary vector, . Therefore, we can use binary encoding, such as one-hot encoding, to prepare its input data. *v* ∈ \{0,1\} *h* ∈ \{0,1\}
+
+An RBM adjusts its weights and biases through multiple iterations of interaction between the visible and hidden layers. The *neurons in the hidden layer represent features that the model learns to capture from the data*. It's important to note that the RBM algorithm does not assign specific labels or meanings to these hidden neurons. However, by analyzing the activation patterns of these neurons in response to various inputs, we can infer what features each neuron represents and selectively activate specific neurons based on these insights.
+
+Let's do a brief review of what we have explained. RBM is an EBM model, and EBM models are generative models that learn the underlying distribution of the data (training set). Once the model has learned this distribution, it is capable of generating new data points that resemble the original data, effectively reproducing the characteristics of the training set's distribution. In other words, the neural networks that we have learned are identifying a mapping between input and output neurons. Still, RBM defines the probabilistic distribution instead of mapping between input and output neurons.
+
+Assuming i presents the index of a visible neuron (v), and j presents the index of a hidden neuron (h), the energy function of RBM will be written as follows:
+
+$$E(v,h) = -\sum_{i}^{D} a_{i}v_{i} - \sum_{j}^{M} b_{j}h_{j} - \sum_{i} \sum_{j} v_{i}h_{j}W_{ij}$$
+
+In the above equations, D is the total number of visible neurons, M is the total number of hidden neurons, v is a vector of visible neurons (units), h is a vector of hidden neurons (units), a is a bias of visible neurons, b is the bias of hidden neurons and  $W_{ij}$  is a matrix of weights between  $v_i$  and  $h_j$ . An RBM network uses this energy function to find patterns in the data by *reconstructing the input*.
+
+This equation shows the energy as the sum of three terms: visible neurons and their biases, hidden neurons and their biases, and a combination of hidden, visible neurons and their weights (edges that connect visible and hidden neurons). We can see from the described equation that RBM has two biases: b is a hidden layer bias that enables the RBM to produce activations on the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_10_Figure_6.jpeg" alt="Figure" />
+
+Figure 11-8: A sample Restricted Boltzmann Machine, hidden neurons are presented in blue and visible neurons (observation) in red. It is very similar to Figure 11-7; the only difference is that nodes are disconnected.
+
+forward pass, and a is the visible layer bias that enables the RBM to reconstruct the input in the backward pass. Weights ( $W_{ij}$ ) in RBM are presented in a matrix in which each of its rows presents a visible neuron, and each of its columns presents a hidden neuron. Figure 11-9 visualizes both biases (presented as a and b) and weights on a simple RBM with three visible neurons and three hidden neurons, and it visualizes a forward pass and backward pass.
+
+#### The Intractable Problem of Z in RBM
+
+The process of training RBM involves configuring biases  $(a_i, b_j)$ , weights  $(w_{ij})$ , and visible/hidden states  $(v_i, h_i)$ , toward minimizing the energy for getting into thermal equilibrium and
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_11_Figure_0.jpeg" alt="Figure" />
+
+Figure 11-9: Visualizing the forward pass versus backward pass in RBM. The input and output of RBM is binary and its activation function is Sigmoid.
+
+constructing the p(v, h) distribution. In simple words, the model makes several forward and backward passes between the visible layer and the hidden layer and configures weight and biases (see Figure 11-7) toward reaching thermal equilibrium.
+
+In the training phase, the RBM needs to model the joint probability distribution of observed variables along with hidden variables, i.e., p(v, h). The following equation is used to model this joint probability distribution.
+
+$$p(v,h) = \frac{1}{Z}e^{-\frac{E(v,h)}{|E(v,h)|}}$$
+Visible Hidden neuron neuron function
+
+This equation shows that the probability of a state between v and h is inversely related to the energy function. In this equation, Z is called the *partition function* or *normalization factor* and is computed as follows:  $Z = \sum_{v} \sum_{h} e^{-E(v,h)}$ 
+
+As we can see from the above equation, Z is the sum of *all values* for all possible combinations of visible and hidden (all possible states). v and h are vectors of 0s and 1s (a.k.a *Bernoulli vectors*). Assuming D is the number of visible neurons, and M is the number of hidden neurons, the number of all possibilities will be  $2^M \times 2^D = 2^{D+M}$ . Now, do you smell the smoke? Yes, the smell of smoke comes from the computer that is going to compute Z. It is clear that Z is intractable, and it is not possible to compute it with the brute force method (check Chapter 5 for the definition of brute force). Let's review the problem again. The objective of the RBM
+
+algorithm is to find all p(v, h) and compute all possible combinations in Z, which is computationally intractable. Therefore, we should look for an approximation method to mitigate this problem.
+
+To identify the joint distribution of p(v, h), we can calculate conditional distributions p(v|h), and p(h|v), which is the basis of *Gibbs sampling*. By using Gibbs sampling (we will explain this sampling method in Chapter 16), we can approximate the p(v, h), via conditional probabilities without directly computing the partition function Z.
+
+#### **Neuron Activation Probabilities**
+
+By using Gibbs sampling (we know v presents visible layers and h hidden layer), the probabilities of the visible layer and hidden layer in RBM can be decomposed as the following joint probabilities:
+
+$$P(h \mid v) = \prod_{i} P(h_i \mid v)$$
+$$P(v \mid h) = \prod_{j} P(v_j \mid h)$$
+
+The activation function for each neuron in RBM is a Sigmoid function, and if a neuron is in state 1, it is activated. Otherwise, it is inactive with a value of 0. Therefore, given the visible vector v, the probability for a single hidden neuron  $h_i$  activated is written as follows:
+
+$$p(h_j = 1 \mid v) = Sigmoid(b_j + W_{ij} \cdot v_i) = \frac{1}{1 + exp(-b_j - \sum_{i=1}^{D} v_i W_{ij})}$$
+
+Respectively, given a hidden vector h, the probability for a single visible neuron  $v_i$  activated is written as follows:
+
+$$p(v_i = 1 \mid h) = Sigmoid(a_i + W_{ij} \cdot h_j) = \frac{1}{1 + exp(-a_i - \sum_{j=1}^{M} h_j W_{ij})}$$
+
+### **RBM Training**
+
+p(v) presents the likelihood of the distribution of visible neurons, and it is calculated as follows:
+
+$$p(v) = \frac{1}{Z} \sum_{h} e^{-E(v,h)}$$
+
+However, since it includes Z and we can not calculate it, we use the energy of visible neurons E(v) to approximate it, i.e.,  $E(v) = -\log p(v)$ . We can see E(v) is a negative log-likelihood of p(v), why do we say  $-\log(v)$ ? If you recall, while describing maximum likelihood estimation (MLE) in Chapter 3, we said that instead of maximum likelihood, we use a negative log-likelihood to have a minimization and then inverse it (for the sake of computational efficiency). Therefore, we can state that RBM includes minimizing the negative log-likelihood for p(v).
+
+The derivative of likelihood with respect to weight equals the expectation of the given data (or actual), minus the expectation provided by the model (or predicted), . *data model*
+
+$$\frac{\partial log \ p(v)}{\partial w_{ij}} = \mathbb{E}_{data} - \mathbb{E}_{model}$$
+
+or
+
+$$w_{ij}(t+1) = w_{ij}(t) + \eta \frac{\partial log \ p(v)}{\partial w_{ij}}$$
+
+Here is the learning rate. Recall from Chapter 3 that denoted the expectation and (positive gradient) means that we update the hidden neurons at the beginning, where visible neurons are the input we give into the network, and hidden neurons are constructed by the initial values of visible neurons. After a certain number of iterations, visible and hidden vectors are updated, and the model is constructed, i.e., (negative gradient). *η data model*
+
+The differences between the two expectations will be used to identify the optimal values for weights. This means that after (actual) and (predicted) have been computed, the weight matrix and biases could be computed. *data model*
+
+Now a question arises: how did we identify and ? To identify , RBM use the following algorithm: *data model data*
+
+```
+# S is a matrix with the same shape as the weight matrix W.
+                       {# T is the number of visible neurons
+      # generates a sample of hidden variables given the visible vector 
+      sample
+      sample
+}
+S = 0
+for each vt in (1 to T )
+                                                                           vt
+             h ← p(h = 1| vt) = σ(b + WT vt)
+             S ← S + vthT
+ data ←
+        1
+        T
+         S
+```
+
+After calculating the with direct sampling, we can calculate with plain Gibbs sampling, but it is too slow. This is due to the fact that one iteration of Gibbs sampling consists of updating all of the hidden neurons in parallel, followed by updating all of the visible neurons in parallel. To improve its training time, the performance RBM uses an algorithm called *Contrastive Divergence (CD)* **[**Hinton '02]. The CD estimates the energy function's gradient using a set of model parameters and the training data as input. The CD makes a series of approximations to the true posterior distribution over the hidden units using a *limited number* of Gibbs sampling steps. *data model p*(*h*| *v*)
+
+Following is a simplified description of the CD algorithm. In this algorithm, instead of iterating *n*  times, if we use a condition that continues the loop until it converges, then it is plain Gibbs sampling. However, the CD applies a small, subtle change that reduces the number of iterations. In summary, the CD algorithm continues to change visible and hidden neurons back and forth in fewer iterations than Gibbs sampling.
+
+```
+# a matrix that has the same shape as weight matrix W and it is used to 
+      approximate p
+           { # k is a small number, and it is used to perform k times Gibbs 
+            sampling, not until it converges. Of course, larger k results in 
+            better accuracy, but at the expense of slower convergence.
+      sample
+      sample
+                   # Re-update the hidden neurons given the reconstructed 
+                   visible neurons using the same equation
+}
+Q = 0
+for(1 to k)
+             h ← p(h = 1| v) = σ(b + WT v)
+             v ← p(v = 1|h) = σ(a + Wh)
+      Q = Q + vhT
+ model ←
+         1
+         k
+          Q
+```
+
+Note that the loop does not stop after it converges. Instead, it performs *k* number of iterations, and then it stops. After both and are specified by the algorithm, assuming is the learning rate, the algorithm uses gradient ascending (not descent) to compute weight and biases as follows: *data model ϵ*
+
+$$\begin{split} \Delta W_{i,j} &amp;= \varepsilon(\mathbb{E}_{data}[v_i, h_j] - \mathbb{E}_{model}[v_i, h_j]) \\ \Delta a_i &amp;= \varepsilon(\mathbb{E}_{data}[v_i] - \mathbb{E}_{model}[v_i]) \\ \Delta b_j &amp;= \varepsilon(\mathbb{E}_{data}[h_j] - \mathbb{E}_{model}[h_j]) \end{split}$$
+
+As we have explained, RBM is a historical algorithm. Through learning history, we cultivate an understanding of how later, more practical algorithms have been designed. Nevertheless, do not underestimate its capabilities. In some scenarios, to analyze data, we usually pass the dataset to SOM, RBM, and Autoencoder and decide which one provides the best accuracy.
+
+### **Deep Belief Network and Deep Boltzmann Machine**
+
+Deep belief network (DBN) and Deep Boltzmann Machine (DBM) are two models inspired by RBM. ٓDBN is composed of stacking multiple hidden layers, which can be trained independently (not necessarily using RBMs). DBM stacking RBM layers directly on top of each other. Each RBM's hidden layer becomes the visible layer for the next RBM in the stack (see Figure 11-10). They both can be used for generative tasks such as image generation and dimensionality reduction.
+
+What is the advantage of stacking multiple RBMs? The first RBM contains latent features that are better than random inputs. The hidden layer of the second RBM contains a combination of hidden features that are better than random inputs, and each layer includes more accurate hidden features.
+
+DBM is trained using the CD algorithm. The training phase in DBN includes two stages: *unsupervised pre-training* and *supervised fine-tuning*.
+
+The pre-training initializes weights on the network, but every hidden layer is trained based on its given input (only its given input, not the previous layers' data). It is a greedy layer-wise approach (shortsighted to one previous layer and not all previous layers), and thus this training can stick in local optima. Because of this limitation, it is called pretraining.
+
+After pre-training, the algorithm performs finetuning, and this step is used to correct weights in a supervised manner with Backpropagation. At the fine-tuning stage, the output layer is added (it is not present in Figure 11-10 because this figure focuses on pre-training only), and supervised learning is used to train the network with forward and backward propagations. Therefore, fine-tuning assigns the final weight and biases in a supervised manner.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_15_Figure_3.jpeg" alt="Figure" />
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_15_Figure_4.jpeg" alt="Figure" />
+
+Figure 11-10: A sample DBN and DBM pre-training stage. The output of each RBM (hidden layer) is the visible layer of the next RBM. Arrows in this figure present the direction of the generative model (Gibbs sampling). For example, updated values in layer are used to reconstruct layer, but in DBN, layer can not be used to reconstruct . *h*(1) *v v h*(1)
+
+Keep in mind that both pre-training and fine-tuning stages in both DBN and DBM use a greedy approach to train and configure weights. Besides, in DBM, unlike DBNs, visible-to-hidden and hidden-to-hidden connections are trained simultaneously in an unsupervised manner.
+
+By looking at Figure 11-10, we realize the arrowhead between the visible and the hidden layer. At the pre-training stage, the undirected connection between and means that Gibbs sampling of RBM once sample from to model and then once from to model , but for a directed (undirected) connection from to *v* sampling goes from to and not from to . In other words, it uses a model to generate visible layer data. *h*(1) *h*(2) *h*(1) *h*(2) *h*(2) *h*(1) *h*(1) *h*(1) *v v h*(1)
+
+You might ask how the DBN model can skip *v* to , and how it can start from the top layer ? The algorithm does not skip weight assignment (training) from *v* to . It performs weight training once and goes up using the same weights on all layers until it reaches the top layer, i.e., . Because of that, it is called pre-training. Then, in the next step, the Gibbs sampling and weight adjustment (fine-tuning) start from the top layer until they reach the directed layers. *h*(1) *h*(3) *h*(1) *h*(3)
+
+*Why do we need to stack lots of RBM and train them (DBN or DBM)? Why not use a deep, feedforward approach?* 
+
+The motivation is that since RBM uses a contrastive divergence algorithm [Hinton '95], there is no use of backpropagation in the pre-training stage while using a discriminative model. By not using backpropagation, it eliminates the vanishing or exploding gradient problem that existed at this stage. The fine-tuning uses backpropagation, but it starts with well-initialized weights in hidden layers.
+
+Similar to MLP, these architectures have input, hidden layers, and output layers. The output of each RBM is an input of the next RBM, as it is shown in Figure 11-10 However, unlike other deep learning algorithms, each layer learns to represent the data (input) passed to it from the previous layer. For example, while using CNN, the first layer gets the original input, and the next layers work with the convolved input data, not the original input data, but both DBN and DBM learn from the input received from the previous layer.
+
+To summarize their differences, DBN uses two phases of training, pretraining and fine-tuning, and it is easy to sample from visible and hidden units. DBM uses contrastive divergence for its training, but it requires a complex approach to sample from visible and hidden units. To summarize their similarities, both use greedy layer-wise training (pre-training) features of RBM, and both use RBM to identify a latent feature of data.
+
+Some literature claims that DBM operates better than DBN for learning complex models [Wang '17], but, as always, we recommend experimenting with both architectures on your own and deciding which one to use.
+
+#### NOTES:
+
+\* A basic model of RBM is inspired by the Hopfield Network [Hopfield '82]. Hopfield network neurons contain binary neurons, which present binary attributes of the dataset. They create a deterministic model (not stochastic, unlike RBM) of the relationship among different features by changing weights on edges. If you intend to learn more about Hopfield networks, you can
+
+- check Aggrawal's book [Aggarwal '18], which has a detailed explanation of it, but it requires a strong mathematical background to understand it.
+- \* By learning the weights, the RBM implicitly memorizes the training dataset; therefore, we could say the RBM is becoming the representation of the input data that we fed to it. RBM minimizes the energy or maximizes the probability. This feature of RBM enables both DBN and DBM to understand complex internal representations of the input data. Also, it can assist in improving the model by adding very few labeled data (semi-supervised learning), but still, RBM is called self-supervised learning.
+- \* Contrastive divergence is a popular algorithm for training EBM algorithms. It operates based on the assumption that the derivative of the log-likelihood function can be defined as differences between two
+
+expectations *( and ). data model*
+
+- \* DBN, DBM, and RBM are not widely used nowadays because Autoencoders outperform them. Nevertheless, learning them is useful for understanding the intuition behind the new models and algorithms. Some algorithms have not been in use for many years, and somebody extracts an idea from them and creates something useful, like Geoff Hinton, whose team created DBN, RBM, and tSNE and also applied backpropagation on DNN. Therefore, it is worth learning as much as we can, even though the algorithm seems not popular at the current time.
+- \* Bengio [Bengio '09] has a good generalization on unsupervised deep learning models, such as DBN and autoencoders. He states: *"Unsupervised training signal at each layer may help to guide the parameters of that layer towards better regions in parameter space"*.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch11/_page_17_Picture_6.jpeg" alt="Figure" />

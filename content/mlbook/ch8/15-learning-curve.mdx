@@ -1,0 +1,58 @@
+---
+chapter: "ch8"
+order: 15
+slug: "learning-curve"
+title: "Learning Curve"
+wordCount: 968
+---
+A fairly easy approach to determining the optimal model size is to study the error changes with different dataset sizes and experiment with the model. This is known as the learning curve. For example, Figure 8-11 presents a sample that by increasing the dataset size in both train and test sets, the error rate will converge at some point,
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_31_Figure_10.jpeg" alt="Figure" />
+
+Figure 8-11: Learning curve example. By increasing the number of data objects, both training and test datasets converge. This makes the model reliable.
+
+and the model will be stable. At the beginning, when there are few training instances (the left side of Figure 8-11) the model fits them very well, and thus, the RMSE is very low. Then, slowly, more training data arrives, and the models' RMSE increases until it gets into a constant value.
+
+On the other hand, you can observe that for the test set at the beginning, the RMSE rate is high despite having a very low training error, but as we add more data, it decreases and reaches a steady point similar to the train set. Therefore, we can claim that the model is stable at that point because both errors converge and stay constant.
+
+Observing a very low training error and very high test error rate at the beginning of the curve, in learning curve, present the overfitting. We will explain overfitting later in this chapter.
+
+#### **ROC Curve**
+
+Another widely used approach to evaluate the quality of a classifier is the *Receiver Operating Characteristic (ROC) curve*. This approach is not limited to the described regressions and can be used to measure the accuracy of any classification algorithm.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_32_Figure_5.jpeg" alt="Figure" />
+
+Figure 8-12: (left) an ROC curve which shows high accuracy, (right) ROC curve which has less accuracy in comparison to the left one.
+
+The ROC curve plots True Positive Rate (TPR or sensitivity or recall) against the False Positive Rate (FPR or fall-out), at different threshold settings. Note that FPR = 1 - TNR (True Negative Rate or Specificity) as shown in the following:
+
+$$FPR = \frac{FP}{FP + TN} = 1 - \frac{TN}{TN + FP}$$
+
+ROC curve is useful for demonstrating the trade-off between TPR and FPR. The closer the curve is to the left and top borders, the more accurate is our results. The closer the curve comes toward the diagonal, the more accuracy decreases. Figure 8-12 presents two ROC curve samples, the left one is more accurate than the right one because the right one is closer to the diagonal.
+
+The result of the ROC plot is read as the *Area Under the ROC* (AUROC) or some said Area Under Curve (AUC), which will be a value between 0 and 1. The higher AUROC (closer to the one) presents better model accuracy.
+
+#### Pseudo R<sup>2</sup>
+
+Unlike linear regression, which typically uses the MSE to minimize the variance between the predicted and actual values and can employ methods like Ordinary Least Squares for parameter estimation, logistic and softmax regressions utilize a different approach. They are designed for classification rather than predicting continuous outcomes, and they estimate their parameters using the Maximum Likelihood Estimation (MLE) approach. This involves optimizing a cost function like cross-entropy (log loss) for logistic regression or a generalized form of it for softmax regression, focusing on maximizing the probability of the observed classifications given the model rather than minimizing variance.
+
+To provide measurement metrics for logistic and softmax regression, we can use some  $Pseudo R^2$  or  $Adjusted R^2$  methods, such as McFadden's  $R^2$  [Domencich '75]. McFadden's  $R^2$  is computed as follows:
+
+$$R_{McFadden}^{2} = 1 - \frac{\ln L(\hat{\theta})}{\ln L(\theta_{0})}$$
+
+ $L(\hat{\theta})$  is the (maximized) likelihood value from the current model,  $L(\theta_0)$  is the model with only an intercept  $(\beta_0)$  and no covariates (input variables). The high value of McFadden's Pseudo R² indicates a lower likelihood (the lower is better), because the ratio of  $L(\hat{\theta})$  and  $L(\theta_0)$  likelihoods should be close to 1. In particular, the higher Pseudo R² indicates a better model fit. Note that while Pseudo R² can theoretically range from 0 to 1, it will never reach 1 due to unpredictability in the data or model limitations.
+
+Remember, your machine learning library can compute these pseudo R<sup>2</sup>, so there's no need to calculate them manually.
+
+#### **Wald Test**
+
+Wald test, also known as Wald Chi-square test [Wald '45], is a significance test that is used to assess the statistical significance of coefficients in regression models. Its null hypothesis states that model parameters do not have any effect on the model fitness. If the null hypothesis fails to get rejected (the null hypothesis is true), then removing those parameters from the model does not harm the fitness of the model. In other words, those parameters are not useful for the model. Conversely, rejecting the null hypothesis implies that the parameter significantly contributes to the model.
+
+For example, assume a data scientist, Dr. Devil, is consulting a politician for election. He had a logistic regression that used three input variables  $(x_1, x_2, x_3)$  to predict the election result.  $x_1$  input variable is presenting the welfare support,  $x_2$  is using the cyber army of fake accounts and bots in social media to promote that candidate and damage the reputation of other candidates,  $x_3$  is creating an imaginary enemy and fueling the xenophobia of that enemy in the public.
+
+Based on previous consultations, Dr. Devil identified some parameters for these variables. He is creating a model that helps him to predict whether a candidate wins the election. He used a Wald test and realized that  $x_I$  does not show a statistically significant result. Therefore, he can remove
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_34_Picture_0.jpeg" alt="Figure" />
+
+it from his model and focus on the two other variables, i.e., creating fake accounts on social media and fueling the public's xenophobia of an imaginary enemy.

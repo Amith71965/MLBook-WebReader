@@ -1,0 +1,110 @@
+---
+chapter: "ch8"
+order: 12
+slug: "logistic-regression-classifier"
+title: "Logistic Regression (Classifier)"
+wordCount: 2324
+---
+To understand logistic regression, we should get familiar with the Sigmoid function. The Sigmoid function is a function that gets numerical data as input and outputs numerical vectors in a S-shaped curve, as is shown in Figure 8-9 (c) with a red line. This function brings any given number close to zero or one. It is written as  $\sigma(.)$ , and its equation is as follows:
+
+$$\sigma(x) = \frac{e^x}{e^x + 1} = \frac{1}{1 + e^{-x}}.$$
+
+For example, assume we have three inputs x = 0, x = 1, x = 2, x = 3. We will have the following sigma for each variable:
+
+$$\sigma(0) = \frac{1}{1 + e^0} = 0.5, \ \sigma(1) = 0.73, \ \sigma(2) = 0.88, \ \sigma(3) = 0.95.$$
+
+We are lazy, and thus, we do not show more examples here, but we recommend you use more values for x and plot them yourself. Then, you will notice that this function returns something between 0 and 1, mostly either close to zero or close to one. Its shape is similar to an S-shaped curve, as shown in Figure 8-9 (c).
+
+Logistic (or Logit) regression (Classification) is used when our output (dependent) variable (y) is binary (e.g., yes/no, open/close, die/survive, spam email/not spam email), as opposed to linear regression which its output has a numeric range. Through a linear regression as input of a sigmoid function, we get a logistic regression. Therefore, we can formalize logistic regression as:
+
+$$\hat{y} = \sigma(\beta_0 + x\beta_1)$$
+
+Logistic regression is not used for predicting or describing a continuous variable. Instead, it predicts or describes a binary variable. It assigns a probability to each class output instead of directly assigning a value to y. In other words, it specifies the probability if a data point belongs to a class or not, and thus, is used to solve classification problems.
+
+With some mathematical calculations, which we skip describing its details here, we can derive the following equation for logistic regression:
+
+$$\hat{y} = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x)}} = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}}$$
+
+ $\hat{y}$  presents what we want to predict (similar to  $\hat{y}$ , in linear regressions), and x is a set of the predictor variables. Linear regression is written as  $y = \beta_1 x + \beta_0$ , but here we call  $\beta_0$  a balance, but in linear regression, it is called *intercept*.
+
+Let's learn logistic regression with an example. Mr. Nerd is attending a course at the university, and due to a pandemics (Covid-19 started in 2019), the grade of the course is based on assignments and universities are closed to take a final exam. He either likes a course or doesn't like it (only two possible classes). If a course has more than ten assignments, it's very unlikely that Mr. Nerd will like it, and he doesn't subscribe to that course. Accordingly, we can formalize the Mr. Nerd course-taking procedure as follows: more than 10 assignments: don't like, less than 10 assignments: like.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_23_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-9: (a) Original dataset, x presents the number of pages each book has (b) linear regression plotted, (c ) Logistic regression Sigmoid line plotted.
+
+Let's assign like to 0 and don't like to 1. He has plotted his previous courses, based on like/don't like and the number of assignments he had, in Figure 8-9 (a). The *x-axis* (independent variable) represents the number of assignments, and on the *y-*axis we have two values for the independent variable, like (0) or don't like (1).
+
+Figure 8-9 (b) presents a linear regression, which has been calculated and plotted based on given data points. We can see in Figure 8-9 (b) that the linear regression line is not a good fit for these data points. If we look at Figure 8-9 (a), we can intuitively guess that there is a correlation between data points. However, instead of fitting a straight line used in linear regression, we need a method to fit a regression line more accurately on data points, like the line Figure 8-9 (c). By using the Sigmoid function, as shown in Figure 8-9 (c) we can cover more data points (than a straight line, which is the result of a linear regression).
+
+The output of the Logistic regression can classify input data into two categories by estimating the probability, e.g., classify any new course that is given to the algorithm as like it, or not like it, depending on the number of its assignments.
+
+The output of our example will be provided as a probability value of *like* or *don't like*  , and the input variable is the number of pages. (*y* = 0) (*y* = 1)
+
+As an example, to calculate output, we give Mr. Nerd's course preferences data to the Logistic regression algorithm, and it identifies model parameters as = 0.4 and = 0.3 coefficients. Now, we can calculate the estimated probability of Mr. Nerd liking a new course, which has eight assignments, as follows: *β*<sup>0</sup> *β*<sup>1</sup>
+
+$$\hat{y} = \frac{e^{0.4 + 0.3 \times 8}}{1 + e^{0.4 + 0.3 \times 8}} = 0.94$$
+
+It is more than 50%, and thus, we conclude he likes it. Also, the probability of not liking it is . This seems a very easy example to identify, but in reality, logistic regression can solve more complex classification tasks. 1 − 0.94 = 0.06
+
+#### **Model Parameters Estimation**
+
+Similar to linear regression, the objective of logistic regression is to identify parameters that fit the sigmoid line. However, logistic regression is not a linear model, and thus, to identify its parameters, we should convert it into a linear model.
+
+We know that the output of logistic regression is a probability value (between 0 and 1). However, the linear regression output does not have a range limitation. This flexibility in linear regression allows it to identify all linear model parameters easily. Therefore, if we make Logistic regression similar to linear regression, we can determine its model parameters.
+
+To make Logistic regression similar to linear regression and be able to determine a value for each model parameter, the output variable is transformed from probability to Logarithm of Odds (Logit). What is  $Odds^3$ ? In statistics, the likelihood of an event happening is called "odds" of that event. Assuming P is the probability, odds is calculated as follows:
+
+
+$$odds = \frac{p(event)}{1 - p(event)} = \frac{probability}{probability} \quad of \quad success$$
+
+Odds are not probabilities, Odds provide a measure of the likelihood of a particular outcome. They are calculated as the ratio of an event happening, to that event not happening. For example, the probability of rolling a dice and getting the number 6 is 1/6, its odds is  $1/6 \div 5/6 = 1/5$ , and 5/6 here presents the probability of not getting 6 (failure).
+
+A *Logit* function, which is the *Logarithm of Odds* (*Log Odds*) is written as follows<sup>4</sup>, for the sake of simplicity we write p instead of p(event):
+
+
+$$log(odds) = log(\frac{p}{1-p}) \text{ or } ln(\frac{p}{1-p}) \text{ for } 0 \le p \le 1$$
+
+Model parameters of logistic regression are estimated by modeling the logit (the natural logarithm of the odds) as a linear combination of the input variables. This makes the output variable of logistic regression (probability value) similar to the output of linear regression (numerical value). Figure 8-10 (c) presents a logistic regression on the left, and by using the logit function, we transfer output probabilities into the Log Odds on the right side.
+
+After using logit, the problem can be solved as a linear regression, but another problem is raising. As p approaches 1, the odds I-p increase towards infinity, and hence the logit of the probability approaches  $+\infty$ . Conversely, as p approaches 0, the odds approach 0, and the logit of the probability approaches  $-\infty$ . This means that our data points are located at  $-\infty$  and  $+\infty$ , and still, we cannot identify their coordinates.
+
+Nevertheless, we can think of an imaginary linear regression line and project our data points on that line, the orange dotted line in Figure 8-10 (a) and (b). present that line. If we can project
+
+<sup>3</sup> We described odds ratio in Chapter 3 for another use.
+
+ $<sup>^4</sup>Log_e(x)$  and ln(x) are equal and they both mean base e logarithm. If you are not familiar with logarithm check Chapter 6, The Magic Power of Transformation section.
+
+our data points on this line, their coordinate will be in a range that linear regression can use to calculate all parameters (we call it  $\theta$  to abbreviate all these parameters).
+
+To solve this problem (range problem), logistic regression uses a Maximum Likelihood Estimation (MLE) (check Chapter 3) to project data into a small range. Here, the algorithm that implements MLE tries to identify parameter values that are closest to the output probability (0 or 1). In other words, the algorithm tries to find a value for its projected parameters  $\hat{\beta}_0$ ,  $\hat{\beta}_1$ , ... $\hat{\beta}_k$ . Then it substitutes them to estimate  $\hat{y}$ , which yields a number close to 1 or close to 0. If you remember from Chapter 3, we are using  $L_n$  to denote the likelihood function,  $\ell$  to denote the logarithm (log) of the likelihood function, and we calculate the maximum likelihood on log-likelihood. Assuming  $\theta$  presents the parameters of our model, X our dataset, we have  $\ell(\theta; X) = log L(\theta; X)$ . Here,  $L(\theta; X)$  represents the likelihood function, which quantifies the probability of observing the given data under a specific set of parameters denoted by  $\theta$ . Now, we have  $\ell(\beta_0, \beta_1, \ldots \beta_k)$ , because here, the objective of this MLE is to find the optimal values for Logistic regression model parameters.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_25_Figure_2.jpeg" alt="Figure" />
+
+Figure 8-10: (a) Projecting original data points from negative and positive infinity to a candidate line. (b) Identify the Y-axis values of each project data point. (c) By rotation, different candidate lines are generated, and the line with the lowest error is chosen to identify the optimal model parameters.
+
+Once again, let's review why we need MLE to project our data points on a line. Our data points are located at  $-\infty$  and  $+\infty$ . Therefore, their linear regression line will start from plus infinity to minus infinity, and thus, we cannot identify the model parameters of this linear regression. The MLE can resolve the infinity problem by projecting the original data points into an imaginary (candidate) line. See Figure 8-10 (a), the original data points are projected on a candidate line and presented as red empty dots. In Figure 8-10 (b), their coordinates to the y-axis have been calculated. These values on the Y-axis are log(odds) of the original data points<sup>5</sup>.
+
+For example, let's take a look at Figure 8-10. There is one data point with a value of -3.5, its projected probability (p) will be calculated as:  $y = e^{-3.5}/(1 + e^{-3.5}) = 0.29$ . This is the number that is used by MLE to sum all likelihoods together. Projected probabilities are between 0 and 1 classes. If the data point belongs to 0 classes (the probability is less than 0.5) its likelihood will
+
+<sup>5</sup> We can transform these log(odds) back to probabilities by the following equation:  $Y = e^{log(odds)}/(1 + e^{log(odds)})$ .
+
+be . If it belongs to the 1 class (its probability is larger than 0.5), its likelihood will be the *p*. The likelihood of all data points on a candidate line is the product of all projected values, or the log-likelihood of all projected data points is the sum of projected data. 1 − *p*
+
+Keep in mind that it is better to convert a product into a sum, and the logarithm function converts the products into a sum, e.g., . The maximum log-likelihood uses log-likelihood to turn products into sums, making the calculations easier. When optimizing, we look for the parameters that maximize the log-likelihood. By negating the result we mean that sometimes we minimize the negative log-likelihood instead of maximizing the log-likelihood. *log*(*x y*) = *log*(*x*) + *log*(*y*)
+
+For example, let's say MLE draws a random line at the first negative of maximum log-likelihood is 2.99. Next, the MLE rotates a bit this candidate line and then it creates a new candidate line. Afterwards, it calculates the log-likelihood for the new candidate line, e.g., 3.21, and continues this process with another rotation and thus another line, e.g., 2.19, and so forth. In the end, the candidate line with the highest likelihood (3.21 in our example) will be used as the best candidate line.
+
+The best candidate line will be used for projecting data points onto this line, and similar to the linear regression, the algorithm can identify parameters from this line. This means that now we have a single linear line, the intercept ( ) and slope ( ) of this line will be reported as the best parameters for our logistic regression. *β*<sup>0</sup> *β*<sup>1</sup>
+
+We remember earlier in the linear regression that to solve non-linear models scientists try to convert them into linear models and solve them. This is another similar scenario. We use MLE to transfer the Logistic regression into linear regression and identify optimal parameters for it.
+
+Since it sounds complex to remember, lets summarize it as question and answer.
+
+Question: How to estimate model parameters for logistic regression?
+
+#### Answer:
+
+- 1. Convert logistic regression to log(odds); using log(odds) makes a linear regression out of given logistic regression. However, now we have a problem with the range of the new linear regression. It has a range from to . −∞ +∞
+- 2. The MLE resolves the range problem, but it reports a log-likelihood. Its result is negative because the logarithm of numbers between 0 and 1 is negative.
+- 3. To formulate the maximization of the log-likelihood as a minimization problem, we use the negative log-likelihood. Therefore, the implementation of the MLE experiments with different linear regression lines (by using optimization) and choosing the one that has the highest negative likelihood.

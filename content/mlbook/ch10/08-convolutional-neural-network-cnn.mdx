@@ -1,0 +1,223 @@
+---
+chapter: "ch10"
+order: 8
+slug: "convolutional-neural-network-cnn"
+title: "Convolutional Neural Network (CNN)"
+wordCount: 5109
+---
+We have covered the general architecture of neural networks, and now we turn our attention to specific deep learning architectures, starting with Convolutional Neural Networks (ConvNets or CNNs), which are pivotal in computer vision.
+
+Back in 1950, Hubel and Wiesel [Huhel '59] identified that monkeys' and cats' brains have two types of cells in their brains (simple cells and complex cells) to be used for visual recognition. Later, Fukushima [Fukushima '80], inspired by the findings of Hubel and Wiesel, introduced the *Neocognitron*, a hierarchical, multilayered artificial neural network, which is considered a precursor to modern CNNs. Afterward, LeCun et al. [LeCun '89] combined the CNN architecture with the Backpropagation algorithm and experimented with it on handwritten numbers . Their [13](#page-46-0) results showed a tremendous improvement in the accuracy of handwritten number recognition.
+
+CNN architecture preserves the spatial structure of the input data. Preserving the spatial structure of data makes CNN very helpful for computer vision applications such as image classification, image segmentation, medical image analysis, etc. CNNs are used in a few other applications, such as natural language processing or audio analysis. Nowadays, most advances in computer vision include CNN or the use of neural networks.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_46_Picture_4.jpeg" alt="Figure" />
+
+CNN models are spatial invariant, which means they can recognize patterns in an image regardless of their position or orientation. They are flexible in tolerating distortion and changes in images. These features make them more accurate than the traditional image feature engineering we have described back in Chapter 6. However, CNNs are not scaling or rotation invariant.
+
+At the time of writing this chapter (first time in 2021, and revision in 2024), most state-of-the-art image analysis algorithms are using CNN, and they even overtake human experts in some
+
+There are some very popular datasets used to evaluate computer vision algorithms. One is a handwritten number dataset called [13](#page-46-1) MNIST (stayed for Modified National Institute of Standards and Technology database), which to date is the most popular image dataset in use for experimenting with different types of machine learning algorithms, especially image recognition ones. There are a few popular datasets, including ImageNet [Deng '09], mtCars (vehicle data), IRIS (flower shape), CIFAR-10/CIFAR100 (tiny images of different objects), and Fashion MNIST (cloths images), which are used for experimenting or benchmarking machine learning algorithm.
+
+computer vision applications such as medical image analysis [Javaheri '21]. CNN operates by assigning multiple image filters to an input image, and these filters enable the algorithm to classify the image accurately.
+
+CNN has two significant advantages over ANN. First, ANN uses densely connected layers, each neuron in CNN is connected to a limited number of neurons in the neighbor layer. Figure 10-24 shows a comparison between CNN and ANN, and we can see that all input neurons of the ANN are connected to all neurons in the next layer. Having this dense connection causes ANN to learn only *global patterns* in the image (the result of having densely connected layers where every output neuron is connected to every input neuron). However, CNN does not use densely connected layers, and by using a window over the image, it
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_47_Figure_2.jpeg" alt="Figure" />
+
+Figure 10-24: A traditional input layer and the second layer of ANN on the left and the same approach for CNN on the right, we can see the number of connections in CNN is smaller than ANN, which is fully connected.
+
+can learn the *local patterns*. The size of the window and the movement steps, or 'stride', are key factors in defining the extent of these connections, which we will explore in detail later.
+
+To understand the importance of local patterns, let's discuss an example in the MNIST dataset. If the handwritten number is not in the center of the image, ANN cannot classify it, but CNN can classify, even if the number is located on the side of the image, because of its local pattern learning capability.
+
+The second advantage of CNNs is their ability to learn hierarchical features within an image. For instance, in analyzing an image of a chicken, a CNN might first identify basic features like edges and curves, then assemble these into more complex structures such as beaks, eyes, and wings, and finally recognize the overall form of the chicken. This hierarchical feature learning enables CNNs to understand complex structures and classify images more effectively, even when they vary in perspective or lighting conditions. Thus, CNNs are capable of distinguishing and classifying images in a way that is challenging for other computer vision algorithms, demonstrating their robustness across different viewing conditions.
+
+Typically, a CNN network takes an input of a tensor, which includes image height, width, and channels (three data for red, green, and blue in RGB mode or three data for hue, saturation, and lightness in HSL mode). We can say that we work with a 3D tensor for colored images. For the sake of simplicity, we explain our example with a matrix and one value for each pixel.
+
+CNN algorithm operates in four steps, but before starting to explain these steps, we need to learn the definition of convolution. Then, we proceed with the explanation of these four steps in a sequence.
+
+### **Convolution and Cross correlation**
+
+Convolution is the process of combining two functions and, as a result, getting a new function with a different function shape than the two input functions. In the context of neural networks, convolution is the process of multiplying matrices (or tensors), and the result will be a new matrix (or tensor). Mathematically, convolution (\*) is written as *the integral product of two functions after one of these functions is reversed and shifted*. The convolution specifies the amount of overlap of one function as it is shifted over another function. The convolution operation can be described using the following equation:
+
+$$(g * f)(t) = \int_{-\infty}^{\infty} g(\tau)f(t - \tau)d_{\tau}$$
+
+In this equation, t is the current time and  $\tau$  is used to specify the size of the shift. The integral measures the overlap between  $g(\tau)$  and  $f(t-\tau)$  as one function slides over the other. If two functions are not overlapped, their convolution is zero. When a function overlaps with another function, then its convolution is none zero. On the top of Figure 10-25, we have two functions f and g. The bottom plots their convolution. We can see the amount of shift on top and its impact on the convolution at the bottom. The grey area on the top shows the convolution. Note that, as part of the convolution process, the function f is reversed starting from the second figure onward.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_48_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-25: Two functions at the top and their convolution function in the bottom. The g function is moving along  $\tau$ -axis and as it overlaps with the function f (the grey area is the overlapped area) the convolution starts to increase and then again decreases as the g is moving away from f. Note that the function g is also reversed, but its shape doesn't changed.
+
+Cross-correlation is similar to convolution, but it measures how similar two different functions are. In other words, while both operations involve sliding one function over another and computing integrals or sums of their products, the key difference is that convolution flips one of the functions before this process. Specifically, in convolution, one of the functions is reversed along one of its dimensions (flipping means taking the negative of its indices), while cross-correlation does not perform this flipping. e.g., f(x) = x and flipping it will be f'(x) = -x.
+
+The following presents an equation of cross-correlation:
+
+$$(g \otimes f)(t) = \int_{-\infty}^{\infty} g(\tau)f(t+\tau)d_{\tau}$$
+
+Usually, when we work with the digital image, the data is considered discrete and multidimensional. Assuming *f* is one function (image), and *g* is the other function (kernel), the convolution equation for 2D data can be written as follows:
+
+$$(f * g)(i,j) = \sum_{m=-k}^{k} \sum_{n=-k}^{k} f[i-n,i-m] \cdot g[m,n]$$
+
+Respectively, their cross correlation will be written as:
+
+$$(f \otimes g)(i,j) = \sum_{m=-k}^{k} \sum_{n=-k}^{k} f[i+n,i+m] \cdot g[m,n]$$
+
+You don't need to learn the mathematics of convolution in this detail, but as general knowledge, they are good to be known, and you can brag about your knowledge while talking about CNN.
+
+### **CNN Architecture**
+
+To implement a CNN, we should follow five steps, and we describe each step in detail.
+
+**Step 1- Convolution:** The first step focuses on using kernels (filters) to construct feature maps. This step of applying filters on images is referred to as convolution. In this context, the kernel is a different concept than the kernel we explained for SVM in Chapter 9. The task of kernels or filters in the CNN is feature detection. Kernels are similar to the image filters that we use in photo editing software, such as blurring an image, sharpening, etc. Filters or kernels are small matrices of weights that slide over the input image to extract specific features, such as edges, textures, and patterns. Figure 10-26 shows some examples of filters applied to a sample image.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_49_Figure_8.jpeg" alt="Figure" />
+
+Figure 10-26: An example of image and three filters that are applied on the image.
+
+In the context of CNN, we call these filters *convolutional kernels* (or filters), and the resulting image is a **c***onvoluted image*. Therefore, we can write the following:
+
+*input image \* kernel (feature detector) convolved image (feature map)*  =
+
+There are some common kernels, e.g., a matrix with a Gaussian distribution is a kernel used for blurring an image. A few examples are presented in Figure 10-27. We can see some filters, and intuitively, by looking at the matrices, we can realize what they are doing. For example, the Sharpen filter on the right increases the differences between the right and left center pixels. It reduces the emphasis on the other pixel, which results in sharpening the image. The convolution process usually results in a feature map with fewer pixels than the original image; as we can see in Figure 10-27, the convolved image is smaller than the original image.
+
+| Sharpen |    |    | Blur |  |      | Left Sobel |      |     |   | Emboss |  |    |    |   |
+|---------|----|----|------|--|------|------------|------|-----|---|--------|--|----|----|---|
+|         | 0  | -1 | 0    |  | 0.05 | 0.1        | 0.05 | 1   | 0 | -1     |  | -2 | -1 | 0 |
+|         | -1 | 5  | -1   |  | 0.1  | 0.25       | 0.1  | 1.5 | 0 | -1.5   |  | -1 | 1  | 1 |
+|         | 0  | -1 | 0    |  | 0.05 | 0.1        | 0.05 | 1   | 0 | -1     |  | 0  | 1  | 2 |
+
+Figure 10-27: Some sample image filters. Sharpen and Blur are clear, Left Sobel is used to show differences between each pixel and its adjacent pixel on the left. Emboss creates an illusion of depth for the viewer of the image.
+
+Take a look at Figure 10-28. We have an image, and for the sake of simplicity, we used a matrix and not a tensor; the process of convolution is a type of matrix multiplication but with a small window (or patch) on the original image. You can see the result of applying the kernel on the original matrix. Using this kernel increases the emphasis on pixels located on the left side of the kernel. The red window of Figure 10-28 is moving along the matrix and constructs pixels of the convolved matrix. The number of pixels that a window moves is called *stride*. In Figure 10-29, we move the window one pixel in the *X* and then *Y* direction. Therefore, we say the stride is equal to one. Usually, the stride is set to two pixels, and the larger the stride, the smaller the resulting convolved image becomes.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_50_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-28: A matrix, which presents image and a filter that will be applied on the matrix. The right matrix presents the result of applying the filter on the original matrix.
+
+The '\*' operator here refers to convolution (sometimes informally referred to as element-wise multiplication in this context) and not the dot product. A filter is always smaller than the original image.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_51_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-29: An example presented a window equal to the size of the filter (3x3) is moving along the original matrix (image) and select a window of data to multiply them to the filter values. Here, the stride is equal to one on both the X and the Y axis.
+
+Another issue is illustrated in Figure 10-29. where the window extends beyond the image matrix, leading to a loss of the image's border in the convolved image. To avoid losing the borders, we can use a process called *padding*. Padding is the process of substituting the pixels on the edges. There are different approaches for padding, including *reflection*, *replication*, and *zero padding*. Otherwise, the convolutional filter does not go outside the image border; its padding is referred to as *valid padding*. If the output of the convolution has the same size as the input image, its padding is referred to as the *same padding*.
+
+Zero padding (masking) is just adding a zero in the padding area. Replication padding is using the same value for the last pixel in the padding area and substituting it in the padding area. Reflection padding uses the neighbor value of the last pixel on the opposite side of this pixel and substituting it in the padding area. Valid padding happens when the filter window stays inside the image and does not go outside. Figure 10-30 presents these three padding techniques.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_51_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-30: Three different approaches for padding on edge pixels. The white area in this figure presents the image pixels and grey ares is the padding area.
+
+Applying image filters to the input image results in having a *convolutional layer* for the neural network. Note, if you encounter the term "local" in the convolutional filter, it refers to the pixels inside a window (the content of red windows in Figure 10-29). Assume that *s* presents the stride size, *p* is the padding size for input matrix, and we apply filter, the output feature map has the following size: . *n* × *n f* × *f* (*n* + *p* − *f* )/*s* + 1 \* (*n* + *p* − *f* )/*s* + 1
+
+**Step 2- Perform non-linear transformation:** Filters create a convolved image, which is a linear transformation of the original image. However, an image includes a set of non-linear objects. To increase the non-linearity of feature maps (convoluted images), the feature map will usually be fed into a non-linear activation function such as ReLU to get a non-linear transformation of the image.
+
+Not having a non-linear transformation after the convolution layer results in lower classification accuracy, which this sin is equal to blasphemy in machine learning. In particular, this nonlinearity of feature maps (convoluted images) makes the neural network really strong, and this step is called the 'detector step' [Goodfellow '16].
+
+Keep in mind that at the end, the output layer should be something related to the task we expect from the neural network. For example, if it is a classification task for more than two classes, then the activation function of the output layer should be Softmax, for two classes, it should be Sigmoid (check Chapter 8 to recall Softmax and Sigmoid).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_52_Picture_4.jpeg" alt="Figure" />
+
+Figure 10-31: All of them are chickens but a spatial variant algorithm cannot detect them. CNN is spatial invariant and it can extract features such as body shape, peak, eyes, etc. and thus recognize them. However, it can recognize them, only if we train the algorithm with enough sample images.
+
+Again, let us remind you that unlike ANNs, where all layers are connected to each other (fully connected), CNN neurons are only connected to a subset of neurons in the next layer, and these are filters. Figure 10-24 visualizes the difference between ANN and CNN at the input layer, which we can see in CNN neurons are not connected to all other neurons in the next layer.
+
+**Step 3- Pooling:** The feature extraction, done automatically by the CNN, is spatial invariant. Spatial invariance makes CNN algorithms a very accurate and flexible algorithm for image classification. For example, traditional image feature extraction methods cannot recognize that Figure 10-31 are chickens because the shape, camera angle, etc., are different among all chickens. However, a CNN trained on many comic chickens can recognize the given chicken image despite their different visual shapes.
+
+Each convolutional layer applies different filters on the input image for feature extraction. The number of filters is a hyperparameter and grows between convolutional layers. For example, the first layer has 32 filters, the next layers 64 filters, and so forth. Therefore, a CNN creates many convolved images (feature maps). Dealing with such a large number of data (results of applying many filters) is computationally very ineffective or impossible.
+
+To handle this issue, the CNN downsamples (reduce the size) of convolved images while maintaining the highlighted features. The pooling functionality is used for this purpose (downsampling), similar to using window and strides, which downsample the original image into smaller images. The result of the convolutional layer, i.e., feature maps (after they have been transformed into non-linear feature maps), are sent to a pooling layer via a *tensor operation* that performs the downsampling. The pooling layer performs something similar to a kernel function (check Chapter 9 SVM algorithm explanation), kernel function downsamples, by using a linear transformation, but pooling performs downsampling by tensor operation, e.g., Figure 10-32 shows some examples of downsampling via pooling. Downsampling here refers to lowering the filter resolution while still maintaining its features. If you read Chapter 6, you might recall the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_53_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-32: Max pooling and average pooling examples are applied to the convoluted image (feature map), and the pooled feature map is created. In these two examples, we use a stride of two pixels in each direction.
+
+SIFT algorithm, which blurs and resizes the image for feature extraction. That process can also be called downsampling as well.
+
+Pooling, similar to convolution, slides a window on data, and two types of pooling are commonly used: max pooling and average pooling. *Max pooling* takes the largest element of the window it defines. *Average pooling* averages the content of the window and presents it as a single pixel for the next layer. Figure 10-32 present max pooling and average pooling examples.
+
+There are other pooling methods as well, such as calculating *norm* for all pixels inside a window, but they are not as popular as max pooling. *L*2
+
+Pooling has another advantage: it removes irrelevant information and unnecessary features. It reduces the chance of overfitting (because of reducing the number of parameters) in addition to making the input smaller and thus making the network more resource efficient.
+
+**Step 4- Flattening:** After the end of the pooling layer, there is usually a normal flattening layer. Flattening is very simple; the result of the pooling layer is a matrix, and the flattening layer converts matrices to a vector, as shown in Figure 10-33. Since we have many pooling layers, the vector size is usually too long. This process occurs before the data is passed into the fully connected layer(s).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_54_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-33: The results of max pooling functions are flattened into a large vector, which will be the input of the dense layer (traditional ANN).
+
+**Step 5- Dense Layers:** After creating this very long vector, it will be fed into a traditional ANN layer. The input layer of this ANN is the result of flattening; its hidden layers are fully connected layers*,* and the output specifies the result of the classification or regression. The reason that hidden layers of the ANN here are called fully connected layers is because all neurons are connected, as is common with ANN architecture. We have described that CNN neurons are locally connected, but the last layers before the output layer are fully connected. In the fully connected layer, the error is calculated and also backpropagated to the neural network until the weights and biases of the networks converge (maximum iteration reached or accuracy reaches a satisfactory number).
+
+If a feature is useless, its weights get reduced during the iterations of backpropagation. The number of neurons in the output layer is equal to the number of classes; for example, if we make a CNN distinguish whether a given image is Chicken, t-rex, or other, the output layer will have three neurons, one for chicken, one for t-rex and one for other.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_55_Figure_1.jpeg" alt="Figure" />
+
+Figure 10-34: A brief summarization of CNN architecture. Here, fully connected layers refer to traditional ANN.
+
+Figure 10-34 summarize what we have explained in the CNN architecture. However, there are usually multiple convolutional layers, multiple pooling layers, and multiple fully connected layers. We could even have several convolutional layers and pooling layers in a sequence. Note that the network learns the filters. These filters, which are small matrices of weights, start as a random set of values and are then adjusted through training iterations to help achieve the goals of the network
+
+A CNN architecture can be used for classification and rarely for regression. If the CNN model is designed for classification, it will have more than one neuron at the end, and for the classification, its output layer neurons are equal to the size of the classes that are used for labeling. For example, if a CNN classifier is trying to distinguish between cat, dog, and t-rex. Then, we will have three neurons. Nevertheless, the neurons in the output layer are unaware of the value of other neurons in the last layer. However, they should provide a probability, and the sum of those probabilities is equal to one. The Softmax function (described in Chapter 8) is used to convert them into a probability and assign a value to them that adds up all of the output neurons to one. In other words, CNN used for classification has a Softmax activation function (or other non-linear activation function) that outputs probabilities for a classification result. The softmax function is a generalization of the logistic function and provides a vector of values with a range between zero and one. The softmax function is usually used with cross entropy as a loss function.
+
+It is not common to use CNN for regression, but if you intend to use a CNN for regression, there will be one output neuron, and its activation function will be linear.
+
+The best way to design a CNN is to experiment with different combinations of layers until we get the best possible result. This can be done by measuring the accuracy and then deciding on the final architecture of the network. In Chapter 12, we will introduce some popular CNN models.
+
+A high number of layers in the neural network leads to a high number of parameters, and thus, the network might get more accurate, but on the other hand, it gets prone to overfitting as well.
+
+Usually, computer vision models are built by very large AI corporations, and it is not easy to generalize all of them for real-world applications developed by non-super-rich corporations.
+
+Therefore, if you develop a model that is accurate and not affiliated with those big AI corporations, good luck in convincing the scientific community about your model.
+
+### **Different Types of Convolutions**
+
+We have learned that the process of convolution is applying a filter/kernel on an image and computing the output, whose size depends on the filter size, stride, and padding. Here, we briefly introduce different types of convolution, but we do not go into detail about each convolution.
+
+**2D and 3D Convolutions:** Until now, we have only used a matrix and explained convolution on a matrix. This convolution is called 2D convolution. If the original data is in 3D format, we should use 3D convolution. For example, a colored image has three color properties (red, green, and blue) along with *x* and *y* coordinates. Therefore, we should deal with a 3D tensor (three matrices with the same width and height). The third dimension is referred to as *depth* or *channel,* and the size of the channel for the original data and filter must be exactly equal. For example, in Figure 10-35, both filter and original data have the same number of channels, i.e., three.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_56_Picture_4.jpeg" alt="Figure" />
+
+Figure 10-35: An example of a 3D Convolution with its filter. As is shown, the depth or channel in both the filter and the original image should be the same.
+
+The dot product of a 3D filter to a 3D tensor will result in a scalar for each position where the filter is applied. As the filter moves across the tensor with a specific stride, each application produces a scalar. These scalars together construct a 2D matrix, known as the feature map or convolution output [.](#page-56-0) [14](#page-56-0)
+
+3D convolutions are typically used for volumetric images (such as MRI and CT images), where each voxel represents a point in a three-dimensional space (a voxel resembles a pixel with one additional dimension, that is depth). They are also applied to video files, where the third dimension is time, allowing the filters to capture temporal information in addition to spatial features. 2D images are generally processed with 2D convolutions, as they lack a third spatial or temporal dimension that would necessitate 3D convolution.
+
+[<sup>14</sup>](#page-56-1) A good video that visualizes this process is available under this link: [https://www.youtube.com/watch?](https://www.youtube.com/watch?v=D0VoQDDe5zI) [v=D0VoQDDe5zI](https://www.youtube.com/watch?v=D0VoQDDe5zI) 
+
+**Dilated (Atrous) Convolution:** Dilated or Atrou[s](#page-57-0) convolution adds a gap between pixels that [15](#page-57-0) feds into the filter. A parameter called *dilation rate (l)* specifies the size of gaps between matrix elements (e.g., pixels). In other words, parameter *l* indicates how much the kernel is widened. For example, Figure 10-36 has a dilation rate of , 2D Convolution shown on top of this figure has (no gap between pixels). As the dilation rate increases, the patch sizes increase as well because it skips several pixels. *l* = 2 *l* = 1
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_57_Picture_1.jpeg" alt="Figure" />
+
+Figure 10-36: A 2D convolution on top and dilated convolution in the button. Both have zero padding and a stride size of 2.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_57_Picture_3.jpeg" alt="Figure" />
+
+Figure 10-37: Different dilation rate specifies the size of gaps between selected pixels.
+
+Dilation convolutions are popular approaches for image segmentation [Chen '17] because they provide an overview of the larger scope of the image. More about image segmentation will be explained in Chapter 12. Figure 10-37 shows different dilation rates (*l*).
+
+*trous* in French means holes [15](#page-57-1)
+
+**Transposed Convolution:** all convolutions, except dilated convolutions, typically either preserve the size of the original data or reduce it, which is downsampling. Transpose convolution, on the other hand, is commonly used to increase the size of the output feature, a technique referred to as *upsampling*. Upsampling has many applications in image processing, such as increasing image resolution, reducing image blur, and facilitating semantic segmentation, which involves abstracting the image into a set of labeled objects. These applications will be explored in more detail in Chapter 12.
+
+A transposed convolutional layer performs the convolution operation in a manner that reverses the spatial dimension reduction of standard convolution, effectively increasing the spatial dimensions of its output. Look at the example we provide in Figure 10-38. Here  $*_{TC}$  refers to transposed convolution. In this example, we have a small input image (2 × 2), the stride is 1, and the padding is zero. The output will be a 3 × 3 matrix, which you can see the input size has been increased from 2 × 2 to 3 × 3. In particular, every cell of the input data will be multiplied by all filter cells and written in a similar position. Then, all these results will be summed in a 3 × 3 matrix. In Figure 10-39, we use red and blue colors to show how two cells construct the upsampled version of the input data cells. The inverse of convolution is referred to as deconvolution, and it is recommended not to call transposed convolution deconvolution.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_58_Figure_2.jpeg" alt="Figure" />
+
+Figure 10-38: A simple example of transposed convolution, with stride size 1 and padding size 0.
+
+#### NOTE:
+
+- \* The CNN will learn the kernel (filter) itself, and we do not need to give the kernel manually. In particular, the algorithm will decide which kernel will get meaningful information from an image. Edge detection kernels (Sobel filters) are very common to be used by CNN algorithms.
+- \* Often, in real-world cases, we stack several convolutional layers on top of each other. This means that the output of one convolutional layer will be an input of another convolutional layer and so forth. This causes the CNN to discover more complex patterns as it goes deeper into convolutional layers. In simple words, for example, a CNN with five convolutional layers could recognize more patterns than a CNN with three convolutional layers.
+- \* Nowadays, we rarely need to build a CNN on our own, and most of the time, we are using an existing model to define the model that fulfills our demand, i.e., transfer learning. More about transfer learning will be explained in Chapter 14.
+
+- \* Pooling layers help manage varying sizes of input images by reducing the spatial dimensions of the feature maps, thus creating more manageable and smaller representations. However, they don't directly handle varying input image sizes; rather, they contribute to making the CNN architecture more flexible and capable of dealing with the spatial hierarchy in images..
+- \* There are different visualization techniques available to present CNN architecture. AlexNet visualization [Krizhevsky '12] is another form to visualize CCN, as shown in Figure 10-39. Here, both convolutional and pooling layers are presented as cubes, and the red cubes inside convolutional layers are filters.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_59_Picture_2.jpeg" alt="Figure" />
+
+Figure 10-39: AlexNet style of presenting a CNN network architecture. Usually the sizes (height, width, channel) on the cube sides as well.
+
+\* CNN models are known to have *inductive bias*, which refers to the built-in assumptions within the model that guide its learning process. These assumptions are not directly derived from the training data but are inherent to the model's architecture, facilitating the identification of relevant patterns and features. Inductive bias enables CNN to generalize from its training data to new, unseen data, allowing it to make predictions or classifications beyond the specific examples it has been trained on. In simple terms, inductive bias is what empowers a CNN to generalize beyond its training dataset.

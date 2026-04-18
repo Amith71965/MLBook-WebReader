@@ -1,0 +1,28 @@
+---
+chapter: "ch3"
+order: 16
+slug: "hypothesis-errors"
+title: "Hypothesis Errors"
+wordCount: 391
+---
+Earlier in this chapter, we explained that the process of making inferences about the data is called *inferential statistics*. In inferential statistics, no hypothesis test is certain or absolutely correct. We always deal with errors.
+
+Test
+
+There are two types of errors in inferential statistics as shown in Table 3-5, *type I error* and *type II error*. When a null hypothesis is true, but we reject it by mistake, we make a Type I error, i.e., false positive error. We can reduce the chance of type I errors by increasing the value of α. When the null hypothesis is false, and we fail to reject it, we make type II errors, i.e., false-negative errors (Check Chapter 1). We can reduce the chance of type II errors by increasing the sample size.
+
+|           | Reality             |                     |  |  |  |  |
+|-----------|---------------------|---------------------|--|--|--|--|
+|           | H0 = True           | H0 = False          |  |  |  |  |
+| Accept H0 | Correct<br/>Decision | Type II error       |  |  |  |  |
+| Reject H0 | Type I error        | Correct<br/>Decision |  |  |  |  |
+
+Table 3-5: Hypothesis test outcomes.
+
+To summarize, assume we have collected some sample data and made some fantastic novel inferences from the data, like *'most cucumbers are green'* (more than 95%). We need to prove it with inferential statistics. To prove it, we can use the p-value to reject our null hypothesis, i.e., *'95% of cucumbers are not green'*.
+
+### NOTES:
+
+- \* As the sample size increases, the margin of error decreases. However, increasing the sample size after a certain point does not have any effect on the margin and error, and keep in mind that sampling is an expensive process.
+- \* There is no optimal test to report the exact sample size we require. However, by comparing two sample datasets, we can say if the sample size is big enough or not. Therefore, if the significance test fails, we should either use a larger sample size or give up on our alternate hypothesis.
+- \* A significance test, in this context, helps us understand whether the result we have gained from an experiment is random (false) or it is valid and has a cause (actual). If our results were random, this means that we could not generalize our findings from our sample to the population.

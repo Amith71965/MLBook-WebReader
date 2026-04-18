@@ -1,0 +1,31 @@
+---
+chapter: "ch3"
+order: 27
+slug: "jensen-shanon-divergence-js-divergence"
+title: "Jensen Shanon Divergence (JS-Divergence)"
+wordCount: 340
+---
+We have explained that KL-Divergence can be used to measure distances between two distributions, but it is not symmetric, i.e.,  $D_{KL}(p | | q) \neq D_{KL}(q | | p)$ . Besides, the KL-Divergence range is unbounded. It means that it varies between 0 to  $\infty$ . The  $\infty$  result occurs when two distributions do not have any overlap. To handle these limitations, we can use *Jensen Shanon Divergence (JS-Divergence)*. It is symmetric, bounded, and computed based on KL-Divergence with the following equation:
+
+$$JS(p,q) = \frac{1}{2}KL(p | | m) + \frac{1}{2}KL(q | m)$$
+
+where m is the average of p and q,  $m_i = (p_i + q_i)/2$ .
+
+The range of JS is between 0 (p = q) to 1 (p and q do not have any overlap at all).
+
+To understand the differences between KL-Divergence and JS-Divergence, check Figure 3-33. In this figure we have two normal distributions in different locations from each other, and their JS-
+
+Divergence and KL-Divergence scores are written on their side. As it is shown, when two distributions stay apart, the KL-Divergence goes toward infinity, but JS-Divergence still provides some numeric data.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_72_Figure_1.jpeg" alt="Figure" />
+
+Figure 3-33: KL-Divergence and JS-Divergence of two normal distributions, based on their overlap.
+
+### NOTES:
+
+- \* Sometimes, we need to quantify how predictable our target dataset is. In those cases, we can use entropy to quantify the predictability of the dataset. Higher entropy could indicate less predictability, and low entropy in a dataset is a sign of high predictability.
+- \* Here, we have learned that JS-Divergence, Cross Entropy, and KL-Divergence can be used to compare two distributions. In addition to these three methods, we could also use Kolmogorov-Smirnoff as well. We have explained it as KS-Test, but some also use this method to compare two distributions.
+
+\* Comparing distributions is the core of neural networks, especially generative AI models. We will explain them in Chapter 11 and Chapter 13. Therefore, please be sure that you have learned everything we explained here perfectly fine.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_73_Picture_1.jpeg" alt="Figure" />

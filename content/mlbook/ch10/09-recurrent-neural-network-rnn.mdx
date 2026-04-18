@@ -1,0 +1,186 @@
+---
+chapter: "ch10"
+order: 9
+slug: "recurrent-neural-network-rnn"
+title: "Recurrent Neural Network (RNN)"
+wordCount: 4340
+---
+We have learned that neural networks, either CNN or ANN, could be used for classification and regression. Until now, our neural networks have received a fixed-size input, such as an image or vector, and the neural network output is a single output. For example, the output will be a vector of two scalars, which includes a classification result on the input image to recognize whether the picture is t-rex or chicken (0.4 for chicken and 0.7 for t-rex probabilities).
+
+Another category of deep learning algorithms is Recurrent Neural Networks (RNN). RNNs are used for *sequential data*, such as sensor data, timestamped data, medical device data, audio, and even text (word appearances in a sentence have an order). In particular, any data with either a timestamp or implicit notion of time can be assumed as sequential data and modeled by RNN. RNNs could be used to reconstruct sequential data similar to the data we fed into it. For example, we could feed a book to RNN, and it can generate sentences similar to that book, or we could use RNN to construct music or poem, but at the time of writing this chapter (2020), they are not accurate enough for Generative AI tasks, but excellent to model sequential data.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_60_Picture_3.jpeg" alt="Figure" />
+
+Figure 10-40: Hidden layers in RNN send their output as input in the next epoch. The red lines present the information flow in the next epoch. Here for sake of simplicity we show each neuron has a input from itself, but in fact RNN cells have input from itself, and they are different than neurons (we will explain more about this later).
+
+As we can see from Figure 10-40, hidden layers of RNN do give output to the next layer, but they also feed back their outputs to themselves along with the input (in the next epoch). In other words, they support a temporal loop.
+
+Figure 10-40 shows an abstract representation of RNN. Hidden layers (shown with rectangles in Figure 10-40) are connected to themselves. It means that in addition to the output for the next layer, they also feed the output of the current hidden layer to themselves as well.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_61_Picture_1.jpeg" alt="Figure" />
+
+Figure 10-41: The hidden layer (h) in RNN receives input *x* and produces output *y*. However, the hidden layers have a temporal loop, which means that in addition to giving the output, it feeds the output to itself as input for the next epoch as well. Each rectangle presents a hidden layer and not a single neuron.
+
+An unfolded hidden layer is shown in Figure 10-41. On the right side of this figure, we can see that the hidden layer at epoch (or time) t receives the output of the previous epoch (t-1) as well, or the layer at a epoch t-1 receives the output of epoch t-2. Therefore, we could say that neurons have *short-term memory* and remember what has happened in the previous epoch (only a single previous epoch, not all previous epochs). To formalize this, assuming  $\vec{y}$  is the output vector of hidden layer variables and  $\vec{x}$  is a vector of the input variable, then we have:
+
+$$\overrightarrow{y_t} = f(\overrightarrow{y}_{t-1}, \overrightarrow{x_t})$$
+
+In this context, neurons functioning with inputs from previous time steps can be thought of as having *memory* capabilities, although in basic RNNs, this memory is typically short-term. This memory structure makes the neural network very attractive for some fields of machine learning, including natural language processing and text analysis, because we need temporal knowledge to predict upcoming information.
+
+Based on the number of inputs and output, there are different types of RNN, which are presented as one-to-one, one-to-many, many-to-one, many-to-many, and one-to-one. Figure 10-42 visualizes these types of presentations and notes that rectangles here refer to a layer of neurons.
+
+For a one-to-one example, assume a single image is given into a neural network, and the network finds its label. For a one-to-many example, suppose we give a single image into the RNN, and it generates the caption for the image. For example, in an image, a chicken weares a shirt, and the shirt has a T-rex image on it. An RNN recognizes the t-rex, the shirt, and the chicken. Then, it generates a caption that correctly describes the image. In summary, in one-to-many mode, for one input (an image), it provides many output labels (chicken, t-rex, shirt). For a many-to-one example, assume we give a sentence that includes several words (many) to a sentiment analyzer, and the RNN labels the sentence tone as positive or negative (one). For many-to-many examples,
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_62_Picture_0.jpeg" alt="Figure" />
+
+we can think of a sentence that includes many words in Mandarin, and the RNN translates it to a Hindi sentence, which also includes many words. The position of words is important in the sentence to make an accurate translation. For example, *"I hit the ball with a bat"* is referring the *"bat"*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_62_Figure_2.jpeg" alt="Figure" />
+
+Figure 10-42: Different architectures of recurrent neural networks, you can see from left to right the time increases.
+
+as a wooden stick and not the *"bat"* as the bird *"bat"*.
+
+We have explained that a neuron receives an input and puts it in the linear function. Then, it applies an activation function on the result of linear regression, and produces the output.
+
+While using RNN, we have , which means that the output depends on the previous outputs as well. Also, its activation function is a *hyperbolic tangent activation* function, i.e., *tanh*. *yt* = *f* ( *y <sup>t</sup>*−1, *xt*)
+
+These are the basics of the RNN network. It is fantastic architecture because it has memory, but it has a goldfish memory; it only remembers the previous output, i.e., short-term memory. To mitigate this, we need an RNN that keeps tracking more previous output, i.e., long-term memory.
+
+### **Long Short-Term Memory (LSTM)**
+
+Vanishing gradient is a severe issue in sequential data, and previous approaches we have explained to mitigate its risk are not very practical for sequential data, especially for long sequential data. As a result, using those methods could slow down the system significantly. Deep learning algorithms are consuming lots of resources, and they are slow; thus, applying those techniques makes things even worse. On the other hand, we have explained that the RNN is a goldfish memory; it has only one short-term memory and can't remember more than a few single previous states. For example, take a look at this sentence: *"I love money, and as a consultation fee, I get a fat check."* The word "*fat*" in this sentence refers to money, not overweight people or
+
+nutritional fat. Therefore, if we give this sentence to an RNN, which can only remember a few previous words, it cannot recognize the context of the word fat.
+
+A well-known approach to handling time series issues and temporal data is the LSTM architecture [Hochreiter '97]. Instead of one memory, each LSTM cell has four memory components: *long-term memory*, *short-term memory*, *new long-term memory,* and *new short-term memory*. It uses the element-wise operator (Hadamard product explained in Chapter 7), sigmoid, and hyperbolic tangent activation functions to decide about the output value.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_63_Picture_6.jpeg" alt="Figure" />
+
+Before explaining LSTM, let's briefly review how an RNN works. It receives and and uses a hyperbolic tangent to calculate the output, which can be written as , as shown on the left side of Figure 10-43. *xt ht*−<sup>1</sup> *ht ht* = *tanh*(*W* [*ht*−1, *xt*] + *b*)
+
+LSTM neurons are referred to as cells. As shown in Figure 10-43, an LSTM cell receives information called *cell state* ( or previous long-term memory), *previous output* ( or previous short-term memory), and *input vector* ( ). The output of LSTM is a *new cell state* ( or new long-term memory) and the *output vector* ( or new short-term memory). The content of each LSTM cell has input, forget, output, sigmoid layers, hyperbolic tangent layers (tanh) gates, and point-wise operators (element-wise or Hadamard product). *Ct*−<sup>1</sup> *ht*−<sup>1</sup> *xt Ct ht*
+
+Gates are responsible for deciding whether the information passes the gate or not. The Sigmoid layer outputs values close to 0 (not passing the gate) or close to 1 (passing the gate), and *tanh* brings the data into the range -1 to 1.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_64_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-43: Traditional RNN neuron, which is called vanilla RNN, versus LSTM neuron. The LSTM neuron receives  $C_{t-1}$  and outputs  $C_t$  as well, which are representations of cell state that could be interpreted as long-term memory.
+
+Now that we have a basic understanding, we can describe LSTM, step by step, as follows.
+
+- (i) The first step of the LSTM algorithm decides what information is not worth keeping and could be thrown away; this will be done through the *Forget gate*, which is a layer with the Sigmoid function. In particular, first, it receives the  $h_{t-1}$  (output of the previous time) and  $x_t$  (input), then calculates f by using the Forget gate (Sigmoid function) and outputs  $f = \sigma(W_f[h_{t-1}, x_t] + b_f)$ . At this step, the state is  $C_{t-1}$ , which comes from the previous cell, as shown in Figure 10-44 Step 1.
+- (ii) The second step decides what new information is going to be stored in the cell state. This step includes three sub-steps. First, it uses the *Input gate* to decide which values will be updated. Its equation is written as:  $i = \sigma(W_i[h_{t-1}, x_t] + b_i)$ , (see Figure 10-44 Step 2-1). Second, a hyperbolic tangent function creates a vector of new candidate values, i.e.,  $\tilde{C}_t$ , that its value will be between -1 and 1. These candidate values can be added to a candidate new cell state (not the final new cell state), and the equation is written as:  $\tilde{C}_t = tanh(W_C[h_{t-1}, x_t] + b_C)$ , (see Figure 10-44 Step 2-2). Third, after these two sub-steps, their results should be combined to update the old cell state,  $C_{t-1}$ , into a new cell state:  $C_t$ . To construct the new cell state, the algorithm multiplies the old state by  $f_t$ , forgetting the information that is forgettable, and then decides how much a cell state is getting updated by using  $i \odot \tilde{C}_t$ . The third sub-step, which constructs the new cell state  $(C_t)$  is written as:  $C_t = f \odot C_{t-1} + i \odot \tilde{C}_t$ , (see Figure 10-44 Step 2-3)
+- (iii) In the final step, the algorithm decides what is going to be in the output vector, which is based on the filtered version of the  $C_t$  cell state. Here, the filter is referred to as passing through  $C_t$  to the tanh gate. This step has three sub-steps. In the first sub-step,  $h_{t-1}$ , and  $x_t$  sends to Output gate (Sigmoid gate), which decides what part of the cell state will be given as output. The equation of this sub-step is written as:  $o = \sigma(W_o[h_{t-1}, x_t] + b_o)$ , see Figure 10-44 Step 3-1. In the second sub-step, the cell state will be passed through a tanh gate (to transform its values between -1 and 1), see Figure 10-44 Step 3-2. As the third sub-step, it constructs the final output,  $h_t$  as  $h_t = o \odot tanh(C_t)$ , (see Figure 10-44 Step 3-3). The final output of each LSTM cell is o, along with its states ( $h_t$  and  $C_t$ ).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_65_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-44: Summarization of the LSTM steps to construct short-term memory and longterm memory. Results of steps 3-2 and 3-3 are returned as outputs of the LSTM cell.
+
+Figure 10-44 summarizes the process of the LSTM cell . It is an easy-to-remember [16](#page-65-0) summarization of the LSTM algorithm. We did not explain each *W* and *b*, weight, and biases. There is another form of visualizing LSTM, which is presented in Figure 10-45.To be sure we understand them correctly, let's summarize their equations:
+
+$$\begin{split} i_t &amp;= \sigma(W_{ii}x_t + b_{ii} + W_{hi}h_{t-1} + b_{hi}) \\ f_t &amp;= \sigma(W_{if}x_t + b_{if} + W_{hf}h_{t-1} + b_{hf}) \\ \tilde{C}_t &amp;= tanh(W_{i\tilde{c}}x_t + b_{i\tilde{c}} + W_{h\tilde{c}}h_{t-1} + b_{h\tilde{c}}) \\ o_t &amp;= \sigma(W_{io}x_t + b_{io} + W_{ho}h_{t-1} + b_{ho}) \\ c_t &amp;= f_t \odot c_{t-1} + i_t \odot \tilde{c} \\ h_t &amp;= o_t \odot tanh(c_t) \end{split}$$
+
+While using LSTM, if the states change in different layers (based on temporal changes), they are not significantly different, and thus, the gradient is unlikely to change drastically. LSTM can resolve the vanishing gradient problem, but it is still prone to exploding gradient.
+
+There are other nice visualizations, especially the one from Christopher Olah existed online as well. Links will be [16](#page-65-1) provided at the end of this chapter.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_66_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-45: Visualization of LSTM and GRU architecture based on their gates and operators. In GRU output and new hidden state ( $h_t$ ) are the same.
+
+### **Gated Recurrent Unit (GRU)**
+
+Gated recurrent unit [Chung '14] is the more recent version of mitigating the vanishing gradient problem of RNN. GRU is less complex than LSTM and does not have a cell state. Since there is no cell state, its input  $(x_t, h_{t-1})$  and output  $(h_t)$  parameters are the same as simple RNN.
+
+GRU has two gates that use the Sigmoid function: reset gate (r) and update gate (z). The reset gate decides how much of the previous state to remember. The update gate is similar to the forget gate and input gate of LSTM, and it decides how much information to throw away, or in other words, how much new information is a copy of the old information. A reset gate is responsible for short-term dependencies of a given sequence, and an update gate is responsible for long-term dependencies of the given sequence. A GRU cell operates as follows.
+
+(i) The input  $x_t$  and output of the previous time  $h_{t-1}$  are used to calculate the value for update and reset gates. They both use the Sigmoid function, and their equations are written as follows:
+
+$$z = \sigma(x_t W_{xz} + h_{t-1} W_{hz} + b_z)$$
+  
+$$r = \sigma(x_t W_{yr} + h_{t-1} W_{hr} + b_r)$$
+
+(ii) Now, with the result of both gates, we can calculate the *candidate hidden state*, but it is not the final hidden state. The candidate's hidden state should stay between -1 and 1 interval, thus, a *tanh* gate is required. Besides, it incorporates the reset gate information, which will be used as an element-wise product of the previous hidden state  $h_{t-1}$  and r. The candidate's hidden state equation is written as follows:
+
+$$\tilde{h}_t = tanh(x_tW_{xh} + (r\odot h_{t-1})W_{hh} + b_h)$$
+
+(iii) After the candidate hidden value  $(\tilde{h}_t)$  and update gate (z) are both identified, the algorithm calculates the hidden state as  $h_t = (1-z) \odot h_{t-1} + z \odot \tilde{h}_t$ . The output of GRU is only  $h_t$ , and unlike LSTM, it does not have a cell state.
+
+Based on the above equation, if z is close to 1, the new hidden value  $(h_t)$  will be very similar to the old hidden value  $(h_{t-1})$ . This reveals that lots of the new information is a copy of old information. In contrast, z close to 0 indicates the new hidden value  $(h_t)$  will be close to the candidate's hidden state  $(\tilde{h}_t)$ .
+
+Figure 10-45 presents a common visualization approach used by these two algorithms, inspired by Christopher Olah's design. In the beginning, we did not describe LSTM and GRU with these visualizations because they might sound confusing, but now you can easily understand them. To
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_67_Figure_3.jpeg" alt="Figure" />
+
+Figure 10-46: Unfold version of one RNN cell, which receives one word at each time unit. 'a' presents activation function result.
+
+be sure we understand it, take a look at the following summary of its equations:
+
+$$\begin{split} r_t &amp;= \sigma(W_{ir} x_t + b_{ir} + W_{hr} h_{t-1} + b_{hr}) \\ z_t &amp;= \sigma(W_{iz} x_t + b_{iz} + W_{hz} h_{t-1} + b_{hz}) \\ \tilde{h}_t &amp;= tanh(W_{in} x_t + b_{in} + r_t \odot (W_{hn} h_{t-1} + b_{hn})) \\ h_t &amp;= (1-z) \times \tilde{h}_t + z_t \odot h_{t-1} \end{split}$$
+
+#### **Bidirectional RNN**
+
+One of the popular problems in NLP applications is referred to as *name-entity recognition*. It refers to a problem that we need to identify a word that refers to what entity (person, object, organization, etc.) in a sentence. RNN is a useful approach for named entity recognition.
+
+For example, consider this sentence: "They seem very tasty". We do not know what "They" means. However, if we write the following: "They seem very tasty, I love cheese." Now, we can understand that "They" refers to food with cheese or cheese itself. Without that prior knowledge, we could not understand what entity the word "They" refers to. A simple RNN cannot incorporate prior knowledge before encountering the word "Cheese" because every new state got the information
+
+from its previous state, and in this particular sentence, we realize they are referring to food with cheese later in the sentence.
+
+Take a look at Figure 10-46, the unfolded version of one RNN cell (check Figure 10-41 to recall what we mean by unfolding). At each time unit, the RNN receives one word of the input sentence. In this figure, we present the activation result as  $a_{(time-index)}$ , which means that at time 3, the word "very" will be fed into the RNN, and the output of the RNN cell at that time will be  $y_3$ . Since the word, "cheese" happened at the  $t_7$  and "They" at  $t_1$ , the RNN can not understand what "They" refers to at any time earlier than  $t_7$ .
+
+A solution to handle this is to incorporate future information for better sequence prediction. Bidirectional RNN is designed to incorporate future data into the sequence as well. It introduces another layer with exactly the same size, but the direction of activations is in the opposite direction (from the end of the sequence to the beginning of the sequence). Figure 10-47 presents the Bidirectional RNN, and we use blue color to present the other direction. In this example, in addition to the forward RNN, the other RNN is going from the last word of the input sequence to the first word of the sequence, i.e., going backward in the sequence. In particular, the neural network of Figure 10-47 starts from  $a_{(0)}$  and goes forward until it computes  $a_{(6)}$ ; simultaneously, it starts from the  $a'_{(0)}$  (blue RNN) and moves backward by computing activations until it reaches  $a'_{(6)}$ . Therefore, assuming our sequence has a size of T, every  $y_t$  output includes both forward (from 0 to t) and backward activation (from t to t) data (simultaneously). This structure allows the network to have information from both past and future states at any point in the sequence.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_68_Figure_3.jpeg" alt="Figure" />
+
+Figure 10-47: Unfold version of one BiDirectional RNN cell, which the blue layer is the same kind of RNN.
+
+Of course, training this network is computationally intensive and slower than usual RNN, but it is a useful network to experiment with when we intend to incorporate future information into the current sequence. Another issue of Bidirectional RNN is that we need to have the entire dataset to train the model, and thus, we can not work with a stream of data (data will be available during the time).
+
+### **Deep RNN**
+
+If we stack multiple layers of RNNs on top of each other, the result is a Deep RNN. This structure is employed to capture more complex patterns and dependencies in the data, which is especially useful in modeling higher levels of non-linearity. As illustrated in Figure 10-48, a Deep RNN can have several hidden layers, such as three in this example. While it is common to expect that increasing the number of layers in a neural network can improve its accuracy, this approach requires sufficient data and comes with trade-offs. Specifically, there is a limit to the
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_69_Figure_2.jpeg" alt="Figure" />
+
+Figure 10-48: A deep RNN with three layers. Note, unlike previous figures, it has three hidden layers instead of one hidden layer that is unfolded.
+
+number of layers that can be added before the model starts experiencing diminishing returns on accuracy, often due to overfitting or training difficulties such as the vanishing gradient problem.
+
+### **RNN Examples**
+
+Unlike CNN, which we could easily understand its applications, RNN might require a bit more explanation. Therefore, we introduce a few examples that might help us better connect with the applications of RNN. More examples of popular RNN models will be explained later in Chapter 12.
+
+We can use an RNN (LSTM, GRU, or any other model) to predict time series or other sequential information in the future. In the example presented in Figure 10-49, the blue part of the time series is fed as trained data, and the RNN constructs the red part of the time series. The given time series is a mock time series that shows the sales of a rubber duck. As we can see, the sales increase in summer and decrease in winter, when most of the planet Earth is cold. Therefore, customers are less motivated to purchase rubber ducks.
+
+Also, RNN is used a lot in natural language processing applications such as machine translation, grammar correction, and text editing tools. For example, we can train it, and it can be used to construct sentences as well. Definitely, the larger the text size, the longer the sentence will be. Also, it could guess the rest of the sentence. For example, "I do appreciate a quick" could be followed by the word "response", which this word is guessed or constructed by an RNN. Another example is Part Of Speech (POS) tagging, which specifies the grammatical role of each word in a sentence.
+
+As another example, take a look at the visualization proposed by Karpathy et al. [Karpathy '15]. We fed the "100 years of solitude" from Gabriel García Márquez as input, and RNN
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_70_Figure_0.jpeg" alt="Figure" />
+
+Figure 10-49: Another popular use of RNN is for time series prediction and here the red area is constructed by the algorithm, which has the blue part of the time series as its training set.
+
+automatically learns text features, such as the beginning of a sentence, quotes, punctuations, etc. It is similar to feeding the image into CNN, and it learns image features such as edge lines. Figure 10-50 visualizes features that the LSTM identifies from the text. In this model [,](#page-70-0) we have [17](#page-70-0) used Sigmoid as the activation function, and the color range from dark sky blue (0) to dark red (1) is used to visualize LSTM cell activations. Blue means it can correctly predict, and red means it has not correctly predicted. You can see this in this example of an output cell. The space and beginning characters of the next word have been predicted, especially the word "the". Thus, one application of LSTM could be a grammar checker, i.e., when the word "the" is not there, recommend adding the word "the".
+
+Figure 10-50: A sample feature (space between words and the character beginning of the next word) that has been detected by one output cell of the LSTM model.
+
+Since the author of this book is poor and can not afford a strong machine with GPU, we trained it in a few epochs, but if we train it longer, we might get more human readable output. Note that there are many other features recognized by LSTM, but they are hard for us as humans to understand due to the black nature of deep neural networks.
+
+In another example, we use a GRU to generate a text automatically by looking at the text of the "100 Years of Solitude" book and learning the patterns of the text. Following is a sample text created at the 30th epoch:
+
+The code is used from here [https://github.com/praneet9/visualising-lstm-activations](https://github.com/praneet9/visualising-lstm-activations), but we apply some [17](#page-70-1) modications to make it run for the currecnt Keras version.
+
+He plunged into his the one he had felt during the time he was resigned to living without a woman. He plunged into his mpose on the gone at section purbers of uneraterad difficult, and on adldo suck pestact rediract. Aureliano, and mort time to lession with phonessess had fanthoush alous the work he fate hoared with his it was a corple and troused a scorphing,s of a lecquiander some most memary and time that the cloth and that it wasred the mosting from darnesprotes. eaven who had becauged your arthioped his walk.
+
+This text does not have a meaning, but it is very interesting, and you can see how these algorithms can be used to generate new information from existing information. Generating new information through the neural network is referred to as "Generative AI", and deep learning algorithms model the path to Generative AI. In later chapters, especially in Chapter 11 and Chapter 12, we will see more exciting examples of Generative AI.
+
+#### NOTES:
+
+- \* There are more variations of LSTM [Greff '16]. For example, peephole LSTM which enables *f*, *i*, and *o* to look at the cell state. We do not describe them here, and to the best of our knowledge, they are not popular frameworks.
+- \* GRU is lighter than LSTM and thus might be more resource-efficient to use. However, whether one should choose GRU over LSTM cannot be generalized and depends on the specific task and dataset. It is recommended to experiment with both LSTM and GRU and make a decision based on comparing the accuracy of the results.
+- \* The Bidirectional RNN and the Forward-Backward algorithm in HMMs share a functional similarity in that both incorporate future information to enhance sequence prediction. This feature allows
+
+for more accurate modeling of sequences by considering the entire context, as well as both past and future elements (refer to Chapter 5 for more on HMMs).
+
+\* While Bidirectional RNNs are computationally more intensive than unidirectional RNNs due to their processing of information in both forward and backward directions, the increased complexity can lead to better performance in tasks where understanding the entire sequence context is crucial.

@@ -1,0 +1,44 @@
+---
+chapter: "ch8"
+order: 20
+slug: "bias-variance-tradeoff"
+title: "Bias-Variance Tradeoff"
+wordCount: 976
+---
+Overfitting is a very common error while working with supervised machine learning models. An appropriate approach to deal with overfitting is to decompose it into bias and variance problems
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_39_Picture_0.jpeg" alt="Figure" />
+
+Figure 8-14: Example of underfitting and overfitting in model fitting. The target is the actual data, and the thrown darts are the predicted data.
+
+[Domingos '12]. In other words, we use bias and variance to study whether our model accurately describes the underlying dataset or is misleading.
+
+Variance refers to how far our observed data (or training dataset) differs from the mean of the predicted data (output variables). It is clear that different training sets result in different output variables, but we need to be sure that changes in the output variables for different training sets are insignificant, i.e., the variety of output variables is low. In other words, variance refers to how much the predictions of a model vary or fluctuate for different training datasets (Variance is varieties of the model's outputs).
+
+*Bias* refers to differences between the model output and correct output (what happens in the real world). In other words, bias presents the prediction error and measures how far off the model's predictions are from the true values, on average.
+
+In summary, Variance is about the model's sensitivity to the training data and how much its predictions vary for different training sets. Bias is about the error in the model itself, regardless of the training data. Domingos [Domingos '12] described: "Bias is a learner's tendency to consistently learn the same wrong thing. Variance is the tendency to learn random things irrespective of the real signal." Figure 8-14 presents the bias and variance analogy by throwing darts at the dartboard. In this example, assume the correct output is the closeness to the center of the dartboard, and the input is a set of parameters that affect the dart direction. Sometimes we will get a good distribution of training data so we predict very well and we are close to the dartboard center, while sometimes our training data might be full of outliers values resulting in poorer predictions.
+
+A good model has both a low bias and low variance. However, there is a phenomenon known as the *Bias-Variance tradeoff*, which means an increase in one of them causes a decrease in the other one. Earlier in this chapter (Evaluating the fitness (accuracy) of linear models section), we discussed MSE while describing the fitness of a linear regression model. MSE has been explained earlier in this chapter
+
+With some mathematics that we skip to explain, the MSE can be decomposed into the error equation as follows:  $Error = bias(\hat{y}_i)^2 + variance(\hat{y}_i) + variance(e)$ . Here, e presents irreducible error, which is an error that can not be reduced by having a good model and it is
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_40_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-15: Typical bias-variance and error changes. At the red dotted line, the model has the smallest MSE error, thus, complexity at this point can be used to develop the optimal model.
+
+always there. The *Error* on the left is called the *reducible error*. It is a sum of  $bias(\hat{y}_i)^2 + variance(\hat{y}_i)$ , and irreducible error.
+
+The more we increase the complexity of a model, the bias will be reduced, but the variance increases. We should look for an optimal boundary, something like the red line in Figure 8-15, in which we have the lowest error rate, MSE is the Error in this figure. The red dotted line will be identified by experimenting with models with different complexities (e.g., more model parameters lead to an increase in the complexity).
+
+Any classification algorithm that builds a model creates a decision boundary, which can be a line that is straight, curved, or has a complex form [Burkov '18]. The decision boundary is used to separate labels for data points. For example, in Figure 8-15, the decision boundary is depicted as a straight red dotted line.e.
+
+As a final remark about these model-building devils, keep in mind that it is recommended [Grus '19] to mitigate high bias, we can add more features to the model, and to mitigate high variance, we can remove some features from the model and add more sample data points (not features but data points). It means that more flexible models (which cover more features) have higher variance.
+
+#### NOTES:
+
+- \* High bias is often associated with underfitting, which occurs when a model is too simple and does not capture the complexities of the dataset. This simplicity leads to errors because the model cannot adjust to the data's underlying patterns. High variance is associated with overfitting, where a model is too complex relative to the simplicity of the data. Such a model captures random noise in the training data, leading to a model that doesn't generalize to new, unseen data.
+- \* Flexible models, which can adapt their shape to the training data, often have lower bias. However, if too flexible, they may also capture the noise in the data, leading to high variance.
+
+- \* Usually, underfitting is characterized by high bias and low variance. Keep in mind that underfitting can not be resolved by adding more training data points. To resolve the underfitting. We require to create more complex models, such as adding more parameters.
+- \* A small sample size usually results in high variance, and the simplest approach to mitigate high variance is to increase the sample size. However, usually, the dataset is available before we start building our model, and we can not easily increase the sample size. The data is a valuable source, and usually, we use it with lots of care. There are other techniques, such as adding regularization (we will explain them shortly), reducing the number of features, and using ensemble methods that can help reduce variance without increasing the amount of data.

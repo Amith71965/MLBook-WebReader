@@ -1,0 +1,390 @@
+---
+chapter: "ch9"
+order: 4
+slug: "decision-trees"
+title: "Decision Trees"
+wordCount: 6113
+---
+Back in Chapter 5, we explained that trees reduce search space and thus make the search algorithm faster and more resource-efficient. There is another group of trees that can be used for classification and regression, which we explain in this section. Decision trees extract humanunderstandable rules, and their explainability makes them very popular. Similar to previous trees we have explained in Chapter 5, decision trees split the search space (dataset) into smaller segments and search those segments instead of the entire dataset. Because of this feature, they are usually resource-efficient.
+
+The first practical version of the decision tree was proposed in the early 80s, i.e., CHAID [Kass '80]. A few years after CHAID, in 1984, Breimanetal [Breimanetal '84] introduced the CART algorithm, another popular decision tree algorithm that is still in use. Two years later, Quilan introduced ID3 [Quilan '86], and then proposed C4.5 [Quilan '94]. All of these four algorithms are still in use. After the introduction of these trees, Gradient Boosting Decision Trees [Mason '99] were introduced, and in 2014, XGBoost [Chen '15] won several Kaggle competition awards. The success of XGBoost leads to shifting the machine learning community's attention to decision trees again. At the time of writing this book, deep learning algorithms have the highest accuracy for unstructured data, but gradient-boosting decision trees perform better than deep learning methods when analyzing tabular data.
+
+Decision trees, similar to other supervised algorithms, use a training dataset to construct a tree. Then, after the decision tree is built, the unlabeled data point navigates through the conditions of the trees to get the label. Leaf nodes (blue-colored nodes in Figure 9-13) of a decision tree are used to assign labels to the tree.
+
+For example, a person who is going under mental therapy is journaling his happiness level based on three different factors: 'having gratitude', 'comparing himself with others', and 'expecting from others'. Figure 9-13 presents the daily information that he collects about himself and what he is thinking about his behaviors and attitudes. He would like to know when he goes to bed and thinks about his day, whether he feels happy or not. We make his job easier by building a
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_27_Figure_0.jpeg" alt="Figure" />
+
+Figure 9-13: A sample dataset along with a simple decision tree, we like to predict the happiness status of the test dataset. On the right side, the algorithm constructs an example tree, and by tracing this tree, the algorithm can make the decision about the test dataset (the? marks of the blue record in the table).
+
+prediction model that assigns the label (happy / not happy) before he ends his day based on the data he gives to the algorithm.
+
+After the training phase, the decision tree receives a vector of features (the test record in the table of Figure 9-13, which is presented in blue color), and the decision tree starts to navigate its branches until it identifies the missing labels ('?', in the table of Figure 9-13).
+
+Decision trees have three important characteristics:
+
+- (i) Decision trees are operated based on the policy of finding the best feature to split the training data into subsets until there is no possible split into a smaller subset. When no further split is possible, the decision tree has been constructed. Next, the test dataset will use this tree to label its records.
+- (ii) The leaf nodes in decision trees present the 'outcome' of the path from the root to that node. All non-leaf nodes are called 'decision nodes' because the algorithm uses them to decide on navigating in which branch reaches a leaf node at the end. The decision tree of Figure 9-13 shows leaf nodes in blue and decision nodes in black.
+- (iii) Decision trees are explainable, making them very popular algorithms for real-world applications. Decision tree results are a set of if-then-else rules, making them explainable, which is not the case for many machine learning algorithms, including neural networks. If you
+
+encounter a fancy word like *explainable AI (xAI)*, it means the machine learning algorithm or model is explainable and not BlackBox.
+
+Please fasten your seat belt. We are about to land on the big planet of decision trees and learn four vanilla decision trees, followed by gradient boosting decision trees.
+
+### **Iterative Dichotomiser 3 (ID3)**
+
+ID3 is one of the simple decision trees that iteratively dichotomizes (divides into two groups) the dataset at each step. Recall that we have explained that the process of decision tree creation is to split the training data into smaller subsets. Looking at the tree in Figure 9-13, we have selected "Compare himself with others" as the root node, but is it the best feature to select? Probably not, and we need a mechanism to choose the best feature to split the data. By splitting the data, we mean choosing the feature that can separate records based on the target label more accurately than other labels. In other words, choose the best separative feature.
+
+ID3 uses *Information Gain (IG)* to select the best feature. Information gain is based on the concept of *entropy*. Entropy is a number that quantifies the uncertainty or disorder (check Chapter 3 to recall it). Entropy specifies (in number) how well a given feature separates the dataset records based on the label. Assuming *n* is the number of possible labels (classes) in the training set, *S* denotes the train dataset, denotes the probability of having class *i* (the number of records with class label *i* divided by the total number of dataset records). In other words, is the proportion of elements in *S* that belong to class *i.* The entropy *H(S)* is computed as follows: *pi pi*
+
+$$H(S) = -\sum_{i=1}^{n} p_i log_2(p_i)$$
+
+In other words, refers to the average amount of information required to identify the class label of a new record*. H*(*S* )
+
+Each column in the table of Figure 9-13 presents features of the decision tree, and we can write information gain for the feature (a column of data) as: . *A IG*(*S*, *A*) = *H*(*S* ) − *H*(*S* |*A*)
+
+entropy of dataset S given feature A 
+$$IG(S,A) = H(S) - H(S|A) \qquad H(S|A) = \sum_{t \in T} p(t) \cdot H(t)$$
+ Information Gain of feature A in dataset S in dataset S
+
+Here, IG presents the differences between the original information, i.e., and the required information, i.e., . Now that we understand IG and entropy in the context of ID3, we can learn step by step how the ID3 algorithm works. *H*(*S* ) *H*(*S* |*A*)
+
+As the first step, the algorithm should find the feature (column) with the highest split against one of the possible values of the labels. To find this feature, it measures the IG for every feature (column) of the dataset. In the second step, it splits the training dataset *S* based on the feature that has the highest IG. Next, in the third step, if all rows in a tree node belong to the same class, then the algorithm marks this node as a leaf node and does not split it any further. Otherwise, it repeats the process from the first step until all nodes are converted into a leaf node, and no path remains from root to decision nodes without ending in a leaf node.
+
+To better understand the ID3 algorithm, let's explain it with the example we have used in the table of Figure 9-13. As the first step, we calculate the entropy of the target column that we would like to predict; in our case, it is the "Happy" column. We have seven yes (✓) and five no (X) for this column. Its entropy is calculated as:
+
+$$H(S) = -(7/12) \cdot log_2(7/12) - (5/12) \cdot log_2(5/12) = 0.96$$
+
+Now we have the entropy of "Happy", and we should find which column has the largest split on "Happy", so we calculate the IG value for each column (feature). We have the following IGs for each feature (column in the table of Figure 9-13). The sign # is used to refer to the number of occurrences.
+
+"Gratitude": yes, #rows: 6, #happy: 5, #not happy:1
+
+$$H(S_{yes}) = -(5/6) \cdot log_2(5/6) - (1/6) \cdot log_2(1/6) = 0.65$$
+
+"Gratitude": no, #rows: 6, #happy: 2, #not happy:4
+
+$$H(S_{no}) = -(2/6) \cdot log_2(2/6) - (4/6) \cdot log_2(4/6) = 0.918$$
+
+The IG of "Gratitude" will be calculated as follows:
+
+$$IG(S,Gratitude) = H(S) - (S_{yes}/S)H(S_{yes}) - (S_{no}/S)H(S_{no}) = \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{2} \frac{1}{$$
+
+$$0.96 - (6/12)(0.65) - (6/12)(0.918) = 0.176 \leftarrow \textit{IG of gratitude}$$
+
+"Compare himself with others (Compare)": yes, #rows: 4, #happy:4, #not happy:0
+
+$$H(S_{yes}) = -(4/4) \cdot log_2(4/4) - (0/4) \cdot log_2(0/4) = 0$$
+
+"Compare himself with others": no, #rows: 8, #happy:3, # not happy:5
+
+$$H(S_{no}) = -(3/8) \cdot log_2(3/8) - (5/8) \cdot log_2(5/8) = 0.95$$
+
+The IG of "Compare himself with others" will be calculated as follows:
+
+$$IG(S, Compare) = H(S) - (S_{yes}/S)H(S_{yes}) - (S_{no}/S)H(S_{no}) = 0.96 - 0 - (8/12)(0.95) = 0.32$$
+
+$$0.96 - 0 - (8/12)(0.95) = 0.32 \leftarrow$$
+ IG of Comparing himself with others
+
+"Expecting from others (Exp)": high, number of rows: 4, #happy:0, #not happy: 4
+
+$$H(S_{high}) = -(0/4) \cdot log_2(0/4) - (4/4) \cdot log_2(4/4) = 0$$
+
+"Expecting from others": medium, #rows: 5, #happy:3, #not happy: 2
+
+$$H(S_{medium}) = -(3/5) \cdot log_2(3/5) - (2/5) \cdot log_2(2/5) = 0.97$$
+
+"Expecting from others": low, #rows: 5, #happy:4, #not happy: 1
+
+$$H(S_{low}) = -(4/5) \cdot log_2(4/5) - (1/5) \cdot log_2(1/5) = 0.72$$
+
+| Gratitude | Compare himself with others | Expecting from others | Нарру                       | Gratitude             | Compare himse with others |                              | Нарру    |
+|-----------|-----------------------------|-----------------------|-----------------------------|-----------------------|---------------------------|------------------------------|----------|
+| X         | X                           | high                  | X                           | <b>✓</b>              | <b>✓</b>                  | low                          | <b>✓</b> |
+| X         | ×                           | high                  | X                           | ✓                     | X                         | low                          | /        |
+| ×         | ×                           | high                  | X                           | ✓                     | ✓                         | low                          | ✓        |
+| ✓         | X                           | high                  | X                           |                       |                           |                              |          |
+|           |                             | C<br/>Gratitude        | Compare himself with others | Expecting from others |                           |                              |          |
+|           |                             | 1                     | x                           | medium                | 1                         |                              |          |
+|           |                             | X                     | ✓                           | medium                | ✓                         | This dataset will be used to |          |
+|           |                             | ✓                     | X                           | medium                | ✓                         | extend the tree of           | ·        |
+|           |                             | X                     | ✓                           | medium                | 1                         |                              |          |
+|           |                             | X                     | X                           | medium                | X                         |                              |          |
+
+Table 9-4: The result of splitting the original dataset in the table of Figure 9-13 based on the "Expecting from Others" column. Now, we have three datasets, but the two on the top are leaf nodes because we cannot further split them.
+
+The IG of "Expecting from others" will be calculated as follows:
+
+$$IG(S, Exp.) = H(S) - (S_{low}/S)H(S_{low}) - (S_{medium}/S)H(S_{medium}) - (S_{high}/S)H(S_{high}) = 0.96 - (5/12)(0.72) - (5/12)0.97 - 0 = 0.25 \leftarrow IG \text{ of Expecting from others}$$
+
+We understand that the highest information gain (0.32) belongs to "Compare himself with others". This means that the training dataset can be split on this feature because it provides the best split in comparison to other features (Comp., Exp.). Therefore, we start to construct the tree as it is shown on the right side of Figure 9-13.
+
+We do not explain the tree construction further. The rest will be done the same until no decision node remains, and we end up with all branches in a leaf node. If the split is based on another feature, such as "Expecting from others", we will have something such as Table 9-4, in which two tables on the top do not require any more split because the label for the Happy column is specified.
+
+### **Chi-square Automatic Interaction Detector (CHAID)**
+
+Back in Chapter 3, we explained that the Chi-square test can be used to identify the relationship between two categorical variables, and here, we benefit from that attribute to split the tree.
+
+|                                | Total<br/>Happy | Total<br/>Unhappy | Total<br/>Observed |                   | Total<br/>Expected<br/>Happy |                            | Total<br/>Expected<br/>Unhappy |                              |
+|--------------------------------|----------------|------------------|-------------------|-------------------|----------------------------|----------------------------|------------------------------|------------------------------|
+| Gratitude<br/>X                 | 2              | 4                | 6                 |                   | (6 x 7)<br/>12              | 3.5                        | (6 x 5)<br/>12                | 2.5                          |
+| ✓<br/>Gratitude                 | 5              | 1                | 6                 |                   | (6 x 7)<br/>12              | 3.5                        | (6 x 5)<br/>12                | 2.5                          |
+| Total                          | 7              | 5                | 12                |                   |                            |                            |                              |                              |
+|                                |                | Total<br/>Happy   | Total<br/>Unhappy  | Total<br/>Observed |                            | Total<br/>Expected<br/>Happy |                              | Total<br/>Expected<br/>Unhappy |
+| Compare himself<br/>with others | X              | 3                | 5                 | 8                 |                            | 4.66                       |                              | 3.33                         |
+| Compare himself<br/>with others | ✓              | 4                | 0                 | 4                 |                            | 2.33                       |                              | 1.66                         |
+|                                | Total          | 7                | 5                 | 12                |                            |                            |                              |                              |
+|                                |                |                  | Total<br/>Happy    | Total<br/>Unhappy  | Total<br/>Observed          |                            | Total<br/>Expected<br/>Happy   | Total<br/>Expected<br/>Unhappy |
+| Expectation from others        |                | high             | 0                 | 4                 | 4                          |                            | 2.33<br/>(4 x 7)              | 1.66<br/>(4 x 5)              |
+| Expectation from others        |                | medium           | 4                 | 1                 | 5                          |                            | 12<br/>2.91<br/>(5 x 7)        | 12<br/>2.08<br/>(5 x 5)        |
+| Expectation from others        |                | low              | 3                 | 0                 | 3                          |                            | 12<br/>1.75<br/>(3 x 7)        | 12<br/>1.25<br/>(3 x 5)<br/>12  |
+|                                |                | Total            | 7                 | 5                 | 12                         |                            | 12                           |                              |
+
+Table 9-5: Chi-square calculation for the each feature.
+
+Recall that the following equation calculates the Chi-Square value, in which *O* stayed for observed, and *E* stayed for expected values.
+
+$$\chi^2 = \Sigma \frac{(O-E)^2}{E}$$
+
+CHAID (Chi-squared Automatic Interaction Detector) primarily uses the Chi-square test for categorical variables to determine the best splits. For numerical variables, they often use the Ftest to assess the significance of the splits. However, CHAID is less commonly used for purely numerical variables than categorical variables.
+
+To calculate the splits in CHAID, the algorithm compares the Chi-square value of each feature (each feature is a column in tabular data) with the target label column. The feature with the highest Chi-square value is chosen for the split. In other words, first, the algorithm calculates the Chi-square for each feature. Then, it chooses the feature with the highest Chi-square and splits the table. This process continues until all remaining features can no longer be split, and thus, they are all considered to be the leaf nodes (no decision node remained).
+
+Using data from the table in Figure 9-13 example, we need to calculate the Chi-square for each feature, including (Gratitude, Comp., and Exp.). These calculations are presented in Table 9-5.
+
+We use the result of Chi-squares for each feature as follows and calculate the overall Chi-square for each feature.
+
+#### Gratitude:
+
+- **•** Gratitude:No, Happy:Yes → (2 − 3.5) <sup>2</sup> /3.5 = 0.643
+- **•** Gratitude:Yes, Happy:Yes → (5 − 3.5) <sup>2</sup> /3.5 = 0.643
+- **•** Gratitude:No, Happy:No → (4 − 2.5) <sup>2</sup> /2.5 = 0.9
+- **•** Gratitude:Yes, Happy:No → (1 − 2.5) <sup>2</sup> /2.5 = 0.9
+
+**Total Chi-Square** = 0.643 + 0.643 + 0.9 + 0.9 = 3.086
+
+#### Compare himself with others:
+
+- **•** Compare: No, Happy:Yes → (3 − 4.66) <sup>2</sup> /4.66 = 5.91
+- **•** Compare: Yes, Happy:Yes → (4 − 2.33) <sup>2</sup> /2.33 = 1.197
+- **•** Compare: No, Happy:No → (5 − 3.33) <sup>2</sup> /3.33 = 0.838
+- **•** Compare:Yes, Happy:No → (0 − 1.66) <sup>2</sup> /1.66 = 1.66
+
+**Total Chi-Square** = 5.91 + 1.197 + 0.838 + 1.66 = 9.605
+
+#### Expectations from others:
+
+- **•** Expectation: High, Happy: Yes → (0 − 2.33) <sup>2</sup> /2.33 = 2.33
+- **•** Expectation: High, Happy: No → (4 − 1.66) <sup>2</sup> /1.66 = 3.298
+- **•** Expectation: Medium, Happy: Yes → (4 − 2.91) <sup>2</sup> /2.91 = 0.408
+- **•** Expectation: Medium, Happy: No → (1 − 2.08) <sup>2</sup> /2.08 = 0.561
+- **•** Expectation: Low, Happy: Yes → (3 − 1.75) <sup>2</sup> /1.75 = 0.893
+- **•** Expectation: Low, Happy: No → (0 − 1.25) <sup>2</sup> /1.25 = 1.25
+
+**Total Chi-Square** = 2.33 + 3.297 + 0.408 + 0.561 + 0.893 + 1.25 = 8.739
+
+Based on these results, the best feature to split the table is "Compare himself with others", because it has the largest Chi-square.
+
+The CHAID algorithm creates a tree with the "Compare himself with others" as the root node. In this split, the algorithm deals with two subsets of the dataset; one subset has only "yes", and the other subset has only "no". These steps of spiting the dataset continue until all nodes are leaf nodes. You can do the rest independently, and it does not make sense to explain the rest of the algorithm in detail. Save your brain energy for more algorithms; still, two more decision tree algorithms remain, and then we will switch to boosting and bagging, which are extremely important algorithms and not easy to understand.
+
+### **C4.5**
+
+C4.5 is developed by the author of the ID3 algorithm, and it is an extension of the ID3 algorithm. There is an open-source implementation of this algorithm called J48, which is the same algorithm but with a different name. C4.5 operates very similar to ID3, but it can handle missing data and continuous data, which are not very efficiently handled by ID3. The ID3 algorithm calculates the information gain to split the data, but C4.5 calculates the *gain ratio* instead. The gain ratio is the information gain of a feature divided by split information. Therefore, instead of information gain, C4.5 calculates the GainRatio for all features and decides on the split based on the highest gain ratio. The gain ratio is computed as follows:
+
+$$GainRatio(S, A) = \frac{IG(S, A)}{Split(S, A)}$$
+
+Split of information is the sum of entropies that are calculated for each feature, as it is written as follows:
+
+$$Split(S, A) = -\sum_{v \in values(A)} \frac{S_v}{S} log_2 \frac{S_v}{S}.$$
+
+Here, *S* presents the dataset, and *A* presents the candidate feature, *v* is all possible values of *A*, is the size of the subset of the dataset where *A* has *v* value. *Sv*
+
+| Gratitude | Compare himself<br/>with others | Expecting<br/>from others | Happy | Gratitude | Compare himself<br/>with others | Expecting<br/>from others | Happy |
+|-----------|--------------------------------|--------------------------|-------|-----------|--------------------------------|--------------------------|-------|
+| X         | X                              | 0.8                      | X     | ✓         | ✓                              | 0.2                      | ✓     |
+| ✓         | ✓                              | 0.2                      | ✓     | ✓         | ✓                              | 0.2                      | ✓     |
+| ✓         | x                              | 0.5                      | ✓     | ✓         | X                              | 0.2                      | ✓     |
+| ✓         | X                              | 0.2                      | ✓     | X         | ✓                              | 0.4                      | ✓     |
+| X         | ✓                              | 0.5                      | ✓     | X         | ✓                              | 0.5                      | ✓     |
+| X         | X                              | 0.8                      | X     | ✓         | X                              | 0.5                      | X     |
+| ✓         | X                              | 0.5                      | X     | X         | X                              | 0.5                      | ✓     |
+| X         | X                              | 0.9                      | X     | ✓         | x                              | 0.5                      | ✓     |
+| X         | ✓                              | 0.4                      | ✓     | ✓         | X                              | 0.8                      | X     |
+| ✓         | ✓                              | 0.2                      | ✓     | X         | X                              | 0.8                      | X     |
+| X         | X                              | 0.5                      | ✓     | X         | X                              | 0.8                      | X     |
+| ✓         | X                              | 0.8                      | X     | X         | X                              | 0.9                      | X     |
+
+Table 9-6: (left) The original dataset, (right) the dataset is ordered based on the "Excepting from others" which is continuous. Every time a single feature is selected for split information calculation the dataset should be ordered based on that feature.
+
+Table 9-6 shows the table of Figure 9-13 with continuous data. In this example, we consider "Expecting from others" as continuous data. To implement the C4.5 decision tree on this data, first, we need to calculate the entropy of Happy for Table 9-6, as follows (7 happy and 5 not happy): . *H*(*S* ) = − (7/12) . *log*2(7/12) − (5/12) . *log*2(5/12) = 0.96
+
+Now that we have the entropy of "Happy", we should find which column has the largest split on the "Happy" column to calculate IG for each column (feature).
+
+The following presents the gain ratio calculation for each feature. The sign # is used to refer to the frequency.
+
+"Gratitude": yes, #rows: 6, #happy: 4, #not happy:2
+
+$$H(S_{yes}) = -(4/6) \cdot log_2(4/6) - (2/6) \cdot log_2(2/6) = 0.918$$
+
+"Gratitude": no, #rows: 6, #happy: 2, #not happy:4
+
+$$H(S_{no}) = -(3/6) \cdot log_2(3/6) - (3/6) \cdot log_2(3/6) = 1$$
+
+The I[G](#page-34-0) of "Gratitude" will be calculated as follows: [6](#page-34-0)
+
+$$IG(S,Gratitude) = H(S) - (S_{yes}/S)H(S_{yes}) - (S_{no}/S)H(S_{no}) = 0.96 - (6/12).0.918 - (6/12).1 = 0.24$$
+
+Next, the Split and then Gain Ratio of "Gratitude" will be calculated as follows:
+
+$$Split(S,Gratitude) = -\left(6/12\right). log_{2}(6/12) - \left(6/12\right). log_{2}(6/12) = 1$$
+
+$$GainRatio(S, Gratitude) = \frac{IG(S, Gradtitude)}{Split(S, Gratitude)} = 0.024/1 = 0.24$$
+
+The IG of "Compare himself with others" will be calculated as follows:
+
+$$IG(S, Compare) = H(S) - (S_{yes}/S)H(S_{yes}) - (S_{no}/S)H(S_{no}) = 0.96 - 0 - (8/12)0.954 = 0.324$$
+
+Next, the Split and then Gain Ratio of "Compare himself with others" will be calculated as follows:
+
+$$Split(S, Compare) = -(8/12) \cdot log_2(8/12) - (4/12) \cdot log_2(4/12) = 0.9$$
+
+$$GainRatio(S, Compare) = 0.324/0.9 = 0.36$$
+
+Now, we need to calculate the Gain Ratio for "Expecting from others", but it is a continuous attribute, and thus, we need to identify the maximum Gain Ratio for the value that can do the best split. Therefore, for each value (0.2,0.4,0.5, 0.8), we should calculate the Gain Ratio.
+
+"Expecting from others" , #rows: 3, #happy: 3, #not happy:0 &lt; = 0.2
+
+$$H(exp &lt;= 0.2) = -(3/3)log_2(3/3) - 0 = 0$$
+
+"Expecting from others" > 0.2, #rows: 9, #happy: 4, #not happy:5
+
+$$H(exp > 0.2) = -(5/9)log_2(5/9) - (4/9)log_2(4/9) = 1$$
+
+Based on the above results, the Gains ratio for Exp. for 0.2 will be calculated as follows.
+
+$$IG(S, Exp \ for \ 0.2) = 0.96 - (3/12).0 - (9/12).1 = 0.21$$
+
+$$Split(S, Exp. for 0.2) = -(3/12)log_2(3/12) - (9/12)log_2(9/12) = 0.8$$
+
+*GainRatio*(*S*, *Exp for* 0.2) = 0.26
+
+"Expecting from others" &lt;= 0.4, #rows: 4, #happy: 4, #not happy:0
+
+$$H(exp &lt; = 0.4) = 0 - (3/3)log_2(3/3) = 0$$
+
+We do not write them here again, the IG of "Gratitude" and "Compare himself with others" come from the ID3 [6](#page-34-1) explanation.
+
+"Expecting from others" > 0.4, #rows: 8, #happy: 3, #not happy:5
+
+$$H(exp > 0.4) = (3/8)log_2(3/8) - (5/8)log_2(5/8) = 0.94$$
+  
+ $IG(S, Exp \ for \ 0.4) = 0.96 - (4/12).0 - (8/12).(0.94) = 0.33$   
+ $Split(S, Exp. \ for \ 0.4) = -(4/12)log_2(4/12) - (8/12)log_2(8/12) = 0.9$   
+ $GainRatio(S, Exp. \ for \ 0.4) = 0.36$ 
+
+Since your brain and our brain are about to explode, we do not continue further. However, the algorithm will do the rest for other values of the "Expecting from others" as well, including 0.5. 0.8 and 0.9. Then, it compares all gain ratios (all from "Expecting from others" plus gratitude and "Compare himself."). For example, assume  $GainRatio(S, Exp \ for \ 0.8) = 0.67$  receives the highest gain ratio. Therefore, the decision tree starts with something like Figure 9-14, and continues until all nodes are leaf nodes.
+
+### **Classification and Regression Trees (CART)**
+
+The CART algorithm is another popular decision tree algorithm. It constructs a binary tree (each node has only two branches), which can also handle continuous data appropriately. The CART algorithm uses a recursive approach similar to other decision trees to split the dataset into smaller units. CART uses *Gini index (Gini split* or *Gini Impurity)* to determine the best feature to split. Gini split quantifies the impurity of each feature. The Gini index is computed as  $Gini = 1 - \sum_{i=1}^{n} (p_i)^2$ , where  $p_i$  is the proportion of the samples that belong to class i in a particular node.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_35_Picture_5.jpeg" alt="Figure" />
+
+The Gini index value varies between values 0 and 1, where 0 expresses the purity of the feature, i.e., all values belong to a specified class, or only one class exists for this feature, and 1 indicates the random distribution of elements across various classes. The algorithm calculates the Gini index for each feature and chooses the lowest one for the split.
+
+It can handle continuous data in a similar fashion as C 4.5; check the example we explained for "Expecting from others" in the C 4.5 algorithm description.
+
+Let's calculate the Gini index for the example presented in Figure 9-13. Similar to other algorithms, the algorithm
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_35_Picture_9.jpeg" alt="Figure" />
+
+calculates the Gini index for each feature (column), and then it selects the feature with the lowest Gini index for the split.
+
+#### Gini index of "Gratitude":
+
+$$Gini(gratitude = yes) = 1 - (5/6)^2 - (1/6)^2 = 0.27$$
+  
+ $Gini(gratitude = no) = 1 - (4/6)^2 - (2/6)^2 = 0.44$   
+ $Gini(gratitude) = 0.44(6/12) + 0.27(6/12) = 0.335$ 
+
+#### Gini index of "Compare himself with others":
+
+$$Gini(Compare = yes) = 1 - (4/4)^2 - (0/4)^2 = 0$$
+  
+ $Gini(Compare = no) = 1 - (3/8)^2 - (5/8)^2 = 0.47$   
+ $Gini(Compare) = 0(4/12) + 0.47(8/12) = 0.313$ 
+
+#### Gini index of "Expecting from others":
+
+$$Gini(Exp. = low) = 1 - (3/3)^2 - (0/3)^2 = 0$$
+  
+ $Gini(Exp. = medium) = 1 - (4/5)^2 - (1/5)^2 = 0.32$   
+ $Gini(Exp. = high) = 1 - (4/4)^2 - (0/4)^2 = 0$   
+ $Gini(Exp. = high) = 0.32 + 0 + 0 = 0.32$ 
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_36_Figure_7.jpeg" alt="Figure" />
+
+Figure 9-14: C4.5 decision tree result example "Expecting from others" for 0.8 has the highest gains ratio.
+
+, has the lowest Gini index. Therefore, the tree starts the first split by using this feature; then, it continues constructing the branches with the same approach for each subset (one subset includes gratitude = yes, and the other subset includes gratitude = no). *Gratiude* = 0.085
+
+### **Decision Tree Challenges and the Need for Pruning.**
+
+While working with decision trees, one might ask when we need to stop creating the tree. One answer is to define a minimum number of records under a leaf node; if the dataset remaining for a node has a size less or equal to this minimum number of records, then the algorithm should stop splitting the dataset and stop going deeper
+
+into that branch.
+
+The second approach is to specify a maximum depth for a tree. Larger tree depths lead to more complex models that can capture detailed patterns but risk overfitting. Conversely, shallow trees might fail to capture essential patterns in the data, which can lead to underfitting. Thus, finding a balance between tree depth and complexity is crucial for building an effective decision tree model. Allowing each leaf to hold only one data point often leads to overfitting because the tree becomes too detailed, fitting the noise in the training data, which can decrease its predictive performance on new data.
+
+If we plot the accuracy of the test and train
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_36_Figure_15.jpeg" alt="Figure" />
+
+Figure 9-15: The overfitting problem in a tree. We can see that after the number of nodes increases to more than 18, test data accuracy decreases significantly, but training is still performing well.
+
+datasets, we might end up having Figure 9-15, which is a demonstration of overfitting in a decision tree. This figure shows that after the 18th node in the tree, the test dataset accuracy starts to decrease. However, while working on the train set, we went to 50 nodes, but the accuracy didn't decrease. In other words, this problem shows that we should cut the tree before it becomes too specific for the train dataset (overfitting), and in this example, we should stop at the 18th node.
+
+A third approach, which is a popular one, is to separate the "train" dataset into two parts: *train*, and *validation* sets (we have explained it in Chapter 1). We construct the tree by using the train set. Then, we test the tree using the validation set. Next, we remove each node and again measure the tree's accuracy (now a pruned tree) on the validation set. If the accuracy of the validation set improves, we do not incorporate the recently removed node anymore and will continue working with the pruned tree. Otherwise, if the accuracy decreases, we add the node back. Next, we remove another node, and we repeat this node removal accuracy test on the validation set until no further node removal improves the accuracy, and we stop removing any new nodes. Pruning stops when removing further nodes no longer improves validation set accuracy. In the end, we evaluate the tree with the data that it has not encountered before from the Test set.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_37_Figure_2.jpeg" alt="Figure" />
+
+Figure 9-16: An example of pruning the original tree (1) and, as a result, removing branch B improves the accuracy (2), but removing another branch, branch C decreases the accuracy, so the algorithm returns (2) as the final result of pruning.
+
+This process is similar to what we have explained about Sequential Backward Selection (SBS), which we have explained in Chapter 6. Note that while we are talking about nodes in this section, in the process of tree pruning, we do not remove leaf nodes, we only remove decision nodes.
+
+To better understand pruning, look at the toy example in Figure 9-16 (1). Using the training set, the algorithm constructs the decision tree, and we experiment with its accuracy on the validation set. The accuracy is 80%. Then, we removed branch B and again tested the accuracy, it improved to 90%. That is good, so we keep the new tree, as shown in Figure 9-16 (2). From the new tree, we remove another branch, which is branch C. Now, the accuracy decreases to 70%, which is worse, as shown in Figure 9-16 (c). Therefore, we return to the pruned tree in Figure 9-16 (2) because it has the highest accuracy.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch9/_page_38_Figure_2.jpeg" alt="Figure" />
+
+Figure 9-17: (Left) Original tree (Right) the pruned version of the tree, by substituting any branches under > x1 as C leaf node. Because most of the leaf nodes under this branch was C (two C and one A) before pruning.
+
+The fourth approach is to prune a tree, which is fairly simple. It starts to remove a branch and substitute it with the most frequent leaf node. For example, take a look at Figure 9-17. Here, we have a branch > X1, and most of its leaf values are C. Therefore, the pruning process removes this branch (and its sub-branches) and substitutes one leaf with a leaf node with the value of C. In other words, it checks the value of the new record (test set). If it is > X1, then it assigns the C label to that record.
+
+### **Decision Trees Computational Complexity**
+
+Assuming a tree has m depth, and it is constructed based on n number of data points, the computational complexity of running a tree is O(m) and always m &lt; n. The complexity of the decision tree increases exponentially as the tree goes deeper. Géron [Géron '19] explained that balanced decision trees have the computational complexity of  $O(\log_2(m))$  for the test set and  $O(n \times \log_2(m))$  for the train set.
+
+Perhaps you might think that decision trees are similar to rule-based classifiers. That is correct; decision trees generate rules, but instead of feeding the rules ourselves, they discover rules on their own.
+
+Table 9-7 summarizes the decision trees we explained here and their usage. If you intend to decide on a decision tree to use, it is better to test them on your dataset and choose the one that has the highest accuracy and/or resource efficiency.
+
+| Algorithm | Split Function   | Usage / Characterisitcs                                                                                                                                                                              |
+|-----------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ID3       | Information Gain | It is used for categorical data and not numerical data.                                                                                                                                              |
+| CHAID     | Chi-Square       | It can produce multiple branches, and since it uses<br/>Chi-Square test, it is good for descriptive analysis.                                                                                         |
+| C4.5      | Gain Ratio       | it constructs a tree based on rule sets. It can handle<br/>missing data and can be used for both continuous<br/>and discrete data.                                                                     |
+| CART      | Gini Split       | it constructs data based on numerical splitting; it is<br/>binary but allows more than one choice via one vs<br/>others labeling policy. It is not very useful when the<br/>number of classes is large. |
+
+Table 9-7: Decision tree algorithms, their splitting method and usage / characteristics.
+
+#### NOTES:
+
+- \* Decision trees can be used for continuous, categorical, and discrete datasets. Besides, they are a good choice for datasets that include missing variables, and we do not need to invest heavily in removing or reconstructing missing data. Besides, decision trees are not good at handling duplicates, and it is better to remove duplicates and then feed the dataset into a decision tree for classification. Decision trees can handle duplicates in the sense that they will still function, but duplicate data can bias the tree's structure toward the over-represented examples.
+- \* We can say that the decision tree is nothing but a set of rules that assign the label to the training data point based on that rule. It is a useful feature of the decision tree, and decision tree algorithms are explainable. At the time of writing this chapter (the first time in 2020), there is a movement to have explainable algorithms, i.e., *xAI*. This is due to the fact that black box algorithms, such as deep learning algorithms, are not explainable and, thus, not reliable for many applications, especially medical applications that make sensitive decisions.
+- \* A problem in the decision tree is repetitions. Repetition occurs when an attribute is tested along the tree more than once, e.g., at level *n*, *salary > 100k,* and then again at level *n+3, salary > 100k*. This problem can also be mitigated by some condition checks (If-Then command).
+- \* Another problem that happens in decision trees is replication. At some level, a duplicate subtree might be created, and considering the fact that a tree is usually loaded into the memory,
+
+this is very inefficient. This problem can also be mitigated by some conditional checks, i.e., rule-based classifiers or condition checks (If-Then command).
+
+- \* ID3, C4.5, and CART algorithms use greedy search methods. Greedy algorithms perform heuristic searches, and they might get stuck in local optima and not reach the global optima (Check Chapter 8 to recall global optima). As we have explained before, greedy algorithms are the algorithms that make the best short-sighted decisions. For example, we have the following two paths to get from A to D. *Path 1: A 3 steps to B, 99 steps to C, 999 steps to D*. *Path 2: A 5 steps to B, 6 steps to C, 5 steps to D*. Path 1 is longer than Path 2, but the greedy algorithm, choose Path 1, because the 3 steps are less than 5 steps at the beginning (short-sighted vision).
+- \* In some literature specifying the depth of a tree as a threshold or the number of branches as the threshold for a decision, the tree is called tree regularization. We prefer to be parsimonious with these terms, but they are not wrong.

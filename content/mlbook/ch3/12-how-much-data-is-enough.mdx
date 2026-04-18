@@ -1,0 +1,32 @@
+---
+chapter: "ch3"
+order: 12
+slug: "how-much-data-is-enough"
+title: "How Much Data is Enough?"
+wordCount: 538
+---
+We might dream of getting hired as a data scientist or AI engineer, starting our data analytical company, or starting to learn something at the university and working with these sexy machine
+
+learning and AI algorithms. Well, that is a nice dream, but most of the time, we are responsible from A to Z for working with the data, and sometimes we are even responsible for collecting the data, preparing coffee for ourselves, cleaning the microwave after use, wiping our desks, cleaning the data, etc.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_38_Picture_3.jpeg" alt="Figure" />
+
+One of the most cumbersome tasks in data science is collecting data to run the
+
+experiment. Once we start experimenting with the collected data, we should ask ourselves whether we have enough data to generalize our findings and make any inferences about the data. In other words, the important question is: "How much data is enough?"*.*
+
+Unfortunately, there is no precise answer, but two approaches are being used to provide insight into the dataset size. Obviously, the more data we collect, the better analysis we can perform. Nevertheless, our resources (time, money, energy, CPU, project deadline) are limited, and we cannot continue collecting data infinitely.
+
+There is a term called *sampling*, which means selecting some data points from an entire *population* (the statistical name for the entire dataset). The small dataset that is selected from the population is called the *sample dataset*. If we use the entire population and not sample the data, this is called *census data*. More about sampling approaches will be described in Chapter 16.
+
+For the sake of brevity, we refer to the sample dataset as a sample and the population dataset as a population. Please remember the definitions of population versus sample, and we are going to refer to them a lot. If a sample describes the same characteristics in the data, we say the sample is representative of the population.
+
+To understand if the sample data is representative of the population, an easy step is to plot the sample distribution and compare it with the population distribution. If their distribution shapes are similar (clearly, the sample dataset is smaller), it means that the sample dataset is the correct representation of the population. Figure 3-24 shows an example of correct and incorrect sample datasets. Nevertheless, it is usually impossible to access all data of the population (the entire dataset), and even if it is possible, it is not cost-effective. Therefore, we should select a wise number of samples from the entire dataset and create a sample that is representative of the population.
+
+If the population follows a distribution, the sample population must follow that distribution as well. To distinguish between the sample mean and the original one, we use different signs. The sample mean is shown as (read as *x* bar), but the original mean is shown as μ. An ideal sample has a mean equal to the population, and a good sample has a mean close to the population mean. *x*¯
+
+There are methods used to sample data, such as clustering, random sampling, etc., which we will explain later in Chapter 16.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_39_Figure_1.jpeg" alt="Figure" />
+
+Figure 3-24: Example of correct or unbiased (left) and incorrect or biased (right) samples of the population.

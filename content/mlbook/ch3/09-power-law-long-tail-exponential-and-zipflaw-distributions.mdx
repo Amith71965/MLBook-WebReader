@@ -1,0 +1,121 @@
+---
+chapter: "ch3"
+order: 9
+slug: "power-law-long-tail-exponential-and-zipflaw-distributions"
+title: "Power Law (Long Tail), Exponential, and ZipfLaw Distributions"
+wordCount: 2524
+---
+Do you remember those nerds at school who have nothing to do except do their homework and compete to get the top mark? Then, the teacher gives the most challenging possible quiz, and when you nag about your grade, the teacher always points you to them as an example to prove the test was not hard. Imagine you are at the school and have a class of 11 students; here are the marks of a quiz ranging from 0 to 100: \{99, 90, 35, 34, 30, 27, 25, 20, 15, 12, 8, 7\}. Figure 3-18 plots the marks on the left side. You see two nerds on top and the other student on the bottom. If you have finished school and have a job, probably one of those nerds is your boss now, and their salary is similar to their grades. Therefore, we could say salary has a power law distribution.
+
+On the right side of Figure 3-18, you see the common shape of the Power law distribution. If you recall, in Chapter 1, we described exponential growth. The Power law has exponential growth as well. In particular, this distribution presents exponential changes in a dataset.
+
+The PDF of the power law is . Here, is called the power law exponent and causes these exponential changes; it is constant. *f* (*x*) = *x<sup>α</sup> α*
+
+There is another distribution similar to this one called *exponential distribution*. The PDF of the exponential distribution is written as . It means the exponent is a variable. Note that *f* (*x*) = *α<sup>x</sup>*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_29_Figure_2.jpeg" alt="Figure" />
+
+Figure 3-18: (left) Distribution of grades in your class that has two nerds on the top. (right) Abstract shape of power law distributions.
+
+mean and standard deviation in the power of law distributions do not make sense because, due to extreme values, which are rare (on the right side of the distribution plot), we can not characterize this distribution by mean and standard deviation.
+
+These two distributions are often more observed in the real-world. For instance, consider the size of cities in big countries, except a few countries like Germany; usually, the population density is concentrated in a few cities, and the rest of the cities are not dense. Or consider the wealth distribution, which is very fair around the world! At the time of writing this chapter (2017), half of the world's wealth is in the hands of 1% of billionaires, and we should pray to god that writing this book has some financial benefit to pay our debts.
+
+There are many other real-world examples in addition to wealth distribution and sizes of cities in a country, such as the magnitude of earthquakes and word frequencies in a text.
+
+### **Zipf law**
+
+Another specific case of power law includes Zipf law. To understand Zipf's law, we use a simple typical example of word frequency in an English book. The most used word is "The", then the second most used word will be "of", which will be half ( ) of the most used word (the). The third most used word will be "and", which will be a third ( ) of the most used word. The word after that is "to", which will be a quarter ( ) of the most used word, and this ratio continues. Such a ratio distribution is called Zipf's law, a type of power law distribution. Figure 3-19 shows an example of Zipf's law, which is a distribution of English words in a book. 1/2 1/3 1/4
+
+### **Pareto principle**
+
+Pareto principle is a type of power of law distribution. It is also known as the 80/20 rule. It says 80% of effects come from 20% of causes, and the 20% remaining effects come from 80% of
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_30_Figure_0.jpeg" alt="Figure" />
+
+Figure 3-19: Zipf law shows the approximate distribution of words in an english text corpus.
+
+remaining causes. For instance, Pareto, back in 1896, shows that 80% of the land in Italy is owned by 20% of the population.
+
+### Chi-Square Distribution
+
+Another continuous distribution that we should know is the Chi-squared ( $\chi^2$ ) distribution. The chi-square distribution is non-symmetrical, skewed to the right side of the X-axis, in which the shape of the distribution is very much dependent on the degree of freedom k. The mean in the chi-square distribution is equal to the degree of freedom; as the degree of freedom increases, this distribution is skewed toward a normal distribution.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_30_Figure_5.jpeg" alt="Figure" />
+
+Figure 3-20: Chi-square distribution with three different degree of freedom.
+
+Figure 3-20 shows this distribution for three different degrees of freedom, 2,4, and 8. This distribution is being used for the chi-square test, including the test for Goodness-of-Fit and dependence between two categorical variables; we explain both of these uses later. Besides, it is used to test whether a sample dataset variance equals a hypothesized population variance and estimate confidence intervals for given variance and standard deviation.
+
+For now, just remember that the total area under the curve equals one, and this distribution depends on the degree of freedom.
+
+Setting k to 1 or 2 makes the shape of Chi-distribution a smooth curve, starting high and getting low. Setting k to a higher value than 2 makes the shape curved and right-skewed. The right skewness decreases as k increases until this distribution gets the shape of a normal distribution.
+
+PDF of Chi-square distribution is computed as follows:
+
+$$f(x,k) = \frac{x^{k-1}e^{-x^2/2}}{2^{(k/2)-1}\Gamma(\frac{k}{2})} \quad for \quad x \ge 0 \text{ for } x \ge 0$$
+
+Here,  $\Gamma$  is the Gamma function (we have explained it earlier), k refers to the degree of freedom or independent (input) variables with normal distributions.
+
+We emphasize that we do not need to memorize the details of the PDF of this distribution, by plugging numbers into this distribution and playing with parameters, we can get different shapes of  $\chi^2$  distribution.
+
+#### **Boltzmann Distribution**
+
+Boltzmann (Maxwell-Boltzmann or Gibbs) distribution [Gibbs '02] is used to model the following statement: the energy distributed from high density to places that have lower density until there is a balance between densities (thermal equilibrium). In school, we learned that by increasing the heat (energy), gas molecules start moving faster, and their kinetic energy increases. The temperature is proportional to the average kinetic energy.
+
+As an example, to understand the described equilibrium, think if we spray perfume in a room; at the beginning, that region has the smell of spray, but then the sprayed molecules move into the room until their kinetic energy is equal to other molecules or they reach thermal equilibrium. Therefore, after a few seconds, we can't smell the perfume sprayed in the air. At this stage, we can say they have reached an equilibrium. In simple terms, all systems tend to move toward thermal equilibrium. *Thermal equilibrium* refers to a condition when parameters do not exchange any energy (the high energy moves to low energy until there is a balance in energy everywhere). Low energy means high probability in that state, and high energy means low probability. However, this example is used to illustrate the thermal equilibrium, and it is not about the energy equilibrium.
+
+To understand energy equilibrium, consider that we have three containers (A, B, and C) of a gas molecule. Container A's temperature is 300 Kelvin, container B's temperature is 200 Kelvin, and container C's temperature is 100 Kelvin. The average kinetic energy of molecules in container A is higher than the average kinetic energy of molecules in container B, and container B's average kinetic energy of molecules is higher than container C. This means molecules in this container are moving faster (higher velocity). If we plot their PDF, we will have a shape similar to Figure 3-21. These distributions are Boltzmann, also known as Boltzmann (Maxwell-Boltzmann or Gibbs) distribution.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_32_Figure_0.jpeg" alt="Figure" />
+
+Figure 3-21: Boltzmann distribution PDF three different temperatures.
+
+In the context of machine learning, the Boltzmann (Maxwell-Boltzmann or Gibbs) distribution represents the probability for the distribution of the states in a system based on the different energy levels in the system.
+
+The PDF of the Boltzmann distribution is computed as follows:
+
+$$p_i = \frac{e^{-\epsilon_i/kT}}{\sum_{j=1}^{M} e^{-\epsilon_j/kT}}$$
+
+In this equation,  $p_i$  is the probability of state i,  $\epsilon_i$  presents the energy at state i, and k is the Boltzmann constant  $(1.380649 \times 10^{-23})$  joule per kelvin), T is the thermodynamic temperature or temperature of the system. Remember that Boltzmann distribution is based on the probability of a state in the system, and it is inversely related to the energy of the system at that state. If we connect all containers A, B, and C together. Their temperature will be changed to something like the average temperature.
+
+This distribution does exist in some natural phenomena, such as gas distribution, where there is no dense energy; the gas will be distributed equally; if the energy increases at some point, the density of gas decreases and changes in that place. Later in Chapter 11, we will revisit this distribution.
+
+We smell a bit of smoke coming out of your brain now. It is ok; after learning all these distributions, your brain is about to explode. However, the bad news is that there are more types of distribution that we do not explain here, but the good news is that in the context of machine learning, they are not used very often. For example, a Laplace distribution is useful to enforce scarcity and a Dirac distribution is useful to enforce domain knowledge [Goodfellow '16]. The distributions we have explained here are very popular in statistical problem solving, and we will
+
+encounter them in the next chapters. For example, we will encounter Dirchilet distribution in Chapter 4, Boltzmann Distribution in Chapter 11, and Beta distribution in Chapter 13.
+
+### Distribution check with P-P Plot and Q-Q Plot
+
+We can use a Probability-Probaility plot (P-P plot) or Quantile-Quantile plot (Q-Q plot) to visually assess whether a dataset follows a particular distribution.. The result of the probability plot is a scatter plot or four scatter plots with a diagonal in the middle of each scatter plot. If the result of the probability plot approximately draws a straight line in the diagonal of the rectangle, then we can claim that our dataset follows the assumed distribution. The P-P plot draws CDF of the data against the CDF of another dataset or theoretical distribution. Q-Q plots the quantiles from the data against the quantiles of a theoretical distribution or another dataset. Q-Q plot visualizes four different plots.
+
+Figure 3-22 shows two different sub-plots of Q-Q plots. We can check if the data had a normal distribution, one follows the normal distribution because data points are roughly distributed around the diagonal, and the other one does not follow the normal distribution because data points are deviated from the diagonal line of the plot.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch3/_page_33_Figure_4.jpeg" alt="Figure" />
+
+Figure 3-22: Two sample diagrams from Q-Q plots, the one on the left is close to a straight line, which means our dataset is following the desired distribution. The one on the right does not follow the desired distribution because it does not create a straight line.
+
+Your software tool will perform the Q-Q plot, and you don't need to learn how it works in detail. In short, the Q-Q plot algorithms take our input dataset, sort it in ascending order, and then plot our sample data versus the quantiles calculated from the theoretical distribution. The number of data points will match the number of our sample dataset.
+
+Since most of the statistical assumptions were based on the fact that the dataset follows a normal distribution, some tests are used to identify whether the dataset is normally distributed. By plotting the density of the data, we can visually inspect the normal distribution of the data. However, they can be used for other distributions as well.
+
+There are statistical tests available for that as well, such as the Shapiro-Wilk [Shapiro '65] test for the test of normal distribution, the KS-Test and the Chi-Square Goodness of Fit test to check the distribution of data.
+
+### NOTES:
+
+- \* If we are sampling a part of a dataset and calculating its mean, we usually use instead of . *X*¯ *μ*
+- \* We use Binomial distribution when we like to know the "probability of getting a certain number of successes". We use geometric distribution when we like to know "how many trials we need before the first success".
+- \* For both Binomial and geometric distribution, the probability of success in each trial should be equal. Otherwise, none of those distributions could be used.
+- \* Geometric distribution and Binomial distribution are very similar. However, geometric distribution "stops" as the first failure or success or any other target boolean variable it may encounter. For example, the Pigeon empties its stomach once it sees a clean car window and will continue doing it. In Binomial distribution, we are interested in the number of successes in the independent trials.
+- \* In Poisson distribution, λ (lambda) is being used to present the mean and not µ, because, in Poisson distribution, variance is equal to the mean. Therefore, using µ or σ² might be confusing.
+- \* Use Poisson distribution if the events are independent. For instance, malfunction events occur in a given interval, and we know the value of λ in that interval.
+- \* Binomial, geometric, and Poisson distributions are for discrete data, and for discrete data, we use the histogram. Nevertheless, since the number of data points is usually large, a line chart is being used to demonstrate distribution.
+- \* When the number of samples is too large, it is better to use the Poisson distribution rather than the Binomial distribution. Because when *n* is large, the system must calculate and it will eat lots of computer memory, and it can come out of the monitor and eat the person who put this input data into the machine as well. However, the choice between these two distributions is based on the nature of the data and the underlying processes, not primarily on computational considerations. *n*!
+- \* The Power Law distributions can be used for both continuous and discrete variables as well. Gaussian are Chi-square are used for continuous distribution only.
+- \* We can use the histogram to draw "discrete" data distributions. While working with [5](#page-34-0) continuous data, we have many different numbers to present. Therefore, the range will be used to present these numbers, and a line chart will be used. Usually, the line chart is used for continuous data, and a histogram is used for discrete data. When there are too many data points
+
+There is a good link in Wikipedia that list all distributions [https://en.wikipedia.org/wiki/](https://en.wikipedia.org/wiki/List_of_probability_distributions#Continuous_distributions) [5](#page-34-1) [List\\_of\\_probability\\_distributions#Continuous\\_distributions](https://en.wikipedia.org/wiki/List_of_probability_distributions#Continuous_distributions)
+
+to plot, and for the sake of readability and simplicity, most of the time, instead of a histogram, a line chart is used to present a distribution of discrete data as well.
+
+\* Statistical skewness is a measure that describes the asymmetry of a distribution. It helps to quantify the extent to which a dataset's values are concentrated on one side or the other of the distribution's mean (average).

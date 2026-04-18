@@ -1,0 +1,52 @@
+---
+chapter: "ch8"
+order: 27
+slug: "types-of-gradient-descent"
+title: "Types of Gradient Descent"
+wordCount: 1131
+---
+There are several types of gradient descent: batch gradient descent, mini-batch gradient descent, stochastic gradient descent (SGD), SGD with momentum, etc. The right choice of optimization algorithm is very important because we might get a good accuracy after several days of waiting for the algorithm or get a good accuracy after a few minutes of experimenting. Here, we only explain three varieties of the Gradient Descent algorithm, which is the most popular optimization algorithm.
+
+#### **Batch Gradient Descent (BGD)**
+
+As a reminder, recall that the gradient descent uses the training dataset to identify the minimum value of the cost function for different values of model parameters.
+
+A training dataset is divided into smaller segments that are referred to as batches. When all training datasets are collected in one single batch, we use gradient descent for optimization, which is called Batch Gradient Descent.
+
+Batch Gradient Descent is the simplest form of gradient descent because it uses the entire training set to compute the gradients at every step. This means that in each epoch , *the entire* [9](#page-61-0) *training set* will be used, and then the gradient will be calculated to decide the next step. Despite its simplicity, since it loads the entire dataset, it is usually the most accurate gradient descent algorithm.
+
+This approach is useful when we have a convex function such as RSME in linear regression because, with enough iterations, the algorithm can easily reach the global minima. Nevertheless, when the training set is large, it uses the entire training set and the batch gradient descent is not resource-efficient.
+
+#### **Stochastic Gradient Descent (SGD)**
+
+To solve the problem of using the entire training set another variety of gradient descent has been used since 1951 [Robbins '51], which is stochastic gradient descent. SGD picks *one random sample* from the training set instead of using the entire dataset and calculates its gradient in the first step. Then, again, for the next step, the algorithm takes *another single random sample* from the training set and calculates the gradient for this point. These iterations will continue until it reaches a zero gradient or the maximum threshold for epochs (iterations).
+
+Using random samples from the training set and not the entire training set makes the algorithm very fast and efficient, especially when the training set is too large to load into the memory. Nevertheless, for non-convex functions, it is bouncing around the minima, and unlike BGD, the SGD is not moving straightly toward the minima.
+
+If the cost function is convex, BGD can approach global minima easily. On the other hand, if the cost function is non-convex, BGD is stuck in local minima, but SGD can jump out of the local minima because of its irregular bouncing behavior.
+
+We can observe in Figure 8-26 that the SGD is bouncing around the minima, but BGD moves toward the minima. However, there is no guarantee that this minimum is the global minima, and it could be a weak local minima. Even sometimes, when the step size is too large, the gradient descent can jump out of the minima, as we can see in Figure 8-24 (b). This problem is called *overshooting*.
+
+You might ask why SGD is too noisy? Later in Chapter 10, we explain more about how to reduce the noise. Another simple solution to enforce SGD moves toward minima (even in cone shape functions such as Figure 8-26) is reducing the learning rate slowly and cautiously, which helps the algorithm to settle at the global minima. The process of slowly reducing the learning rate to reach global minima is called *simulated annealing,* and the function that determines a value for the learning rate is called *learning schedule*. If the learning rate reduces too fast, we might stuck
+
+Once again, we remind you that a complete pass through the training set is referred to as an epoch, and thus, [9](#page-61-1) processing each batch in BGD costs one epoch. Also, every single data point that is processed in SGD is one epoch.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_62_Picture_0.jpeg" alt="Figure" />
+
+Figure 8-26: A toy example that shows a contour plot of a convex function. The minimum is located in the center. We can see that the batch gradient descent (blue colors) goes straight to the global minima. Minibatch gradient descent (red colors) moves toward minima with some variances, and this variance significantly increases while using the stochastic gradient descent (green color).
+
+in local minima, if it reduces too slow, we might jump to global minima and end up in a suboptimal solution. Therefore, implementing a good learning schedule is not easy, but the underlying software library usually takes care of it. Just keep in mind that simulated annealing is useful when finding an approximate global minima is more important than finding precise local minima.
+
+#### **Mini Batch Gradient Descent (miniBGD)**
+
+We described that BGD uses the entire training set in each epoch to calculate the gradient, and SGD uses one single sample in each epoch. There is another variation that tries to be in the middle of these two algorithms named miniBGD. In particular, miniBGD uses *a subset of the training set*, (BGD uses the entire training set), and thus it is faster than BGD. Since it uses a subset of training data and not a single instance. However, it has less bouncing in comparison to SGD. In particular, it splits the training dataset (batch) into smaller sets (mini-batch), and in each epoch, it uses one mini-batch. A mini-batch is smaller than a batch and greater than one single data point. Similar to other types, miniBGD needs to have a dynamically changing learning rate, and thus, the learning schedule function here is also important. miniBGD is useful for parallelization of the gradient descent process across multiple GPU [Zhang '21].
+
+Table 8-2 summarizes the comparison between these three methods. We have learned many details about Gradient Descent; it might make sense to emphasize that gradient descent is a firstorder optimization algorithm, which means it only works with the first derivation of the function, and it is iterative.
+
+|                                | Advantages                                                                              | DisAdvantages                                                                               |  |
+|--------------------------------|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|--|
+| Batch Gardient<br/>Descent      | - no bouncing and no variance<br/>- can identify global minima in convex function        | - very slow<br/>- not suitable for large dataset<br/>- can stuck in local minima              |  |
+| Mini-Batch Gardient<br/>Descent | - fast<br/>- suitable for large dataset<br/>- reduce the variance overhead of SGD         | - sensitive to the learning schedule<br/>- can stuck in local minima but better than BGD     |  |
+| Stochastic Gardient<br/>Descent | - very fast<br/>- suitable for large dataset<br/>- very unlikely to stuck in local minima | - sensitive to deal learning schedule<br/>- very high variance that might miss a good minima |  |
+
+Table 8-2: Comparison between advantages and disadvantages of different varieties of gradient descent algorithm.

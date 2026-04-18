@@ -14,7 +14,11 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { createClient } from "@supabase/supabase-js";
-import "dotenv/config";
+import dotenv from "dotenv";
+
+// Load .env.local (Next.js convention) with fallback to .env
+dotenv.config({ path: path.join(process.cwd(), ".env.local") });
+dotenv.config();
 
 const MLBOOK_DIR = path.join(process.cwd(), "content", "mlbook");
 
@@ -133,14 +137,17 @@ async function main() {
       continue;
     }
 
-    const chSectionsMeta = JSON.parse(
-      fs.readFileSync(path.join(chDir, "_meta.json"), "utf8")
-    );
+    // Sections are derived from MDX filenames on disk. The chapter _meta.json
+    // `sections` field (written by split-sections.ts) is an array of objects
+    // `{order, slug, title, wordCount}` — we use file-system order instead so
+    // we stay resilient if _meta.json is out of sync.
+    const mdxFiles = fs
+      .readdirSync(chDir)
+      .filter((f) => /^\d{2}-.+\.mdx$/.test(f))
+      .sort();
 
-    for (const sectionName of chSectionsMeta.sections) {
-      const mdxPath = path.join(chDir, `${sectionName}.mdx`);
-      if (!fs.existsSync(mdxPath)) continue;
-
+    for (const mdxFile of mdxFiles) {
+      const mdxPath = path.join(chDir, mdxFile);
       const raw = fs.readFileSync(mdxPath, "utf8");
       const { data: fm, content } = matter(raw);
 
@@ -150,12 +157,12 @@ async function main() {
       for (let i = 0; i < textChunks.length; i++) {
         allChunks.push({
           chapter: chMeta.number,
-          section: fm.slug || sectionName,
+          section: (fm.slug as string) || mdxFile.replace(/\.mdx$/, ""),
           chunkIndex: i,
           content: textChunks[i],
           metadata: {
             chapterTitle: chMeta.title,
-            sectionTitle: fm.title || sectionName,
+            sectionTitle: (fm.title as string) || mdxFile,
             keywords: fm.keywords || [],
             notebooks: fm.notebooks || [],
           },
@@ -164,7 +171,7 @@ async function main() {
     }
 
     console.log(
-      `  ✓ Chapter ${chMeta.number}: ${chMeta.title} — ${chSectionsMeta.sections.length} sections`
+      `  ✓ Chapter ${chMeta.number}: ${chMeta.title} — ${mdxFiles.length} sections`
     );
   }
 

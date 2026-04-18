@@ -1,0 +1,115 @@
+---
+chapter: "ch8"
+order: 21
+slug: "regularization"
+title: "Regularization"
+wordCount: 2500
+---
+Now, we are familiar with devils in model building, and one of the fiercest devils is overfitting. Due to Occam Razor's principle, we are always looking for less complex (parsimonious) models. Besides, we should always consider reducing overfitting, and for these two needs, we can use *regularization*. Regularization is defined as constraining or shrinking a model to reduce the risk of overfitting the given training set*.* It applies to the training phase only, not the testing phase. They make the model simpler and try to reduce model coefficients (parameters). Hence, they are also called *shrinkage* methods. In other words, regularization is the process of *shrinking the model's coefficients* and focusing on *decreasing the variance of the model*. Regularizations penalize the high power coefficients that make the polynomial model very sensitive to noise.
+
+If a coefficient of a regression is zero, its predictor will get zero effect on the model as well. Assuming is a model parameter , and thus, we can remove . It means that this particular variable will be removed from the model, which is good. Why? Because we use the regularization to reduce the model parameters. *βk xj β<sup>k</sup>* . *xj* = 0.*xj* = 0 *xj*
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_41_Picture_5.jpeg" alt="Figure" />
+
+Regularization is crucial for working with regressions. There are  $(2^n - 1)$  possible linear models from a combination of n input variables. For example, assuming we have three input variables as  $x_1$ ,  $x_2$  and  $x_3$ , we can have  $(2^3 - 1)$  combinations of these parameters:  $x_1$ ,  $x_2$ ,  $x_3$ ,  $x_1x_2$ ,  $x_2x_3$ ,  $x_1x_3$ , and  $x_1x_2x_3$  and each is related to a model parameter. If we have 10 input variables, we can build  $2^{10}$  different linear models. If we have 100 input variables, which is common in real-world applications, we need a supercomputer to choose the model from a set of  $2^{100} - 1 = 1267650600228229401496703205375$  models. Therefore, we need a way to shrink models and reduce the number of choices as much as we can. This task will be done by regularization methods. In this section, we explain four common regularization methods, including *Ridge*, *LASSO*, *ElasticNet*, and *NonNegative Garrote*.
+
+### Ridge
+
+Ridge regression or regularization (Tikhonov-Miller regularization, L<sub>2</sub> regularization, or weight decay) [Tikhonov '43] can be used when the model's *independent variables are highly correlated* (multicollinearity). Also, we use it when there is a multicollinearity among the features or we have few training data points. In other words, it makes the prediction less sensitive to the training data, by reducing the variance of the model.
+
+Ridge penalizes the model based on the distances of predictor coefficients (weights) from zero. The higher the distance between coefficient and zero, the higher will be the penalty. It is an RSS (If you can't recall RSS, check "Evaluating the fitness of training sets in linear models" section of this chapter), plus a penalty:
+
+$$Ridge\ Regression = RSS + penalty.$$
+
+Assuming  $\theta$  is a vector and presents all parameters of our model and we have n parameters, the penalty will be shown as  $\lambda \sum_{i=1}^{n} \theta_i^2$ , which is  $\lambda$  times the sum of square coefficients.  $\lambda$  is a hyperparameter used to define the *severity of the penalty* or *tuning parameter*. As  $\lambda$  increases, the flexibility of the ridge regression fit decreases, leading to a decrease in variance but an increase in bias. The Ridge regression cost function can be written as follows:
+
+$$J(\theta) = RSS(\theta) + \lambda \sum_{i=1}^{n} \theta_i^2$$
+
+Usually, when we encounter J(something) it presents an objective function for something parameters. A question might arise now: how can we choose an appropriate  $\lambda$ ? Typically, we use 10-fold cross-validation to choose the one that provides the lowest variance. It means, we test with different  $\lambda$  values until we identify a  $\lambda$  that results in the lowest variance. The objective of Ridge regression is to minimize  $J(\theta)$ . In some literature, MSE [Géron '19] has been used instead of RSS, but both methods are correct (MSE is just the RSS divided by the sample size).
+
+Figure 8-16 presents an example model with three parameters, and after increasing the  $\lambda$  to a specific value, all parameters converge toward zero (but do not get zero). This example shows us how increasing the penalty will reduce the impact of each coefficient on the model until they remove their associated variables because their coefficients will be zero. Keep in mind that Ridge
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_43_Figure_0.jpeg" alt="Figure" />
+
+Figure 8-16: A mock model with three parameters that presents the impact of ridge regression. All parameters are converged toward zero as λ value increases.
+
+regression introduces a small amount of bias, and increasing the bias will cause a significant decrease in the variance.
+
+Let's use a simple example to better understand the ridge regression. Before explaining the example, note that acquiring data is an expensive process, and we should use a small number of data objects (as a training dataset) to create the regression model and then use the model on the test dataset.
+
+Figure 8-17 (a) shows a toy dataset composed of 7 data points, and we would like to use linear regression to make a prediction model for this dataset. Figure 8-17 (b) shows two random data points that have been selected as training and marked in red. By calculating their RSS, we identify their RSS is zero, which is too low for bias, and this makes us suspicious. Figure 8-17 (c) calculates the RSS for other points (test set), which are marked with blue color. Test set data points (blue dots) stays far the line constructed by using training set (red dots). This is a sign of high variance (overfitting) and we can say that this regression line is not a good model because we observe overfitting.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_43_Figure_5.jpeg" alt="Figure" />
+
+Figure 8-17: (a) Original dataset. (b) Training set data points were selected as red color. (c) The other remaining points RSS are calculated to the regression line (red regression line). (d) By introducing a Ridge penalty, the red regression line is rotated, and the blue line regression is drawn.
+
+To solve the problem of high variance, we use a Ridge regression, and an increase in its penalty causes a rotation of the red regression line a bit toward the X-axis. As a result, the blue regression line will be created, which is shown in Figure 8-17 (d). The blue regression line has a lower variance despite having a bit more bias. In such a simple approach, Ridge regression resolves the overfitting problem. Ridge regression can be applied to logistic regressions and other regression methods as well, but we used a linear regression example for the sake of simplicity.
+
+If you would like to learn how the math behind the Ridge regression works, you can plot some data points in 2D spaces and try them on your own with the linear regression, which is easy to calculate on a piece of paper.
+
+Note that the shrinkage penalty is not applied to the intercept  $(\beta_0)$ , it is applied to other parameters  $(\beta_1, \beta_2, \dots, \beta_k)$ , because the intercept measures the mean value of responses, and we do not want to shrink that. Increasing the  $\lambda$  causes a decrease in the slope. The larger the lambda gets, the prediction for y becomes less and less sensitive to x. In other words, the introduction of the penalty moves the regression line more toward the horizon line (parallel to the x-axis). When all coefficients are set to zero, the regression line will be a horizontal line parallel to the x-axis, which obviously is useless because  $y = \beta_0 + 0 \times x_1 + 0 \times x_2 + \ldots = \beta_0$ , and we do not have any predictor in the final model.
+
+Assuming m is the number of our parameters, and n is our data points for the training set. The computational complexity of the ridge regression is  $O(m^2n)$ . Ridge is good when we have a small dataset size, but it is not scale-invariant<sup>6</sup>.
+
+#### **LASSO**
+
+LASSO (Least Absolute Shrinkage and Selection Operator) [Santosa '86, Tibshirani '96] is another regularization method in use and performs slightly better than ridge regression.
+
+Ridge regression is very helpful, but it has a disadvantage. It keeps all coefficients in the final model and does not remove them completely. It means that Ridge reduces all coefficients toward zero but didn't set any of them to zero. In other words, Ridge does not exclude predictors that are unrelated to the model, it only reduces the magnitude of their coefficients, which is against Occam's Razor principle. Therefore, all predictors will stay in the final model, even the unrelated ones, but with a low coefficient. However, the LASSO regularization resolves this by substituting the Ridge's penalty  $\sum_{i=1}^{n} \theta_i^2$  (L2 norm) with  $\sum_{i=1}^{n} |\theta_i|$  or  $||\theta_i||_1$  (L1 norm). We have the following equations for these two regularizations:
+
+Ridge Regression = RSS + 
+$$\lambda \sum_{i=1}^{n} \theta_i^2$$
+  
+LASSO Regression = RSS +  $\lambda \sum_{i=1}^{n} |\theta_i|$ 
+
+LASSO is very simple, it just uses an absolute value instead of squares. Nevertheless, it creates a parsimonious model (respecting Oscam's Razor principle), and even it has been recommended to use it as a feature reduction technique as well.
+
+<sup>6</sup> If you recall, we have used this term in Chapter 6, while describing SIFT. However, scale invariant means that the feature or characteristics of the system should not change if their scale of lengths, energy, or other variables changes.
+
+For example, assume we are creating a linear model to predict the success of a candidate in an upcoming election. The model measures success based on the following parameters as follows:
+
+$$success = \beta_0 + \beta_1.diet + \beta_2.hobby + \beta_3.climate-change + \beta_4.foreign-policy.$$
+
+If we have a dataset about this model and use Ridge regression, by increasing the  $\lambda$ , both personal's "diet policy" and "hobby", which do not affect on the success of the candidate will be shrunken toward zero, but they wouldn't be removed completely. However, LASSO can clean the model and get rid of both (diet and hobby) by increasing the  $\lambda$ , and thus the final model will only keep "climate-change policy" and "foreign-policy" as its predictors. LASSO is better than Ridge because we can say that its result models are more parsimonious. In summary, LASSO shrinks the coefficients to zero, unlike Ridge, which shrinks them toward zero but does not remove them entirely. Since LASSO can remove several features from the model, its result model is called a *sparse model*.
+
+LASSO is better than Ridge, but it does not perform very well for highly correlated predictors, and it is also not scale invariant. Besides, when the number of parameters is larger than the number of training set data points, it does not perform well.
+
+Assuming k is the number of variables and n is the number of sample sizes, LASSO computational complexity is  $O(k^3 + k^2n)$  [Efron '04].
+
+#### **Elastic Net**
+
+Both Ridge and LASSO are useful, but using them when our model includes many parameters, might be challenging. Besides, when the number of our parameters is larger than the available data points for training both LASSO and Ridge do not perform well.
+
+Elastic Net regression [Zou '05] can mitigate these issues because it combines the strength of both Ridge and LASSO. Elastic Net regression is a combination of Ridge (L<sub>2</sub>) and LASSO (L<sub>1</sub>) regressions. We write the equation of Elastic Net as follows:
+
+Elastic Net Regression = RSS + 
+$$\lambda_1 \sum_{i=1}^{n} \theta_i^2 + \lambda_2 \sum_{i=1}^{n} |\theta_i|$$
+
+ $\lambda_I$  is used for Ridge and  $\lambda_2$  is used for LASSO. We should use cross-validation to find the best values for both  $\lambda_I$  and  $\lambda_2$ . By setting  $\lambda_I = 0$ , we will have LASSO regression, and by setting  $\lambda_2 = 0$ , we will have Ridge regression.
+
+Elastic Net uses this combination of penalties, which can better deal with correlative parameters. Therefore, Elastic Net includes advantages of LASSO and Ridge, but the best way to decide about a regularization selection is to conduct several experiments on the dataset with different regularizations and check results until a good one that addresses our concerns is identified.
+
+### **Non-Negative Garrote**
+
+Another regularization method worth being familiar with is Non-Negative Garrote (NNG) [Breiman '95]. If you don't know what is Garrote, it is better not to search online for it, and we wonder how the author of this method cannot end up using a less gruesome name.
+
+NNG is comparable to LASSO, but it is scale-invariant. It can also eliminate predictors with weak coefficients (LASSO can not do it). NNG does not require specifying the penalty function separately, as it has a fixed penalty function. It only requires specifying the tuning parameter  $\lambda$ , which reduces the computational complexity compared to methods that require selecting both the penalty function and the tuning parameter [Xiong '10].
+
+Assuming n is the number of parameters and  $u \ge 0$  is the shrinkage factor, its equation is written as follows:
+
+*Non-Negative Garrote* = 
+$$RSS + 2\lambda \sum_{i=1}^{n} u_i^2$$
+
+There are different approaches to computer the shrinkage factor  $u_i$  for parameter i. For example, assuming  $\beta_i$  is the ith parameter, and  $\hat{\beta_{i,LS}}$  is the least squares estimate of the parameters, we can rewrite the Non-Negative Garrote as follows:
+
+Non-Negative Garrote = RSS + 
+$$\lambda \sum_{i=1}^{P} \frac{\beta_i^2}{\hat{\beta}_{i,LS}^2}$$
+
+This method is not as popular as previous methods and unlike Elastic Net, it cannot handle datasets whose number of predictors (or parameters) are larger than training data points. Perhaps its attractive and friendly name demotivates researchers and developers to implement it into their software packages or libraries.
+
+#### NOTES:
+
+- \* Keep in mind that regularization should be performed on the training set. We should use the same regularized model for both training and testing to assess the model's generalization performance accurately.
+- \* The cost function result of the training set is usually different from the cost function result of the test set because regularization is applied to the cost function at the training phase.
+- \* We have explained that Ridge regression can help to model data with a small training set. Even in some cases, the number of parameters is larger than the number of training data. If we have a model whose parameters are larger than its data points (the dataset is small), we can also use a regularization regression to reduce the magnitude or influence of its parameters.
+- \* In the world of mathematics, we have a concept referred to as Lagrangian relaxation. It is a method to approach a difficult problem of constrained optimization by a simpler problem. It solves the optimization problem by introducing additional variables called Lagrange multipliers, which act as a penalty. As a result, it simplifies the optimization solution. While regularization methods use penalty terms in their objective functions, they cannot be considered as direct applications of Lagrangian relaxation. Regularization methods are designed to address the problem of overfitting and improve the generalization of models rather than solving constrained optimization problems (Lagrangian relaxation does it).

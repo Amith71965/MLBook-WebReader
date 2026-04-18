@@ -1,0 +1,18 @@
+---
+chapter: "ch3"
+order: 10
+slug: "expected-value-and-expectation-of-a-function"
+title: "Expected Value and Expectation of a Function"
+wordCount: 320
+---
+The *expected value* is a type of arithmetic mean but with the *weight* or *probability* for each value. It could be called weighted average as well. It is presented with in the context of artificial intelligence machine learning. For instance, imagine you are an expert AI engineer, and you are doing technical consultation and offering three different AI courses. Introduction to AI, which costs \$300 per person; intermediate AI, which costs \$700 per person; and Advanced AI for experts, which costs \$1000 per person. Then 100 people subscribed for your course. 2% have subscribed for the expert level, 8% for the intermediate level, and %90 for the beginner level. The expected value or weighted average of the earnings is as computed as follows: [ . ]
+
+$$EV = 0.02 \times 1000 + 0.08 \times 700 + 0.90 \times 300 = 20 + 56 + 270 = 346,$$
+
+In other words, \$346 is the expected value of your earnings by teaching AI.
+
+By working with a function, usually, the average of the values we inject into the function is known as the *expectation of a function*, and it is presented as , which presents the expected value of the function where x is a random variable. In reality, it is nothing than plugging n numbers into the function and computing their average; thus, we can have the following: [ *f* (*x*)] *f*
+
+$$\mathbb{E}[f(x)] = \frac{1}{n} \sum_{n} f(x)$$
+
+Later in Chapter 11 and many times in Chapter 13, we will encounter . We should read it as the excepted value for and which *x* is sampled from distribution and is sampled from distribution. See, it is very simple; don't freak out while encountering these weird, super long mathematical terms. To summarize, *when we say we sample data x from the distribution of , we use this notation: . <sup>x</sup>*∼*A*,*y*∼*B*[ . . . ] *x y A y B p*(*x*) *x* ∼ *p*(*x*)

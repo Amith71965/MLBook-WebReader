@@ -1,0 +1,92 @@
+---
+chapter: "ch8"
+order: 11
+slug: "extrapolation-and-interpolation"
+title: "Extrapolation and Interpolation"
+wordCount: 2074
+---
+Extrapolation is estimating the next change of a variable beyond the observation range, the value of a variable on the basis of its relationship with another variable.
+
+For example, in Figure 8-7 (left) the red values are an extrapolation (predicted behavior) of the observed values (blue ones), which could be called forecasting time series as well.
+
+Interpolation produces an estimate of potential values between observation data points, such as red dots that are generated between blue dots in Figure 8-7 (right).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_17_Figure_4.jpeg" alt="Figure" />
+
+Figure 8-7: (left) A toy example of extrapolation. (right) A toy example of interpolation.
+
+#### **ARIMA Model**
+
+ARIMA is used for time series extrapolation (or time series forecasting) algorithm. It assumes that the future data points can be determined by using the past data points, or in other words, we can extrapolate future data points of time series based on the existing data points in the target time series. Specifically, ARIMA models the future data points as a linear combination of past data points (autoregressive part), past forecast errors (moving average part), and differences of past data (integrated part).
+
+ARIMA receives three input parameters, p, d and q, which is written as ARIMA(p, d, q). ARIMA(1,1,0) means that p=1, d=1, and q=0. ARIMA model can be written as a linear equation to predict the next data point,  $\hat{y}$  as follows:
+
+ $\hat{y}$ = constant + weighted sum of p number of lags + weight sum of q number of lag errors.
+
+In the following we explain the ARIMA algorithm steps and this equation in more detail.
+
+(i) As the first step, ARIMA converts a non-stationary time series into a stationary time series, which is called *differencing* the time series. Differencing helps to stabilize the mean of the time series by removing changes in the level of a time series and thus de-trending it. The first column of Figure 8-8 presents the result of de-trending time series. This transformation is necessary because the prediction of future data points relies on the lags from a stationary time series model.
+
+The differencing process is done by subtracting previous data  $(y_{t-1})$  from the current data  $(y_t)$ . However, just one previous data substitution is usually not enough, and the algorithm should subtract d data points  $(y_{t-1}, y_{t-2}, \dots)$  from the current data point. In other words, the parameter d specifies the *order of differencing* required to make the time series stationary. In other words, d specifies the minimum number of differences required for each data point to transform the non-stationary time series into the stationary time series. If the original time series is stationary, we have d = 0.
+
+For example, considering  $y'_t$  is the differences between lags (the concept of lag is described in Chapter 6), and time t, we can write the following:
+
+ $d=0: \quad y_t'=y_t$ 
+
+ $\begin{array}{ll} d=0: &amp; y_t &amp; y_t\\ d=1: &amp; y_t'=y_t-y_{t-1} \text{ # first-order differencing}\\ d=2: &amp; y_t'=(y_t-y_{t-1})-(y_{t-1}-y_{t-2}) \text{ # second-order differencing} \end{array}$ 
+
+ $y'_t$  values are used to transform the original time series, which is not stationary into a stationary time series. The transformation through differencing is actually related to the Integrated component of ARIMA.
+
+(ii) The parameter p specifies the order of autoregressive terms. It refers to the number of lags to be used as input (predictors) to predict the upcoming  $y'_t$ . A simple autoregressive (AR) model can be written as a linear model,  $y'_t$  depends on its p number of lags. Therefore, we can write the following equation for predicting  $y'_t$  based on pure autoregression:
+
+$$\hat{y}_t' = \beta_0 + \beta_1 y_{t-1}' + \beta_2 y_{t-2}' \dots + \beta_p y_{t-p}' + \epsilon_1$$
+
+In this equation,  $\beta$ s are coefficients of their associated data points (lags) and  $\beta_0$  is the intercept. Note that it is only AR and not the moving average (MA).
+
+(iii) The parameter q specifies the order of moving average (MA) term. This means it refers to the number of lagged forecast error terms used to predict the current value of the series. The moving average part of the model is indeed a weighted sum of the past forecast errors. In other words, moving average is a weighted sum of q number of lags of the prediction errors. Therefore, assuming  $\alpha$  is the intercept  $(\beta_0)$ ,  $\epsilon$  is the error of the associated lag and  $\phi$  is the coefficient of the error, a pure moving average equation (only MA and not AR) can be written with the following equation.
+
+$$\hat{y}_t' = \alpha + \epsilon_t + \phi_1 \epsilon_{t-1} + \phi_2 \epsilon_{t-2} + \ldots + \phi_q \epsilon_{t-q}$$
+
+ARIMA model combines both AR and MA models and creates the following equation to predict the upcoming data points in time series.
+
+$$\hat{y}_t' = \alpha + \beta_1 y_{t-1} + \ldots + \beta_p y_{t-p} + \epsilon_t + \phi_1 \epsilon_{t-1} + \ldots + \phi_q \epsilon_{t-q}$$
+
+#### ARIMA Parameters Estimation
+
+We understand the intuition behind the ARIMA equation, so now, we should explain how to choose the best values for d, p, and q. We have learned in Chapter 3 that correlation describes the relationship between two variables. In the context of time series and signals, when a correlation is calculated against lag variables (e.g., the correlation between  $d_t$  and  $d_{t-1}$ ) it is called autocorrelation or self-correlation. In other words, autocorrelation means that the signal or time series is correlated with itself.
+
+Let's use a sample; assume  $X = \{1,2,4,5,6\}$  and  $Y = \{2,3,5,7,7\}$ . If we calculate the correlation coefficients of these two sets the Pearson correlation will be r = 0.9834, which means they are highly correlated. Let's say we would like to measure the correlation of X with itself, but with one lag. One shift in X will result in  $X' = \{0,1,2,4,5\}$ , and the correlation between X and X' will be 0.97, which means still, with one shift, X is autocorrelated. The more shifts we perform, the correlation coefficient decreases until it reaches zero. The existence of autocorrelation in errors (residuals) of a model is a sign of error.
+
+We can identify the existence of autocorrelation by using a *correlogram* that stays for the *Auto Correlation Function plot* (ACF plot). ACF plot visualizes the auto-correlation (correlation between the original series and its lagged values). It presents how well the present data points correlate with lag data points (past data points). ACF plot allows us to determine the Auto Regressive coefficient for the ARIMA. In particular, the x-axis of the ACF plot represents the number of lags. The y-axis typically measures the autocorrelation coefficient, which ranges from -1 to 1, as we can see in the second column of Figure 8-8.
+
+The lag value located outside the significant area (blue-shaded area) should be chosen because they are statistically significant. For example, only lag 1 is significant in 'autocorrelation of firstorder differencing', the rest, which are located inside the blue area, are insignificant. Lag 0 is also located outside the blue area, despite showing a significant size.
+
+To determine the stationarity of a time series, a statistical test called the Augmented Dickey-Fuller test or ADF test [Dickey '79] will be used. The p-value of this test determines if the time series is stationary. Its null hypothesis states that the time series is non-stationary. If p-value , the null hypothesis is rejected, which means the time series is stationary. &lt; 0.05
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_19_Picture_3.jpeg" alt="Figure" />
+
+ACF plot measures the correlation between observation (data) at the current time and previous observations (data); in other words, it is doing the MA part of the ARIMA. Another plot called the *Partial Autocorrelation Function plot (PACF plot)* finds a correlation of residuals. PACF plot finds a correlation of residuals. It is a bit challenging to understand, and we try to use an example to learn it.
+
+Assume we are living in a city that has a business of selling academic degrees to international students at a huge price. It is a win-win game because academic corporations get richer, and international students who return to their countries are proud to get their degrees from wellknown universities. Let's call this imaginary city Bustom. Most of the Bustom population are students. Assume you have arrived later than the start of a new semester and you need to rent an apartment in November. November prices correlate to September (when students move to the city and the fall semester begins) and not October. December prices correlate with September prices, and not October. Therefore, PACF can resolve our need because it identifies the correlation between data at two different times (e.g.  $d_{t+1}$ ,  $d_{t+2}$ ) given both data are correlated to a data at other time (e.g.,  $d_{t-1}$ ). In other words, PACF can remove the correlation to data that is not relevant (e.g.,  $d_t$  is not relevant). In our example, prices of November ( $d_{t+1}$ ) and December ( $d_{t+2}$ ) correlate to September ( $d_{t-1}$ ) and not October ( $d_t$ ).
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch8/_page_20_Figure_1.jpeg" alt="Figure" />
+
+Figure 8-8: (Left) original time series, first-order differencing and second-order differencing (center) ACF plots of each time series. (Right) PCAF plot for each time series on the left side. The light blue color background is called the confidence band and tells us whether the correlation is statistically significant.
+
+Check Figure 8-8, where we present ACF and PACF plots, along with the original and transformed time series.
+
+#### Determining the best order of differencing (d)
+
+There are a couple of rules to identify the best d. A good differencing is the minimum number of differencing that its ACF plot is fluctuating and decaying toward zero fast. In other words, a good order of differencing is often the order of differencing in which its standard deviation is lowest, and it indicates the time series is stationary. For example, by looking at Figure 8-8, we can see that the ACF plot for second-order differencing is moving toward zero, and compared to the original time series, its standard deviation is also closer to zero. Therefore, we choose the second-order of differencing. Keep in mind that if a time series is stationary (which is our desire), both ACF and PACF should move their tail toward zero (tail off to zero).
+
+In the example presented in Figure 8-8, the second-order of differencing moves toward zero (better than the first-order of differencing), thus we choose d=2. If both the first-order and the second-order are moving toward zero, we go for the smaller d. Usually, we do not need to have a d larger than 2.
+
+#### Determining the best order of Auto Regression (p)
+
+To determine a proper value for d we use the ADF test. To determine a proper value for p, we will use the PACF plot (AR part of ARIMA). We choose a p based on the significance test reported by the PACF plot. For example, if we realize that  $d_{t-1}$  is not passing the significance test (located inside the blue area) but  $d_{t-2}$  passes, we choose  $d_{t-2}$  to predict  $d_t$ . The left side of the Figure 8-8 presents PCAF of each time series on their right side. To determine p, we use PACF plot and choose lag values that have its value is statistically significant, i.e. fall outside the blue area. The first-order PCAF has some lag values statistically significant. We go for the smallest one and say p=1 is the proper value for p. Lags 1, 2, 3, 4, and 19 are significant in the "partial autocorrelation of first-order time series" plot, but we go for the smallest value of lag and assign p=1.
+
+#### **Determining the best order of Moving Average (q)**
+
+The same approach we have used to determine p from PACF could be used to determine q, but instead of PACF we rely on ACF. Therefore, based on our data presented in Figure 8-8, for both first-order differencing and second-order differencing lag number 1 falls outside the blue area in ACF plots, and this shows statistically significance. However, we choose our q from first-order differencing, because the literature recommends staying with one order differencing that has been chosen for p, and in our case p has been chosen from first-order differencing. Therefore, we can finalize our ARIMA parameters by writing ARIMA (p=1, d=2, q=1).
+
+If these parameter configurations sound hard to rationalize, we can go for cross-fold validation as well. We can test different settings of a parameter and choose the one that has the highest accuracy. However, it is recommended to use this method instead of cross fold validation.

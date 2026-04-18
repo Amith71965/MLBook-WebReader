@@ -1,0 +1,27 @@
+---
+chapter: "ch3"
+order: 17
+slug: "a-b-testing-and-significance-test"
+title: "A/B Testing and Significance Test"
+wordCount: 457
+---
+Most scientific experiments we conduct disregarding its field (e.g., human-computer interaction, biology, psychology, etc. ) require A/B testing to compare the results of experiments. A/B testing refers to grouping data into two (could be more) groups, one group control, and the other treatment or experiment. Then, apply something to these groups and compare the results.
+
+For example, we are building a computer game that brings the user joy while playing. We claim it has a more positive emotional impact on the player than other games. We can prove our claim by using A/B testing. In particular, we experimented with two groups of users. One group uses our game; they are called the treatment or experiment group. The other groups do not use our game; we call them the control group. Then, we measure their joy level, and we can conclude whether our computer game brings more joy to the treatment group than the control group.
+
+Now, let's study an example. We are giving weight loss medication (A and B) to a group of individuals: group A (control and do not receive the medication) and group B (treatment and get the medication).
+
+The weight loss in two groups is reported as negative, and weight gain as positive. The result is as follows:
+
+```
+Group A: -4kg, 0kg, 3kg, 1kg, 1kg, => mean: 1kg
+Group B: -1kg, -1kg, -1kg, 4kg, -1kg => mean: 1kg
+```
+
+We can see that everyone in group B lost weight except for one person who gained 4kg. However, the mean weight change is equal to that of group A. It shows that just comparing the mean is usually not enough. To solve this issue, we can use a significance test. The significance test compares two groups of data reports if there is a statistically significant difference between the two groups of data. The goal of a significance test in this context is to determine whether the observed differences in outcomes (in this case, weight changes) between the two groups are likely due to the treatment (medication) rather than occurring by chance.
+
+To summarize, make a slot in your brain and write the following, "A significance test is comparing if two groups of data are different in their statistical characteristics". Nonetheless, significance test results only tell us if there is a significant difference between those two groups, but they cannot measure the magnitude of the difference.
+
+There are two categories of significance tests: parametric significance tests and non-parametric significance tests. Parametric significance tests assume that all samples have a normal distribution. Non-parametric significance tests do not rely on the normal distribution of samples.
+
+Whenever the term non-parametric is encountered, it means that there is no information about the distribution (distributions are characterized by their parameters).

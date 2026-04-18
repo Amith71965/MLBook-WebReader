@@ -1,0 +1,154 @@
+---
+chapter: "ch10"
+order: 5
+slug: "activation-functions"
+title: "Activation Functions"
+wordCount: 2466
+---
+Activation functions are mathematical equations used to set boundaries on each neuron and decide the output value of a neuron. We can write the *output of each neuron* as , and is the activation function that changes *z* to the neuron's output. *z* = *wx* + *b a*(*z*)
+
+There are many activation functions available. Some activation functions focus on binary decisions, such as the step function, which we have explained. Some activation functions, such as softmax, can handle multi-classes, e.g., objects that appear inside a photo (cat, dog, human, etc.). In the following, we list some common activation functions, and they are visualized in Figure 10-12.
+
+**Step function:** The simplest form of binary class activation function is the step function, used for binary classification. It has a similar shape to the function presented in Figure 10-4, but the threshold is , and if it is greater than , the signal is fired ( ). Otherwise, it will be 0 ( ). *z z y*̂= 1 *y*̂= 0
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_14_Figure_4.jpeg" alt="Figure" />
+
+Figure 10-12: Some popular Activation functions.
+
+**Sigmoid function:** It is smoother than the step function and uses the Sigmoid equation, which we have explained in Chapter 8, for logistic regression. The Sigmoid function is written as follows:
+
+$$f(z) = \frac{1}{1 + e^{-z}}$$
+
+Sigmoid is more popular than step function because it is slightly more sensitive to small changes in the output value, and it is better suited to report probabilities because it gives a value between 0 and 1, step function only gives either 0 or 1, and no other numbers in between. The sigmoid function involves exponential calculations, which can be computationally expensive and slow down the training process, especially for large networks.
+
+**Hyperbolic Tangent function:** it is another activation function, and its equation is written as follows:
+
+$$a(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}.$$
+
+It calculates a ratio between hyperbolic sine and hyperbolic cosine, i.e., the ratio of the halfdifference and half-sum of two exponential functions in the points and . This activation function is very similar to the Sigmoid function, but its range is from to 1. It is used when we do not want to have zero as the lower boundary of the activation function. *z* −*z* −1
+
+**Rectified Linear Unit (ReLU) function:** ReLU [Nair '10] is a very common activation function (probably the most popular binary activation function), and we can easily write it as *.* It means if the output value is less than zero, the RELU activation function considers it as 0; otherwise, the value of the output is the actual output value. ReLU is a useful activation function while dealing with the vanishing gradient problem, which will be explained later in detail. The following equation formalizes the ReLU. *ma x*(0,*z*)
+
+$$a(z) = \begin{cases} 0 &amp; for \ z &lt; 0 \\ z &amp; for \ z \ge 0 \end{cases}$$
+
+ReLU function has a specific characteristic, and it can be used in networks with many layers.
+
+**Leaky RELU (LReLU):** LReLU [Maas '13] is another common activation function that allows a very small negative value to have a non-zero variable. Not having zero is useful because it mitigates the challenge of vanishing gradient better than ReLU, which is called *dying ReLU*. The LReLU equation is written as follows.
+
+$$a(z) = \begin{cases} 0.01z &amp; for \ z &lt; 0 \\ z &amp; for \ z \ge 0 \end{cases}$$
+
+Having zero gradients can also result in slow learning, and using ReLU and LReLU resolves this. In other words, The derivative of the ReLU is 1 in the positive part and 0 in the negative part. The derivative of the LReLU is 1 in the positive part, and it is a small fraction in the negative part. If this explanation does not make sense now to you, be patient; after you have learned backpropagation and chain rule, it might make more sense.
+
+**Gaussian Error Linear Units (GELU):** The GELU is a nonlinear activation function based on the standard Gaussian cumulative distribution function [Hendrycks '16]. Later in this chapter, we learn to regularize a neural network. Sometimes, we set some weights randomly to zero, i.e., *dropout*. In the context of GELU, the function smoothly varies between 0 and 1, modulating the output based on the Gaussian CDF, which gives it a probabilistic interpretation somewhat similar to dropout. In particular, assuming the is the standard Gaussian cumulative distribution function (CDF if you recall from Chapter 3), each data point *x* will be multiplied by this value, , and is the output of GELU activation. Φ(*x*) *x*Φ(*x*)
+
+This activation function is used in several transformer-based models, GPT-3, BERT, and wav2vec 2, which we will describe later in Chapter 12.
+
+**Softmax:** It is an activation function used for multiclass output values. We cannot visualize it in Figure 10-12 because it has multi-dimensions (equal to the number of output classes). Assuming we have k number of classes, the softmax is presented with  $\sigma(.)$  and it is formalized as follows:
+
+$$\sigma(z)_i = \frac{e^{z_i}}{\sum_{i=1}^k e^{z_i}}$$
+ for  $i = 1,...,k$ 
+
+Softmax activation function calculates probability distributions of the particular output over k different labels. For example, we have a neural network to recognize if the given image includes a human, cat, or dog, then our k=3. Softmax calculates the probability of each target class over all possible target classes.
+
+To understand how Softmax works, we use another example. Assuming we are creating an algorithm to identify infection in microscopic blood samples, we have developed a neural network algorithm to identify specific types of infection in the blood sample. There are three types of infection. X, Y, and Z. First, our algorithm analyzes an image, and then probabilities for infection probabilities are calculated using Softmax as follows: X:0.3, Y:0.6, and Z:0.1. We can see that their sum is equal to one, the output of Softmax is a probability function, and thus the sum of the label values is equal to 1. In summary, based on the number of possible outputs, Softmax assigns each of the outputs a probability value, and the one that has the highest probability is the correct output.
+
+Let's review why we need an activation function. Neural networks are linear transformations, and chaining many linear transformations ends up having a linear transformation again. This means the neural network cannot solve complex problems by just having a linear transformation. For example, if we have f(x) = x - 1 and g(x) = 2x + 1, chaining them will be f(g(x)) = (2x + 1) - 1 = 2x, which is still a linear function. Therefore, activation functions are used to enable the neural network to perform a non-linear transformation.
+
+**SiLu (Swish):** Swish activation function is smooth, non-monotonic, and unbounded above, allowing for more complex representations in neural networks and it combines the benefits of both linear and non-linear functions. The Swish activation function, is defined as follows:
+
+$$swish(x) = \frac{x}{1 + e^{-x}}$$
+
+A variant of Swish includes a learnable parameter  $\beta$ , and its computed as follows:
+
+$$Swish(x) = x \times sigmoid(\beta x)$$
+
+Swish approximates a linear function for positive inputs and ReLU for negative inputs, which helps mitigate the vanishing gradient problem in deep networks.
+
+### **Neural Network Cost Functions**
+
+We have explained that a neural network has three core components, and the cost function is one of them, as is shown in Figure 10-7. We have also introduced and explained Chapter 8 about the motivation and use of cost functions. In the context of a neural network, a cost function uses the given input to measure how accurate the output is. In other words, after the neural networks construct the output, the algorithm uses the cost function to report the loss score  $L(\hat{y}, y)$ . Basically, the loss score is calculated by the cost function and presents how far the algorithm output is from the true value.
+
+A cost function for a single neuron can be formalized as  $C = (W, B, S_r, E_r)$ , in which C presents the cost value, W presents weights, B presents biases,  $S_r$  presents the input of a single training sample (e.g., one record of data), and  $E_r$  presents the desired output of the given input training sample  $(S_r)$ . For the entire network, which has n layers and we have m numbers of weights in the last layer, we will have a cost function that depends on all of the weights  $C(w_1^{(1)}, w_2^{(1)}, \ldots, w_m^{(n)})$ .
+
+Let us remind you, that when we report something specific to a layer, we use superscript. For example,  $a^{(2)}(x)$  presents the value of the activation function at the second layer.
+
+Here, we list four cost functions that are common for neural networks. Some of them have been explained in Chapter 8 and Chapter 3, but here we repeat them because they are widely used for neural networks. We can also define our cost function based on our needs for the neural network and incorporate the domain knowledge into the customized cost function.
+
+### **Quadratic Cost (Mean Squared Error)**
+
+We use this cost function for regression as well, and it is known as "root mean square error". Assuming y(x) presents the actual value of output,  $a_i^L$  or y presents the actual value in the last layer (L presents the last layer), and  $E_{r(i)}$  (or  $\hat{y}$ ) presents the output value. Assuming the test set has n data points, and i is the index of each data point, the quadratic cost equation is written as follows:
+
+$$C = \frac{1}{n} \sum_{i=1}^{n} (a_i^L - E_{r(i)})^2$$
+
+Using simply y and  $\hat{y}$  is much easier to understand and memorize, but other literatures use this notation, and it is better to get familiar with this style of writing as well; we follow the common approach while describing these equations.
+
+The quadratic cost function is usually used for neural networks that try to resolve a regression problem. The loss function used in the training phase of MLP is usually Mean Square Error (MSE), if there are many outliers, then it is recommended to use Mean Absolute Error (MAE) instead.
+
+### **Cross Entropy**
+
+Cross entropy is a mathematical function that measures the differences between two statistical distributions. Assuming P(x) is one distribution and Q(x) is the second distribution, their cross entropy H(P,Q) is written as follows:
+
+$$H(P,Q) = -\sum_{x} P(x) \cdot log \ Q(x)$$
+
+For classification tasks of neural networks where we deal with labels, we use cross entropy cost function. This function provides a probability distribution for each class label. For example, an algorithm that recognizes your mood from facial expressions after you wake up from bed can provide a list of three probabilities as follows: \{ I bite, don't talk with me: 0.7, full of energy: 0.1, immediately to the restroom: 0.2\}.
+
+Assuming the data points in the test dataset are specified i index, the binary cross entropy equation is written as follows.
+
+$$C = -\sum_{i} \left[ E_{r(i)} \cdot ln(a_i^L) + (1 - E_{r(i)}) ln(1 - (a_i^L)) \right]$$
+
+Respectively, we can write the multiclass cross entropy as follows:
+
+$$C = -\sum_{i} \sum_{j} [E_{r(i),j}. ln(a_{i,j}^{L})]$$
+
+Here, i is the index of samples, and j is the index of classes. The description of other variables in this equation is exactly the same as the one we have explained for the quadratic cost function.
+
+### **Kullback-Leibler Divergence**
+
+Back in Chapter 3, we explained the KL-Divergence function is used to quantify the differences (or measuring similarity) between two probability distributions, which is written as follows:
+
+$$D_{KL}(P,Q) = \sum_{i} P(i) ln \frac{P(i)}{Q(i)}$$
+
+In the context of neural networks, we need a cost function to compare the distribution of output values with the actual values. Therefore, it is written as follows:
+
+$$D_{KL}(E_r, a^L) = \sum_{i} E_{r(i)} \log \frac{E_{r(i)}}{a_i^L}$$
+
+KL divergence and cross entropy are very similar, and KL divergence is also called relative entropy. Therefore, similar to cross entropy, we can also use it for classification tasks.
+
+### Hellinger (Bhattacharyya) Distance
+
+Hellinger distance [Hellinger '09] is also used to quantify the similarity between two probability distributions. Therefore, outside the context of the cost function, we can formalize the Hellinger
+
+distance between two distributions, P and Q, as the  $L_2$  norm (Euclidean norm) used for probability distributions:
+
+$$H(P,Q) = \frac{1}{\sqrt{2}} ||\sqrt{P} - \sqrt{Q}||_2 = \frac{1}{\sqrt{2}} \sqrt{\sum_i (\sqrt{P_i} - \sqrt{Q_i})^2}$$
+
+However, differentiating a square root inside a square root (used by Backpropagation) is computationally complex, and this distance can be relaxed by removing the square root as follows:
+
+$$H^{2} = \frac{1}{2} \sum_{i} (\sqrt{a_{i}^{L}} - \sqrt{E_{r(i)}})^{2}$$
+
+If we intend to ensure that the cost function result will stay between 0 and 1, we can use Hellinger distance and not its squared version.
+
+To summarize these cost functions, cross entropy and all other cost functions we described here, except quadratic cost, measure the differences between two probabilities, in which one probability presents the actual value and the other presents the output value. To review where we use which cost function, check the following:
+
+*Quadratic cost:* Typically used in regression problems where the output is a continuous variable.
+
+*Cross Entropy:* Commonly used in classification problems, particularly multiclass classification.
+
+Binary Cross Entropy: Specifically used in binary classification problems.
+
+*KL-Divergence:* Also used in classification tasks, KL-Divergence measures how one probability distribution diverges from a second reference probability distribution.
+
+Hellinger Distance: Used in classification problems as well, especially when a bounded metric between 0 and 1 is preferred.
+
+<Figure src="https://pub-ee43721261544e8e8a0ca430d5d2c560.r2.dev/ch10/_page_19_Picture_11.jpeg" alt="Figure" />
+
+#### NOTE:
+
+- \* Since a neural network includes many neurons and many activation functions used to combine these neurons, activation functions should be computationally efficient. Similar to the similarity metrics that are required to be computationally efficient while we are doing clustering, the same issue existed for the activation function as well.
+- \* Among the equations we described for the cost function, the quadratic cost function is more popular. It is squared to eliminate negative values and increase the impact of errors to highlight
+
+them. Somehow, it punishes the network when the error is large by making it a larger error. If we have a multi-label classification problem, cross entropy is also popular. Nevertheless, we recommend that if you have enough resources, you experiment with all of them. You can change them in the neural network package easily as hyperparameters.
+
+- \* There are more cost functions, such as the Generalized Kullback–Leibler divergence or Exponential cost function, which we did not describe.
+- \* Some implementations of cross entropy provide one implementation for binary classification and one for multi-class classification, i.e., softmax cross entropy.
+- \* While using gradient-based optimization, Mean Absolute Error and Mean Square Error usually do not yield good results. Therefore, they are not popular to go for neural network cost functions. However, while MSE and MAE are not typically the first choice for classification problems in neural networks, they are still popular and effective for regression tasks.
