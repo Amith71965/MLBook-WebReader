@@ -35,7 +35,12 @@ export function TextSelectionAction({
     }, 10);
   }, []);
 
-  const handleMouseDown = useCallback(() => {
+  const handleMouseDown = useCallback((e: MouseEvent) => {
+    // Don't collapse our own selection when the user is clicking the tooltip.
+    // If we did, React would unmount the button between mousedown and mouseup,
+    // and the browser would never fire the `click` event on it.
+    const target = e.target as Element | null;
+    if (target && target.closest("[data-ask-ai-tooltip]")) return;
     setSelection(null);
   }, []);
 
@@ -52,10 +57,14 @@ export function TextSelectionAction({
 
   return (
     <div
+      data-ask-ai-tooltip
       className="fixed z-50 -translate-x-1/2 -translate-y-full animate-in fade-in slide-in-from-bottom-2 duration-200"
       style={{ left: selection.x, top: selection.y }}
     >
       <button
+        // Prevent the mousedown from collapsing the text selection and
+        // re-triggering our own clear logic before the click lands.
+        onMouseDown={(e) => e.preventDefault()}
         onClick={() => {
           onAskAI(selection.text);
           setSelection(null);

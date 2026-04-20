@@ -58,10 +58,13 @@ if [ -d "$MLBOOK" ]; then
   shopt -u nullglob
 fi
 
-# 3. Cover image (if staged)
+# 3. Cover image (checked in order: staged tmp, then professor's MLBook dir)
 if [ -f "$PROJECT_ROOT/tmp/cover.png" ]; then
-  echo "=== Uploading cover.png ==="
+  echo "=== Uploading cover.png (from tmp/) ==="
   upload "$PROJECT_ROOT/tmp/cover.png" "cover.png"
+elif [ -f "$HOME/MLBook/Frontcover.png" ]; then
+  echo "=== Uploading cover.png (from ~/MLBook/Frontcover.png) ==="
+  upload "$HOME/MLBook/Frontcover.png" "cover.png"
 fi
 
 echo

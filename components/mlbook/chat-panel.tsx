@@ -29,21 +29,23 @@ export function ChatPanel({
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [initialPrompt, setInitialPrompt] = useState<string | null>(null);
+  const lastPrefilledRef = useRef<string | null>(null);
 
-  // Auto-fill input when text is selected
+  // Auto-fill input whenever a new selection arrives while the panel is open.
+  // We compare against the last prefilled value via a ref so unrelated
+  // re-renders don't keep overwriting what the user is typing.
   useEffect(() => {
-    if (selectedText && isOpen && !initialPrompt) {
-      setInitialPrompt(selectedText);
-      setInput(`What does this mean: "${selectedText.slice(0, 200)}"`);
-      inputRef.current?.focus();
-    }
-  }, [selectedText, isOpen, initialPrompt]);
+    if (!isOpen || !selectedText) return;
+    if (lastPrefilledRef.current === selectedText) return;
+    lastPrefilledRef.current = selectedText;
+    setInput(`What does this mean: "${selectedText.slice(0, 200)}"`);
+    inputRef.current?.focus();
+  }, [selectedText, isOpen]);
 
-  // Clear initial prompt when panel closes
+  // Reset the prefill guard + clear selection when the panel closes
   useEffect(() => {
     if (!isOpen) {
-      setInitialPrompt(null);
+      lastPrefilledRef.current = null;
       onClearSelection?.();
     }
   }, [isOpen, onClearSelection]);
@@ -187,6 +189,32 @@ export function ChatPanel({
             &times;
           </button>
         </div>
+
+        {/* Selected passage chip */}
+        {selectedText && (
+          <div className="px-5 pt-3">
+            <div className="flex items-start gap-2 bg-cream-50 border border-ink-500/10 rounded-2xl px-3 py-2">
+              <span className="font-sans text-[9px] font-bold tracking-[0.2em] text-ink-500 uppercase mt-1 shrink-0">
+                Asking about
+              </span>
+              <p className="flex-1 font-serif italic text-[13px] leading-snug text-ink-700 line-clamp-3">
+                &ldquo;{selectedText.slice(0, 180)}
+                {selectedText.length > 180 ? "…" : ""}&rdquo;
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  lastPrefilledRef.current = null;
+                  onClearSelection?.();
+                }}
+                className="text-ink-400 hover:text-ink-900 transition-colors text-base leading-none shrink-0"
+                aria-label="Clear selected passage"
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Messages */}
         <div
