@@ -80,6 +80,12 @@ export function ChatPanel({
       setInput("");
       setIsLoading(true);
 
+      // Once the question has been sent, the selection is "consumed" —
+      // reset the prefill guard and clear the chip so the next selection
+      // cleanly re-prefills the input.
+      lastPrefilledRef.current = null;
+      onClearSelection?.();
+
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
@@ -101,13 +107,25 @@ export function ChatPanel({
           throw new Error(`Chat API error: ${res.status}`);
         }
 
-        // Read the streaming response
-        const reader = res.body?.getReader();
-        const decoder = new TextDecoder();
-        let assistantContent = "";
+        // Read the streaming response. If res.body is null (rare), fall back
+        // to res.text() BEFORE touching the reader — once getReader() is
+        // called the body is locked and res.text() would throw
+        // "Body is disturbed or locked".
         const assistantId = `assistant-${Date.now()}`;
+        let assistantContent = "";
 
-        if (reader) {
+        if (!res.body) {
+          const text = await res.text();
+          assistantContent =
+            text || "I couldn't generate a response. Please try again.";
+          setMessages([
+            ...updatedMessages,
+            { id: assistantId, role: "assistant", content: assistantContent },
+          ]);
+        } else {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
@@ -123,19 +141,19 @@ export function ChatPanel({
               },
             ]);
           }
-        }
 
-        // Final message if no streaming happened
-        if (!assistantContent) {
-          const text = await res.text();
-          setMessages([
-            ...updatedMessages,
-            {
-              id: assistantId,
-              role: "assistant",
-              content: text || "I couldn't generate a response. Please try again.",
-            },
-          ]);
+          // Empty stream → show a friendly message, don't re-read the body.
+          if (!assistantContent) {
+            setMessages([
+              ...updatedMessages,
+              {
+                id: assistantId,
+                role: "assistant",
+                content:
+                  "I couldn't generate a response. Please try again.",
+              },
+            ]);
+          }
         }
       } catch (error) {
         console.error("Chat error:", error);
@@ -152,7 +170,7 @@ export function ChatPanel({
         setIsLoading(false);
       }
     },
-    [input, isLoading, messages, chapter, section, selectedText]
+    [input, isLoading, messages, chapter, section, selectedText, onClearSelection]
   );
 
   if (!isOpen) return null;
