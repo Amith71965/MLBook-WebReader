@@ -73,8 +73,6 @@ export async function POST(req: Request) {
     const embedding = await generateEmbedding(query);
     const chunks = await searchChunks(embedding, {
       chapter: context?.chapter,
-      threshold: 0.6,
-      count: 3,
     });
 
     if (chunks.length > 0) {
