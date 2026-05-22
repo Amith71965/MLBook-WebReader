@@ -73,8 +73,8 @@ export async function POST(req: Request) {
     const embedding = await generateEmbedding(query);
     const chunks = await searchChunks(embedding, {
       chapter: context?.chapter,
-      threshold: 0.5,
-      count: 5,
+      threshold: 0.6,
+      count: 3,
     });
 
     if (chunks.length > 0) {
@@ -99,10 +99,6 @@ export async function POST(req: Request) {
 
   // Combine session history with current messages
   const conversationMessages = [
-    ...sessionHistory.map((m) => ({
-      role: m.role as "user" | "assistant",
-      content: m.content,
-    })),
     ...messages,
   ];
 
