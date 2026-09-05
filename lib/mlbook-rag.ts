@@ -57,7 +57,7 @@ export async function searchChunks(
   queryEmbedding: number[],
   options: { chapter?: number; threshold?: number; count?: number } = {}
 ): Promise<ChunkMatch[]> {
-  const { chapter, threshold = 0.5, count = 5 } = options;
+  const { chapter, threshold = 0.6, count = 3 } = options;
   const supabase = getSupabase();
 
   const { data, error } = await supabase.rpc("match_book_chunks", {
@@ -92,7 +92,7 @@ export async function getSessionMessages(
     .single();
 
   if (!data) return [];
-  return (data.messages as ChatMessage[]).slice(-20); // Keep last 10 pairs
+  return (data.messages as ChatMessage[]).slice(-6); // Keep last 6 messages
 }
 
 export async function saveSessionMessages(
@@ -101,7 +101,7 @@ export async function saveSessionMessages(
   context?: { chapter?: number; section?: string }
 ) {
   const supabase = getSupabase();
-  const trimmed = messages.slice(-20); // Keep last 10 pairs
+  const trimmed = messages.slice(-6); // Keep last 6 messages
 
   const { error } = await supabase.from("chat_sessions").upsert(
     {
